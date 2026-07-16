@@ -192,6 +192,33 @@
 
   .footnote { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
   hr.soft { border: 0; border-top: 1px solid var(--hair); margin: 40px 0; }
+
+  /* ---- Mobile: keep vertical scrolling working, make tables fit ---- */
+  @media (max-width: 660px) {
+    .wrap { padding: 0 14px 72px; }
+    header.mast { padding: 40px 0 28px; margin-bottom: 32px; }
+    section { margin: 40px 0; }
+    /* the fix for "page won't scroll down": these containers no longer trap
+       vertical touch gestures, so a down-swipe always scrolls the page */
+    .table-scroll { touch-action: pan-y; overscroll-behavior: contain; }
+    table { min-width: 0; width: 100%; font-size: 12px; }
+    th, td { padding: 8px 7px; }
+    th:first-child, td:first-child { white-space: normal; }
+    caption { padding: 10px 12px 0; font-size: 11.5px; }
+    /* hide derived / intermediate columns so the essentials fit the screen
+       width — full breakdown remains in the desktop/artifact view */
+    #t-salary th:nth-child(5), #t-salary td:nth-child(5) { display: none; }        /* CPH premium */
+    #t-net th:nth-child(3), #t-net td:nth-child(3),
+    #t-net th:nth-child(5), #t-net td:nth-child(5) { display: none; }              /* eff-rate cols */
+    #t-rent th:nth-child(5), #t-rent td:nth-child(5) { display: none; }            /* gap col */
+    #t-disp th:nth-child(2), #t-disp td:nth-child(2),
+    #t-disp th:nth-child(3), #t-disp td:nth-child(3),
+    #t-disp th:nth-child(4), #t-disp td:nth-child(4) { display: none; }            /* net / -rent / -essentials */
+    .barrow { grid-template-columns: 58px 1fr; gap: 8px; }
+    .barrow .who { font-size: 11px; }
+    .two-col { grid-template-columns: 1fr; }
+    .sources { columns: 1; }
+  }
 </style>
 
 <div class="wrap">
@@ -244,7 +271,7 @@
     <p class="lede">Average gross monthly salaries for private-sector marketing roles in each capital, by seniority. Danish figures come in higher across the board — a real, well-documented wage gap between the two countries — and the strong krone widens it further on conversion.</p>
 
     <div class="table-scroll">
-      <table>
+      <table id="t-salary">
         <caption>Gross monthly salary, before tax · local currency and DKK equivalent</caption>
         <thead>
           <tr>
@@ -294,7 +321,7 @@
     </div>
 
     <div class="table-scroll" style="margin-top:24px">
-      <table>
+      <table id="t-net">
         <caption>Net monthly salary after income tax · effective tax rate in brackets</caption>
         <thead>
           <tr>
@@ -322,7 +349,7 @@
     <p class="lede">Housing is where the two cities diverge most. Rents below are for a one-bedroom apartment roughly 10–15 minutes from the city centre by metro — Nørrebro / Amager / Sydhavn / Vanløse in Copenhagen; Södermalm fringe / Liljeholmen / Solna / Sundbyberg in Stockholm.</p>
 
     <div class="table-scroll">
-      <table>
+      <table id="t-rent">
         <caption>Monthly rent, one-bedroom · median with low/high band for sensitivity</caption>
         <thead>
           <tr><th class="lvl">Scenario</th><th>Copenhagen (DKK)</th><th>Stockholm (SEK)</th><th>Stockholm in DKK</th><th>Gap (STO cheaper)</th></tr>
@@ -388,7 +415,7 @@
     <p class="lede">Disposable income = net salary − median rent − essential costs, all in DKK. This is the headline number: money remaining each month for saving, leisure and discretionary spending.</p>
 
     <div class="table-scroll">
-      <table>
+      <table id="t-disp">
         <caption>Monthly disposable income at median rent · all values DKK</caption>
         <thead>
           <tr>
