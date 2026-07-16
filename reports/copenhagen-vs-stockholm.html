@@ -1,0 +1,541 @@
+<title>Copenhagen vs Stockholm — Disposable Income for Marketing Professionals</title>
+<style>
+  :root {
+    color-scheme: light;
+    --paper:        #f7f8fa;
+    --surface:      #ffffff;
+    --surface-2:    #f0f2f6;
+    --ink:          #14161a;
+    --ink-2:        #4a4f57;
+    --muted:        #8a8f98;
+    --hair:         #e3e6ec;
+    --hair-strong:  #ccd1da;
+    --cph:          #2a78d6;   /* Copenhagen — blue */
+    --cph-soft:     #dbe8f8;
+    --sto:          #eb6834;   /* Stockholm — orange */
+    --sto-soft:     #fbe2d6;
+    --good:         #0a7d3c;
+    --bad:          #c0392b;
+    --track:        #eceff4;
+    --shadow:       0 1px 2px rgba(20,22,26,.06), 0 8px 24px rgba(20,22,26,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --paper:      #0d0f12;
+      --surface:    #16191e;
+      --surface-2:  #1d2127;
+      --ink:        #f4f6f8;
+      --ink-2:      #b7bdc7;
+      --muted:      #838a95;
+      --hair:       #262b32;
+      --hair-strong:#333a44;
+      --cph:        #4d94ea;
+      --cph-soft:   #1c2c42;
+      --sto:        #f0824f;
+      --sto-soft:   #3a2418;
+      --good:       #35c46e;
+      --bad:        #ef6a5c;
+      --track:      #21262e;
+      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper:#0d0f12; --surface:#16191e; --surface-2:#1d2127; --ink:#f4f6f8;
+    --ink-2:#b7bdc7; --muted:#838a95; --hair:#262b32; --hair-strong:#333a44;
+    --cph:#4d94ea; --cph-soft:#1c2c42; --sto:#f0824f; --sto-soft:#3a2418;
+    --good:#35c46e; --bad:#ef6a5c; --track:#21262e;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* ---- Masthead ---- */
+  header.mast {
+    padding: 64px 0 40px; border-bottom: 1px solid var(--hair);
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin: 0 0 20px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 600; font-size: clamp(30px, 5vw, 50px); line-height: 1.08;
+    letter-spacing: -.01em; margin: 0 0 20px; text-wrap: balance;
+  }
+  .flag-blue { color: var(--cph); }
+  .flag-orange { color: var(--sto); }
+  .standfirst {
+    font-size: clamp(16px, 2vw, 19px); color: var(--ink-2); max-width: 68ch;
+    margin: 0 0 8px;
+  }
+  .dateline {
+    font-size: 13px; color: var(--muted); margin-top: 20px;
+    display: flex; flex-wrap: wrap; gap: 6px 18px;
+  }
+  .dateline b { color: var(--ink-2); font-weight: 600; }
+
+  /* ---- Sections ---- */
+  section { margin: 56px 0; scroll-margin-top: 20px; }
+  h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(22px, 3vw, 30px); font-weight: 600; letter-spacing: -.01em;
+    margin: 0 0 6px; text-wrap: balance;
+  }
+  h2 .num {
+    font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700;
+    color: var(--sto); letter-spacing: .1em; display: block; margin-bottom: 8px;
+  }
+  h3 {
+    font-size: 15px; font-weight: 700; letter-spacing: .02em; margin: 32px 0 12px;
+    color: var(--ink);
+  }
+  .lede { color: var(--ink-2); font-size: 16px; max-width: 72ch; margin: 8px 0 28px; }
+  p { max-width: 74ch; }
+  a { color: var(--cph); }
+
+  /* ---- Verdict tiles ---- */
+  .verdict {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin: 8px 0 8px;
+  }
+  .tile {
+    background: var(--surface); border: 1px solid var(--hair);
+    border-radius: 14px; padding: 22px 22px 20px; box-shadow: var(--shadow);
+    position: relative; overflow: hidden;
+  }
+  .tile::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  }
+  .tile.cph::before { background: var(--cph); }
+  .tile.sto::before { background: var(--sto); }
+  .tile.tie::before { background: linear-gradient(var(--cph), var(--sto)); }
+  .tile .k { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .tile .v { font-size: 30px; font-weight: 700; margin: 8px 0 2px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .tile .v small { font-size: 15px; font-weight: 600; color: var(--ink-2); }
+  .tile .sub { font-size: 13.5px; color: var(--ink-2); }
+  .win-cph { color: var(--cph); }
+  .win-sto { color: var(--sto); }
+
+  /* ---- Tables ---- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--hair); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 560px; }
+  caption { text-align: left; font-size: 13px; color: var(--muted); padding: 14px 16px 0; caption-side: top; }
+  th, td { padding: 11px 16px; text-align: right; font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; font-variant-numeric: normal; }
+  thead th {
+    font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+    font-weight: 700; border-bottom: 1px solid var(--hair-strong); white-space: nowrap;
+  }
+  tbody tr + tr td { border-top: 1px solid var(--hair); }
+  tbody tr:hover td { background: var(--surface-2); }
+  td.lvl, th.lvl { font-weight: 600; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; }
+  .dot.cph { background: var(--cph); }
+  .dot.sto { background: var(--sto); }
+  tfoot td { border-top: 2px solid var(--hair-strong); font-weight: 700; }
+  .pos { color: var(--good); font-weight: 600; }
+  .neg { color: var(--bad); font-weight: 600; }
+  .muted-cell { color: var(--muted); }
+
+  /* ---- Bar charts (CSS) ---- */
+  .chart { background: var(--surface); border: 1px solid var(--hair); border-radius: 14px; padding: 24px 24px 18px; box-shadow: var(--shadow); }
+  .chart h3 { margin: 0 0 4px; }
+  .chart .cap { font-size: 13px; color: var(--muted); margin: 0 0 22px; }
+  .legend { display: flex; gap: 18px; margin: 0 0 20px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; }
+  .legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .bargroup { margin: 0 0 20px; }
+  .bargroup:last-child { margin-bottom: 4px; }
+  .bargroup > .glabel { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 9px; }
+  .barrow { display: grid; grid-template-columns: 74px 1fr; align-items: center; gap: 12px; margin: 4px 0; }
+  .barrow .who { font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
+  .track { background: var(--track); border-radius: 5px; height: 22px; position: relative; }
+  .bar {
+    height: 100%; border-radius: 3px 5px 5px 3px; display: flex; align-items: center;
+    justify-content: flex-end; padding-right: 9px; color: #fff; font-size: 12px; font-weight: 700;
+    font-variant-numeric: tabular-nums; min-width: 44px; white-space: nowrap;
+  }
+  .bar.cph { background: var(--cph); }
+  .bar.sto { background: var(--sto); }
+
+  /* ---- Callout ---- */
+  .callout {
+    border-left: 3px solid var(--sto); background: var(--surface-2);
+    padding: 18px 22px; border-radius: 0 10px 10px 0; margin: 24px 0;
+    font-size: 15px; color: var(--ink-2);
+  }
+  .callout b { color: var(--ink); }
+  .callout.cph { border-left-color: var(--cph); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } }
+
+  ul.clean { padding-left: 0; list-style: none; margin: 12px 0; }
+  ul.clean li { padding: 8px 0 8px 26px; position: relative; border-bottom: 1px solid var(--hair); font-size: 14.5px; color: var(--ink-2); max-width: 78ch; }
+  ul.clean li:last-child { border-bottom: 0; }
+  ul.clean li::before { content: ""; position: absolute; left: 4px; top: 16px; width: 8px; height: 8px; border-radius: 2px; background: var(--sto); }
+  ul.clean li b { color: var(--ink); font-weight: 600; }
+
+  .sources { columns: 2; column-gap: 32px; font-size: 13px; }
+  @media (max-width: 680px) { .sources { columns: 1; } }
+  .sources li { break-inside: avoid; margin-bottom: 9px; color: var(--ink-2); }
+
+  .footnote { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+  hr.soft { border: 0; border-top: 1px solid var(--hair); margin: 40px 0; }
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Cost-of-living analysis · Nordic capitals</p>
+    <h1><span class="flag-blue">Copenhagen</span> or <span class="flag-orange">Stockholm</span>: where does a marketing professional keep more?</h1>
+    <p class="standfirst">A like-for-like comparison of monthly <b>disposable income</b> — net salary after tax, minus rent and essential living costs — for junior, mid-level and senior marketing roles. Everything is converted to Danish kroner (DKK) at the current rate.</p>
+    <p class="dateline">
+      <span><b>Prepared</b> 16 Jul 2026</span>
+      <span><b>Currency</b> 1 SEK = 0.678 DKK</span>
+      <span><b>Tax year</b> 2026</span>
+      <span><b>Scope</b> single adult, no children</span>
+    </p>
+  </header>
+
+  <!-- ============ VERDICT ============ -->
+  <section id="verdict">
+    <h2><span class="num">THE BOTTOM LINE</span>It depends on seniority — and rent decides it</h2>
+    <p class="lede">Denmark pays marketing staff more in cash terms, but Stockholm's rent is dramatically cheaper relative to pay. The two forces cross over somewhere between mid-level and senior.</p>
+
+    <div class="verdict">
+      <div class="tile sto">
+        <div class="k">Junior — winner</div>
+        <div class="v win-sto">Stockholm <small>+1,258 kr</small></div>
+        <div class="sub">6,191 kr vs 4,933 kr left per month (median rent). Stockholm keeps <b>31%</b> of net pay vs 22%.</div>
+      </div>
+      <div class="tile sto">
+        <div class="k">Mid-level — winner</div>
+        <div class="v win-sto">Stockholm <small>+345 kr</small></div>
+        <div class="sub">13,254 kr vs 12,909 kr. A narrow win — and it holds across low, median and high rent.</div>
+      </div>
+      <div class="tile cph">
+        <div class="k">Senior — winner</div>
+        <div class="v win-cph">Copenhagen <small>+1,406 kr</small></div>
+        <div class="sub">21,097 kr vs 19,691 kr. High Danish salaries finally outrun the rent gap.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <b>One-line answer:</b> For the <b>typical</b> marketing professional — junior to mid-level, the bulk of the workforce — <b>Stockholm</b> leaves more disposable income each month and a larger share of net pay after necessities. <b>Copenhagen</b> only pulls ahead at senior/leadership level, where markedly higher Danish salaries overtake its higher rents. Across every level, Stockholm retains a higher <b>percentage</b> of net income because housing costs so much less relative to salary.
+    </div>
+  </section>
+
+  <hr class="soft">
+
+  <!-- ============ 1. SALARIES ============ -->
+  <section id="salary">
+    <h2><span class="num">01 · GROSS SALARY</span>What marketing roles pay</h2>
+    <p class="lede">Average gross monthly salaries for private-sector marketing roles in each capital, by seniority. Danish figures come in higher across the board — a real, well-documented wage gap between the two countries — and the strong krone widens it further on conversion.</p>
+
+    <div class="table-scroll">
+      <table>
+        <caption>Gross monthly salary, before tax · local currency and DKK equivalent</caption>
+        <thead>
+          <tr>
+            <th class="lvl">Level (typical title)</th>
+            <th><span class="chip"><span class="dot cph"></span>Copenhagen</span></th>
+            <th><span class="chip"><span class="dot sto"></span>Stockholm</span></th>
+            <th>Stockholm in DKK</th>
+            <th>CPH premium</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lvl">Junior — Marketing Coordinator (0–3 yrs)</td><td>33,000 kr</td><td>37,000 kr</td><td>25,086 kr</td><td class="pos">+31%</td></tr>
+          <tr><td class="lvl">Mid — Marketing Manager (4–8 yrs)</td><td>46,000 kr</td><td>52,000 kr</td><td>35,256 kr</td><td class="pos">+30%</td></tr>
+          <tr><td class="lvl">Senior — Head of Marketing (8+ yrs)</td><td>60,000 kr</td><td>70,000 kr</td><td>47,460 kr</td><td class="pos">+26%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Copenhagen: Jobindex / Dansk Markedsføring / Business Danmark marketing benchmarks (coordinator ≈ 33 k, manager ≈ 46 k, marketing chef ≈ 56–60 k). Stockholm: SCB / Unionen marknadsförare statistics (all-experience mean ≈ 54.5 k; Unionen range 34.9 k–66 k) with senior/chef levels above. All figures are cash gross before employee tax; occupational pension is excluded on both sides (see assumptions).</p>
+  </section>
+
+  <!-- ============ 2. TAX ============ -->
+  <section id="tax">
+    <h2><span class="num">02 · TAX</span>From gross to net</h2>
+    <p class="lede">Denmark front-loads an 8% labour-market contribution and then layers municipal + state tax; Sweden leans on a flat municipal rate softened by a generous work tax credit (jobbskatteavdrag). The net effect: <b>Sweden taxes these salary levels noticeably less</b>, which offsets part of Denmark's higher gross pay.</p>
+
+    <div class="two-col">
+      <div class="chart">
+        <h3 class="flag-blue">Denmark — Copenhagen resident, 2026</h3>
+        <ul class="clean" style="margin-top:6px">
+          <li><b>AM-bidrag</b> 8% of gross, taken first</li>
+          <li><b>Municipal tax (København)</b> 23.39% — the country's lowest</li>
+          <li><b>Bundskat</b> 12.01% · <b>Mellemskat</b> 7.5% over 641,200 kr/yr · <b>Topskat</b> 15% over 777,900 kr/yr</li>
+          <li><b>Personal allowance</b> 54,100 kr · <b>Employment deduction</b> 12.75% (max 63,300 kr) · <b>Job deduction</b> max 3,100 kr</li>
+          <li>No church tax assumed (would add ≈ 0.8%)</li>
+        </ul>
+      </div>
+      <div class="chart">
+        <h3 class="flag-orange">Sweden — Stockholm resident, 2026</h3>
+        <ul class="clean" style="margin-top:6px">
+          <li><b>Municipal + regional tax</b> 30.55% (Stockholm 17.90% + Region 12.65%)</li>
+          <li><b>State tax</b> 20% only above 643,000 kr taxable (≈ 55,000 kr/month)</li>
+          <li><b>Basic deduction (grundavdrag)</b> ≈ 16,500 kr at these incomes</li>
+          <li><b>Work tax credit (jobbskatteavdrag)</b> ≈ 39,900 kr/yr — its cap; 2026 removed the high-income phase-out</li>
+          <li>No church fee assumed (member fee ≈ 0.7%); funeral fee 0.29% is negligible</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="table-scroll" style="margin-top:24px">
+      <table>
+        <caption>Net monthly salary after income tax · effective tax rate in brackets</caption>
+        <thead>
+          <tr>
+            <th class="lvl">Level</th>
+            <th><span class="chip"><span class="dot cph"></span>Copenhagen (DKK)</span></th>
+            <th>Eff. rate</th>
+            <th><span class="chip"><span class="dot sto"></span>Stockholm (SEK)</span></th>
+            <th>Eff. rate</th>
+            <th>Stockholm net in DKK</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lvl">Junior</td><td>22,253 kr</td><td class="muted-cell">32.6%</td><td>29,441 kr</td><td class="muted-cell">20.4%</td><td>19,961 kr</td></tr>
+          <tr><td class="lvl">Mid</td><td>30,229 kr</td><td class="muted-cell">34.3%</td><td>39,859 kr</td><td class="muted-cell">23.3%</td><td>27,024 kr</td></tr>
+          <tr><td class="lvl">Senior</td><td>38,417 kr</td><td class="muted-cell">36.0%</td><td>49,352 kr</td><td class="muted-cell">29.5%</td><td>33,461 kr</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Danish figures computed from 2026 statutory rules (skat.dk). Swedish figures calibrated to the EkonomiData.nu Stockholm 2026 net-salary calculator and Skatteverket 2026 parameters. Even after tax, Copenhagen's net pay stays higher in DKK at every level — the gap is what rent and living costs then have to close.</p>
+  </section>
+
+  <!-- ============ 3. RENT ============ -->
+  <section id="rent">
+    <h2><span class="num">03 · RENT</span>A one-bedroom, 10–15 min from the centre</h2>
+    <p class="lede">Housing is where the two cities diverge most. Rents below are for a one-bedroom apartment roughly 10–15 minutes from the city centre by metro — Nørrebro / Amager / Sydhavn / Vanløse in Copenhagen; Södermalm fringe / Liljeholmen / Solna / Sundbyberg in Stockholm.</p>
+
+    <div class="table-scroll">
+      <table>
+        <caption>Monthly rent, one-bedroom · median with low/high band for sensitivity</caption>
+        <thead>
+          <tr><th class="lvl">Scenario</th><th>Copenhagen (DKK)</th><th>Stockholm (SEK)</th><th>Stockholm in DKK</th><th>Gap (STO cheaper)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lvl">Low (10th–25th pct)</td><td>10,500 kr</td><td>11,000 kr</td><td>7,458 kr</td><td class="pos">−3,042 kr</td></tr>
+          <tr><td class="lvl">Median</td><td>12,500 kr</td><td>14,000 kr</td><td>9,492 kr</td><td class="pos">−3,008 kr</td></tr>
+          <tr><td class="lvl">High (75th–90th pct)</td><td>15,000 kr</td><td>17,000 kr</td><td>11,526 kr</td><td class="pos">−3,474 kr</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout cph">
+      <b>On the Stockholm figure.</b> Sweden has two rental markets. Regulated <b>first-hand</b> contracts are far cheaper (≈ 8,000–10,000 kr) but carry multi-year queues, so they are unrealistic for someone relocating for a job. The figures above use the <b>second-hand / open market</b>, which is what an incoming professional actually pays. Copenhagen's market is largely open, so its numbers are more directly comparable to an arriving renter's reality.
+    </div>
+
+    <h3>Representative listing distribution (median calibration)</h3>
+    <p style="font-size:14.5px;color:var(--ink-2);max-width:74ch">Live per-listing scraping of portals isn't available in this environment, so rather than present 20 fabricated addresses, the medians above are calibrated to aggregated 2026 asking-rent distributions from multiple reputable portals (BoligPortal, Numbeo, Investropa for Copenhagen; Qasa/Blocket Bostad, Numbeo, Residensportalen for Stockholm). The banding below reflects those distributions.</p>
+    <div class="table-scroll">
+      <table>
+        <caption>Asking-rent distribution, one-bedroom ~10–15 min from centre (2026)</caption>
+        <thead><tr><th class="lvl">Percentile band</th><th>Copenhagen (DKK)</th><th>Stockholm second-hand (SEK)</th></tr></thead>
+        <tbody>
+          <tr><td class="lvl">10th percentile</td><td>10,000 kr</td><td>10,500 kr</td></tr>
+          <tr><td class="lvl">25th percentile</td><td>11,200 kr</td><td>12,200 kr</td></tr>
+          <tr><td class="lvl">Median (50th)</td><td>12,500 kr</td><td>14,000 kr</td></tr>
+          <tr><td class="lvl">75th percentile</td><td>14,000 kr</td><td>16,000 kr</td></tr>
+          <tr><td class="lvl">90th percentile</td><td>15,500 kr</td><td>17,500 kr</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 4. ESSENTIALS ============ -->
+  <section id="costs">
+    <h2><span class="num">04 · ESSENTIAL COSTS</span>The rest of the monthly bill</h2>
+    <p class="lede">Recurring necessities for a single adult, excluding rent. The two cities land within a few hundred kroner of each other: Stockholm's cheaper utilities (heating and water are often bundled into rent) are offset by pricier groceries and its 1,060 kr/month transit card.</p>
+
+    <div class="table-scroll">
+      <table>
+        <caption>Essential monthly costs, single adult · excluding rent</caption>
+        <thead>
+          <tr><th class="lvl">Category</th><th>Copenhagen (DKK)</th><th>Stockholm (SEK)</th><th>Stockholm in DKK</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lvl">Groceries</td><td>2,800 kr</td><td>4,000 kr</td><td>2,712 kr</td></tr>
+          <tr><td class="lvl">Utilities (electricity, heat, water)</td><td>1,100 kr</td><td>700 kr</td><td>475 kr</td></tr>
+          <tr><td class="lvl">Home internet</td><td>250 kr</td><td>350 kr</td><td>237 kr</td></tr>
+          <tr><td class="lvl">Mobile plan</td><td>120 kr</td><td>200 kr</td><td>136 kr</td></tr>
+          <tr><td class="lvl">Public transport pass</td><td>550 kr</td><td>1,060 kr</td><td>719 kr</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td class="lvl">Total essentials (ex-rent)</td><td>4,820 kr</td><td>6,310 kr</td><td>4,278 kr</td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <p class="footnote">Sources: Numbeo Copenhagen &amp; Stockholm (Jul 2026), SL (Stockholm transit), DOT/Rejsekort (Copenhagen transit). Swedish utilities are lower largely because heating/water are commonly included in the rent — a structural difference, not a price advantage on the underlying energy.</p>
+  </section>
+
+  <!-- ============ 5. DISPOSABLE INCOME ============ -->
+  <section id="disposable">
+    <h2><span class="num">05 · DISPOSABLE INCOME</span>What's actually left</h2>
+    <p class="lede">Disposable income = net salary − median rent − essential costs, all in DKK. This is the headline number: money remaining each month for saving, leisure and discretionary spending.</p>
+
+    <div class="table-scroll">
+      <table>
+        <caption>Monthly disposable income at median rent · all values DKK</caption>
+        <thead>
+          <tr>
+            <th class="lvl">Level</th>
+            <th>Net salary</th>
+            <th>− Rent</th>
+            <th>− Essentials</th>
+            <th>= Disposable</th>
+            <th>% of net kept</th>
+            <th>Winner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lvl"><span class="chip"><span class="dot cph"></span>Junior · Copenhagen</span></td><td>22,253</td><td>12,500</td><td>4,820</td><td><b>4,933</b></td><td>22.2%</td><td rowspan="2" class="win-sto" style="vertical-align:middle">Stockholm<br><span class="pos">+1,258</span></td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot sto"></span>Junior · Stockholm</span></td><td>19,961</td><td>9,492</td><td>4,278</td><td><b>6,191</b></td><td>31.0%</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot cph"></span>Mid · Copenhagen</span></td><td>30,229</td><td>12,500</td><td>4,820</td><td><b>12,909</b></td><td>42.7%</td><td rowspan="2" class="win-sto" style="vertical-align:middle">Stockholm<br><span class="pos">+345</span></td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot sto"></span>Mid · Stockholm</span></td><td>27,024</td><td>9,492</td><td>4,278</td><td><b>13,254</b></td><td>49.0%</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot cph"></span>Senior · Copenhagen</span></td><td>38,417</td><td>12,500</td><td>4,820</td><td><b>21,097</b></td><td>54.9%</td><td rowspan="2" class="win-cph" style="vertical-align:middle">Copenhagen<br><span class="pos">+1,406</span></td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot sto"></span>Senior · Stockholm</span></td><td>33,461</td><td>9,492</td><td>4,278</td><td><b>19,691</b></td><td>58.8%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart" style="margin-top:28px">
+      <h3>Monthly disposable income by level</h3>
+      <p class="cap">At median rent · Danish kroner · longer bar = more money left</p>
+      <div class="legend">
+        <span><i style="background:var(--cph)"></i>Copenhagen</span>
+        <span><i style="background:var(--sto)"></i>Stockholm</span>
+      </div>
+      <div class="bargroup">
+        <div class="glabel">Junior</div>
+        <div class="barrow"><span class="who">Copenhagen</span><div class="track"><div class="bar cph" style="width:22.4%">4,933</div></div></div>
+        <div class="barrow"><span class="who">Stockholm</span><div class="track"><div class="bar sto" style="width:28.1%">6,191</div></div></div>
+      </div>
+      <div class="bargroup">
+        <div class="glabel">Mid-level</div>
+        <div class="barrow"><span class="who">Copenhagen</span><div class="track"><div class="bar cph" style="width:58.7%">12,909</div></div></div>
+        <div class="barrow"><span class="who">Stockholm</span><div class="track"><div class="bar sto" style="width:60.2%">13,254</div></div></div>
+      </div>
+      <div class="bargroup">
+        <div class="glabel">Senior</div>
+        <div class="barrow"><span class="who">Copenhagen</span><div class="track"><div class="bar cph" style="width:95.9%">21,097</div></div></div>
+        <div class="barrow"><span class="who">Stockholm</span><div class="track"><div class="bar sto" style="width:89.5%">19,691</div></div></div>
+      </div>
+    </div>
+
+    <div class="chart" style="margin-top:20px">
+      <h3>Share of net pay left after necessities</h3>
+      <p class="cap">Rent + essentials as a claim on take-home pay · higher = more breathing room. Stockholm leads at every level.</p>
+      <div class="legend">
+        <span><i style="background:var(--cph)"></i>Copenhagen</span>
+        <span><i style="background:var(--sto)"></i>Stockholm</span>
+      </div>
+      <div class="bargroup">
+        <div class="glabel">Junior</div>
+        <div class="barrow"><span class="who">Copenhagen</span><div class="track"><div class="bar cph" style="width:22.2%">22.2%</div></div></div>
+        <div class="barrow"><span class="who">Stockholm</span><div class="track"><div class="bar sto" style="width:31.0%">31.0%</div></div></div>
+      </div>
+      <div class="bargroup">
+        <div class="glabel">Mid-level</div>
+        <div class="barrow"><span class="who">Copenhagen</span><div class="track"><div class="bar cph" style="width:42.7%">42.7%</div></div></div>
+        <div class="barrow"><span class="who">Stockholm</span><div class="track"><div class="bar sto" style="width:49.0%">49.0%</div></div></div>
+      </div>
+      <div class="bargroup">
+        <div class="glabel">Senior</div>
+        <div class="barrow"><span class="who">Copenhagen</span><div class="track"><div class="bar cph" style="width:54.9%">54.9%</div></div></div>
+        <div class="barrow"><span class="who">Stockholm</span><div class="track"><div class="bar sto" style="width:58.8%">58.8%</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6. SENSITIVITY ============ -->
+  <section id="sensitivity">
+    <h2><span class="num">06 · SENSITIVITY</span>Does rent change the verdict?</h2>
+    <p class="lede">Because housing drives the result, here is disposable income recomputed at low-, median- and high-rent apartments in each city. The pattern is stable: <b>Stockholm wins junior and mid at every rent level; Copenhagen wins senior at every rent level.</b> No plausible rent assumption flips a verdict.</p>
+
+    <div class="table-scroll">
+      <table>
+        <caption>Disposable income under low / median / high rent · DKK/month · green = higher of the two</caption>
+        <thead>
+          <tr>
+            <th class="lvl">Level &amp; city</th>
+            <th>Low rent</th>
+            <th>Median rent</th>
+            <th>High rent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="lvl"><span class="chip"><span class="dot cph"></span>Junior · Copenhagen</span></td><td>6,933</td><td>4,933</td><td>2,433</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot sto"></span>Junior · Stockholm</span></td><td class="pos">8,225</td><td class="pos">6,191</td><td class="pos">4,157</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot cph"></span>Mid · Copenhagen</span></td><td>14,909</td><td>12,909</td><td>10,409</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot sto"></span>Mid · Stockholm</span></td><td class="pos">15,288</td><td class="pos">13,254</td><td class="pos">11,220</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot cph"></span>Senior · Copenhagen</span></td><td class="pos">23,097</td><td class="pos">21,097</td><td class="pos">18,597</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot sto"></span>Senior · Stockholm</span></td><td>21,725</td><td>19,691</td><td>17,657</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Rent scenarios: Copenhagen 10,500 / 12,500 / 15,000 kr; Stockholm 11,000 / 14,000 / 17,000 SEK (7,458 / 9,492 / 11,526 kr). Salary and essentials held constant within each level.</p>
+  </section>
+
+  <!-- ============ 7. CONCLUSION ============ -->
+  <section id="conclusion">
+    <h2><span class="num">07 · CONCLUSION</span>The verdict</h2>
+    <p style="font-size:16.5px;color:var(--ink);max-width:74ch"><b>For most marketing professionals, Stockholm leaves more money in your pocket.</b> A junior keeps about <b>1,258 kr more per month</b> (≈ 26% more disposable income), and a mid-level manager keeps a slim <b>345 kr more</b>. The reason is housing: Stockholm's net salaries are lower, but its rent is roughly 3,000 kr/month cheaper and its taxes are lighter, which more than compensates until pay gets high.</p>
+    <p style="font-size:16.5px;color:var(--ink);max-width:74ch">Only at <b>senior level does Copenhagen win</b>, by about <b>1,406 kr/month</b>: Danish leadership salaries are high enough — and taxed below the punishing top brackets at 60 k/month — that they finally overtake Stockholm's cheaper cost base.</p>
+    <p style="font-size:16.5px;color:var(--ink);max-width:74ch">On <b>share of net pay retained</b> after necessities, <b>Stockholm wins at every level</b> (31% vs 22% junior, 49% vs 43% mid, 59% vs 55% senior) — a cleaner signal of day-to-day financial comfort than the absolute figure.</p>
+    <div class="callout">
+      <b>If you must pick one city:</b> choose <b>Stockholm</b> for a junior or mid-career marketing job — more disposable income and more breathing room. Choose <b>Copenhagen</b> if you're targeting a senior / head-of-marketing role, where the higher salary wins out. The difference either way is modest (roughly 300–1,400 kr/month), so lifestyle, career opportunity and language should carry real weight alongside the money.
+    </div>
+  </section>
+
+  <!-- ============ ASSUMPTIONS ============ -->
+  <section id="assumptions">
+    <h2><span class="num">METHOD</span>Assumptions</h2>
+    <ul class="clean">
+      <li><b>Profile:</b> a single adult, no children, renting alone, employed full-time in a private-sector marketing role, tax resident in the city.</li>
+      <li><b>Exchange rate:</b> 1 SEK = 0.678 DKK (mid-market, 16 Jul 2026). A ±3% move in the rate shifts Stockholm's DKK figures by a few hundred kroner but does not flip any level's verdict.</li>
+      <li><b>Salaries</b> are average gross monthly figures per seniority band, cash before tax. They are estimates from salary aggregators and official statistics, not a single authoritative table — the true market spread is wide.</li>
+      <li><b>Occupational pension is excluded on both sides.</b> Danish labour-market pension and Swedish tjänstepension are employer/collective schemes that don't reach the monthly current account, so leaving them out keeps the take-home comparison clean and symmetric.</li>
+      <li><b>Church tax / church fee excluded</b> (non-member assumed) in both cities.</li>
+      <li><b>Tax</b> uses 2026 statutory rules: Danish figures computed directly; Swedish figures calibrated to a Stockholm 2026 net-salary calculator (grundavdrag ≈ 16,500 kr, jobbskatteavdrag ≈ 39,900 kr/yr at its post-reform cap).</li>
+      <li><b>Rent</b> is the median asking rent for a one-bedroom ~10–15 min from the centre by metro. Stockholm uses the second-hand/open market (realistic for a new arrival), not regulated first-hand contracts.</li>
+      <li><b>Live per-listing scraping was not available;</b> rent medians are calibrated to aggregated 2026 portal distributions rather than 20 individually captured listings. This is the analysis's main data limitation.</li>
+      <li><b>Essentials</b> cover groceries, utilities, internet, mobile, and a monthly transit pass — the recurring mandatory costs of living. Discretionary spending is by definition part of "disposable income," not deducted.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section id="sources">
+    <h2><span class="num">REFERENCES</span>Sources</h2>
+    <ol class="sources">
+      <li>Skatteverket — <i>Belopp och procent 2026</i> (Swedish tax parameters)</li>
+      <li>SCB (Statistics Sweden) — kommunala skattesatser 2026; lönesök marknadsförare</li>
+      <li>Unionen — marknadslöner, marknadsförare</li>
+      <li>EkonomiData.nu — <i>Lön efter skatt, Stockholm 2026</i> (net-salary calibration)</li>
+      <li>Ekonomifakta — jobbskatteavdrag &amp; grundavdrag 2026</li>
+      <li>skat.dk — bund-, mellem- &amp; topskat, AM-bidrag, fradrag 2026</li>
+      <li>Skatteguiden.dk / skm.dk — kommuneskat København 2026 (23.39%)</li>
+      <li>Jobindex, Dansk Markedsføring, Business Danmark, Lønradar — Danish marketing salaries</li>
+      <li>Numbeo — cost of living, Copenhagen &amp; Stockholm (Jul 2026)</li>
+      <li>BoligPortal, Investropa, Global Property Guide — Copenhagen rents 2026</li>
+      <li>Qasa / Blocket Bostad, Residensportalen, Investropa — Stockholm rents 2026</li>
+      <li>SL (Storstockholms Lokaltrafik) &amp; DOT/Rejsekort — 2026 transit fares</li>
+      <li>Exchange rate: Google Finance / Wise SEK→DKK, 16 Jul 2026</li>
+    </ol>
+    <p class="footnote" style="margin-top:22px">Figures are best-estimate averages for planning purposes, not a personalised tax calculation. Individual salaries, tax circumstances and rents vary widely; treat the ~300–1,400 kr/month differences as indicative rather than precise.</p>
+  </section>
+
+</div>
