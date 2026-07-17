@@ -5,7 +5,7 @@
     --paper:#f6f7f9; --surface:#ffffff; --surface-2:#eef1f5; --ink:#14161a;
     --ink-2:#474d56; --muted:#868c96; --hair:#e3e6ec; --hair-strong:#ccd1da;
     --good:#0a7d3c; --bad:#c0392b; --track:#eceff4;
-    --cph:#2a78d6; --sto:#eb6834; --got:#1baf7a; --ams:#e87ba4; --vie:#eda100; --sgp:#008300;
+    --cph:#2a78d6; --sto:#eb6834; --got:#1baf7a; --ams:#e87ba4; --vie:#eda100; --sgp:#008300; --sha:#5b3fb5;
     --accent:#2a78d6;
     --shadow:0 1px 2px rgba(20,22,26,.06), 0 8px 24px rgba(20,22,26,.05);
   }
@@ -15,7 +15,7 @@
       --paper:#0c0e11; --surface:#15181d; --surface-2:#1c2027; --ink:#f3f5f8;
       --ink-2:#b6bcc6; --muted:#828993; --hair:#252a31; --hair-strong:#333a44;
       --good:#35c46e; --bad:#ef6a5c; --track:#20252d;
-      --cph:#3987e5; --sto:#d95926; --got:#199e70; --ams:#d55181; --vie:#c98500; --sgp:#0a9a0a;
+      --cph:#3987e5; --sto:#d95926; --got:#199e70; --ams:#d55181; --vie:#c98500; --sgp:#0a9a0a; --sha:#9085e9;
       --accent:#3987e5;
       --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
     }
@@ -25,7 +25,7 @@
     --paper:#0c0e11; --surface:#15181d; --surface-2:#1c2027; --ink:#f3f5f8;
     --ink-2:#b6bcc6; --muted:#828993; --hair:#252a31; --hair-strong:#333a44;
     --good:#35c46e; --bad:#ef6a5c; --track:#20252d;
-    --cph:#3987e5; --sto:#d95926; --got:#199e70; --ams:#d55181; --vie:#c98500; --sgp:#0a9a0a;
+    --cph:#3987e5; --sto:#d95926; --got:#199e70; --ams:#d55181; --vie:#c98500; --sgp:#0a9a0a; --sha:#9085e9;
     --accent:#3987e5;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
   }
@@ -484,7 +484,7 @@
 
     <div class="chart">
       <h3>Overall weighted score (all levels blended)</h3>
-      <p class="cap">Out of 10. Top four separated by less than one point — the pillars trade off.</p>
+      <p class="cap">Out of 10. Top four separated by less than one point — the pillars trade off. Shanghai shown for an English-only marketer; ★ ≈ 8.2 if Mandarin-fluent (see §15).</p>
       <div class="bargroup">
         <div class="barrow"><span class="who">Stockholm</span><div class="track"><div class="bar b-sto" style="width:81.3%">8.13</div></div></div>
         <div class="barrow"><span class="who">Copenhagen</span><div class="track"><div class="bar b-cph" style="width:78.6%">7.86</div></div></div>
@@ -492,6 +492,7 @@
         <div class="barrow"><span class="who">Amsterdam</span><div class="track"><div class="bar b-ams" style="width:71.6%">7.16</div></div></div>
         <div class="barrow"><span class="who">Gothenburg</span><div class="track"><div class="bar b-got" style="width:71.5%">7.15</div></div></div>
         <div class="barrow"><span class="who">Vienna</span><div class="track"><div class="bar b-vie lbl-dark" style="width:71.2%">7.12</div></div></div>
+        <div class="barrow"><span class="who">Shanghai ★</span><div class="track"><div class="bar" style="width:70.8%;background:var(--sha)">7.08</div></div></div>
       </div>
     </div>
 
@@ -574,6 +575,43 @@
       <li><b>If you'd rather build than climb,</b> stay in Stockholm and start something — it's the best of these six for a marketer-founder.</li>
       <li><b>Don't over-index on the 0.3-point winner.</b> The top three (Stockholm, Copenhagen, Singapore) are a statistical tie; sunlight, relationships and climate tolerance should break it. Pick the city you'll thrive in for five years, then re-optimise — a career is a sequence of cities, not one bet.</li>
     </ol>
+  </section>
+
+  <!-- ===== 15 SHANGHAI ADDENDUM ===== -->
+  <section id="shanghai">
+    <h2><span class="num">15 · ADDENDUM</span>Shanghai — the wildcard that hinges on one word: Mandarin</h2>
+    <p class="lede">Added at the reader's request. Shanghai doesn't behave like the other six, so it sits in its own section. On the money it is <b>best-in-class</b> — the highest disposable income of any city here. But its career market runs in <b>Mandarin</b>, which splits its value in two: mediocre for an English-only marketer, potentially #1 for a Mandarin speaker.</p>
+
+    <div class="table-scroll">
+      <table>
+        <caption>Shanghai financials · DKK/month, median rent, income-tax only (1 CNY = 0.965 DKK)</caption>
+        <thead><tr><th class="lvl">Level</th><th>Gross</th><th>Net (IIT)</th><th class="hide-sm">Eff. tax</th><th>− Rent</th><th class="hide-sm">− Essentials</th><th>Disposable</th></tr></thead>
+        <tbody>
+          <tr><td class="lvl"><span class="chip"><span class="dot" style="background:var(--sha)"></span>Junior ¥18,000</span></td><td>17,370</td><td>16,222</td><td class="hide-sm mut">6.6%</td><td>6,755</td><td class="hide-sm">3,252</td><td class="win">6,215</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot" style="background:var(--sha)"></span>Mid ¥35,000</span></td><td>33,775</td><td>29,104</td><td class="hide-sm mut">13.8%</td><td>6,755</td><td class="hide-sm">3,252</td><td class="win pos">19,097</td></tr>
+          <tr><td class="lvl"><span class="chip"><span class="dot" style="background:var(--sha)"></span>Senior ¥60,000</span></td><td>57,900</td><td>46,233</td><td class="hide-sm mut">20.2%</td><td>6,755</td><td class="hide-sm">3,252</td><td class="win pos">36,226</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Rent: 1-BR near metro in the middle ring, median ¥7,000 (25th ¥5,500 / 75th ¥9,500). Essentials ¥3,370/mo (groceries 2,500, utilities 450, internet 120, mobile 100, transit 200). IIT via 2026 brackets with the ¥60,000 standard deduction; foreigner. <b>Both the mid (19,097) and senior (36,226) disposable figures are the highest of all seven cities</b> — Shanghai senior beats even Singapore.</p>
+
+    <div class="grid2">
+      <div class="callout warn" style="margin:0"><b>Caveat 1 — language gates the career.</b> Shanghai runs the world's largest e-commerce and live-commerce ecosystem (Tmall, Douyin, Xiaohongshu, WeChat) — but almost entirely in <b>Mandarin</b>, on China-only platforms. EF rates Shanghai's English "moderate" (512). For an English-only marketer, realistic access is limited to MNC regional and expat-facing roles, and a foreign <b>junior</b> will struggle to get hired or a work permit at all. English is <em>not</em> a working language the way it is in Singapore.</div>
+      <div class="callout" style="margin:0"><b>Caveat 2 — money you can't easily move, and pension you must self-fund.</b> Foreigners now generally owe ~10.5% social insurance (capped), trimming take-home ~8–10% (mid ≈15,800; senior ≈30,700 — still excellent). And China's <b>capital controls</b> cap individual outward transfers (~US$50k/yr with paperwork), so converting savings to DKK is real friction. Add work-permit-tied visas, VPN/censorship and policy risk.</div>
+    </div>
+
+    <div class="table-scroll" style="margin-top:22px">
+      <table>
+        <caption>Where Shanghai ranks — two personas</caption>
+        <thead><tr><th class="lvl">Persona</th><th>Career</th><th>Income</th><th class="hide-sm">Cost</th><th class="hide-sm">Life</th><th class="hide-sm">Econ</th><th>English</th><th>Overall</th></tr></thead>
+        <tbody>
+          <tr><td class="lvl">English-only marketer</td><td>5.5</td><td>9.0</td><td class="hide-sm">9.5</td><td class="hide-sm">6.8</td><td class="hide-sm">6.5</td><td>4.0</td><td class="win">≈7.08 <span class="mut">(mid-pack, ~5th)</span></td></tr>
+          <tr class="rank1"><td class="lvl">Mandarin-fluent marketer</td><td>8.0</td><td>9.0</td><td class="hide-sm">9.5</td><td class="hide-sm">6.8</td><td class="hide-sm">6.5</td><td>7.0</td><td class="win">≈8.23 <span class="mut">(would rank #1)</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Sources: Morgan McKinley / ERI / Michael Page China salary data 2026; PwC & MS Advisory China IIT 2026; Numbeo / Maxview Realty (rent); EF EPI 2025 (China #86, Shanghai city 512); Shanghai Statistics Bureau (2025 GDP +5.4%, unemployment 4.2%, CPI +0.1%).</p>
+    <div class="callout"><b>Verdict on Shanghai.</b> If you stay English-only, it's a <em>middle-of-the-pack</em> choice — superb take-home, but a career you can't fully access and savings you can't easily repatriate. If you're willing to <b>learn Mandarin</b>, it flips to arguably the strongest city on this list: top disposable income, lowest living cost, and a front-row seat to the world's most advanced digital-marketing laboratory. For a 21-year-old with a 20-year horizon, that makes Shanghai the highest-<em>ceiling</em>, highest-<em>variance</em> bet of the seven — a language investment, not just a relocation.</div>
   </section>
 
   <!-- ===== ASSUMPTIONS ===== -->
