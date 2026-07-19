@@ -59,25 +59,23 @@
   .toggle.red input:checked + .sw{background:var(--red)} .toggle.amber input:checked + .sw{background:var(--amber)}
   .toggle:focus-within .sw{outline:2px solid var(--accent);outline-offset:2px}
   .gpanel{margin-top:10px;border:1px solid var(--hair);border-radius:10px;overflow:hidden}
-  .gpanel .phint{font-size:12px;color:var(--muted);padding:10px 12px 2px}
+  .gpanel .phint{font-size:12px;color:var(--muted);padding:10px 12px 4px}
 
-  /* ---- issue group (issue-first) ---- */
-  .gcat{display:flex;align-items:center;gap:8px;padding:11px 12px 5px;font-size:13.5px;font-weight:800;color:var(--ink)}
-  .gcat.sep{border-top:1px solid var(--hair);margin-top:2px}
-  .gcat .gc-count{font-weight:600;color:var(--muted);font-size:12px}
-  .gcat .gc-ico{width:16px;text-align:center}
-
-  /* ---- city-under-issue row & city-panel issue row (shared) ---- */
-  .issue{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:8px 12px 8px 16px;border-bottom:1px solid var(--hair)}
+  /* ---- issue row (issue label + inline cities + one control) ---- */
+  .issue{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:11px 12px;border-bottom:1px solid var(--hair)}
   .issue:last-child{border-bottom:0}
-  .issue .txt{flex:1;min-width:170px;font-size:13.5px;color:var(--ink)}
+  .issue .txt{flex:1;min-width:190px;font-size:14px}
+  .issue .ilabel{font-weight:700;color:var(--ink)}
+  .issue .cities{color:var(--ink-2)}
   .issue.ign .txt{text-decoration:line-through;color:var(--muted)}
-  .cityref{font-weight:700}
-  .seg{display:inline-flex;border:1px solid var(--hair-strong);border-radius:8px;overflow:hidden}
-  .seg button{border:0;background:var(--surface);color:var(--muted);font-size:11.5px;font-weight:700;padding:5px 9px;cursor:pointer;font-family:inherit}
+  .issue.ign .ilabel,.issue.ign .cities{color:var(--muted)}
+  .controls-inline{display:inline-flex;align-items:center;gap:10px;margin-left:auto}
+  .seg{display:inline-flex;border:1px solid var(--hair-strong);border-radius:999px;overflow:hidden}
+  .seg button{border:0;background:var(--surface);color:var(--muted);font-size:12px;font-weight:700;padding:6px 13px;cursor:pointer;font-family:inherit}
   .seg button + button{border-left:1px solid var(--hair-strong)}
+  .seg button:first-child{border-radius:999px 0 0 999px} .seg button:last-child{border-radius:0 999px 999px 0}
   .seg button.on.red{background:var(--red);color:#fff} .seg button.on.amber{background:var(--amber);color:#fff} .seg button.on.green{background:var(--green);color:#fff}
-  .ign-btn{font-size:12px;font-weight:600;color:var(--ink-2);background:none;border:1px solid var(--hair-strong);border-radius:7px;padding:5px 10px;cursor:pointer;font-family:inherit}
+  .ign-btn{font-size:12.5px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--hair-strong);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:inherit}
   .ign-btn.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
   .empty{font-size:13px;color:var(--muted);padding:11px 12px}
 
@@ -116,6 +114,7 @@
   .panel .ptitle{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:11px 12px 3px}
   .brk{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);padding:4px 12px 12px}
   .brk span{font-variant-numeric:tabular-nums} .brk b{color:var(--ink)}
+  .also{font-size:12px;color:var(--muted);font-weight:600}
 
   .note{font-size:12.5px;color:var(--muted);margin-top:20px;max-width:72ch}
   .divider{display:flex;align-items:center;gap:10px;margin:6px 2px 2px;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
@@ -126,7 +125,7 @@
   <header>
     <p class="eyebrow">Relocation system · Fit-flag layer · Interface mockup</p>
     <h1>The money ranking is objective. Your life makes it personal.</h1>
-    <p class="sub">Manage fit by <b>issue</b>, not by city: open a colour to see the concerns (working language, ice-hockey scene…), and under each concern the cities that have it — reclassify them there. Numbers are the junior e-commerce-marketer case, DKK/month.</p>
+    <p class="sub">Fit is managed by <b>issue</b>: one concern, the cities it affects, one flag. Set “Mandarin required” to Red once and every city needing Mandarin updates. Numbers are the junior e-commerce-marketer case, DKK/month.</p>
     <div class="persona">
       <span class="pill">👤 Junior · e-commerce marketing</span>
       <span class="pill">🗣️ Speaks English only</span>
@@ -164,93 +163,71 @@
 <script>
 (function(){
   const SEV={red:2,amber:1,green:0}, SEVNAME={red:"Red",amber:"Yellow",green:"Green"};
-  // issue categories — the panels lead with these, cities sit underneath
-  const CATS={
-    hockey:{label:'Ice-hockey scene', ico:'🏒'},
-    langwork:{label:'Working language (can you get hired in English?)', ico:'🗣️'},
-    langlife:{label:'Local language for daily life & long-term', ico:'💬'},
-    money:{label:'Moving your savings abroad', ico:'💸'},
-    distance:{label:'Distance from home', ico:'✈️'},
-  };
+
   const cities=[
-    {key:'mel',name:'Melbourne',gross:26540,tax:4896,exp:13991,remaining:7653,issues:[
-      {id:'hockey',cat:'hockey',txt:'No competitive ice-hockey scene',sev:'red',ignored:false},
-      {id:'iso',cat:'distance',txt:'Isolated from Europe (family, weekend travel)',sev:'amber',ignored:false},
-      {id:'lang',cat:'langwork',txt:'English is the native language',sev:'green',ignored:false},
-    ]},
-    {key:'got',name:'Gothenburg',gross:21696,tax:4515,exp:10428,remaining:6753,issues:[
-      {id:'swe',cat:'langlife',txt:'Swedish needed for full integration within a few years',sev:'amber',ignored:false},
-      {id:'hockey',cat:'hockey',txt:'World-class ice hockey (top hockey nation)',sev:'green',ignored:false},
-      {id:'work',cat:'langwork',txt:'Can land an English-speaking job to start',sev:'green',ignored:false},
-    ]},
-    {key:'sha',name:'Shanghai',gross:17370,tax:1148,exp:10007,remaining:6215,issues:[
-      {id:'mand',cat:'langwork',txt:'Mandarin required to work in the local market',sev:'red',ignored:false},
-      {id:'cap',cat:'money',txt:'Capital controls limit moving savings abroad',sev:'amber',ignored:false},
-      {id:'hockey',cat:'hockey',txt:'Limited ice-hockey scene',sev:'amber',ignored:false},
-    ]},
-    {key:'sto',name:'Stockholm',gross:25086,tax:5125,exp:13770,remaining:6191,issues:[
-      {id:'hockey',cat:'hockey',txt:'World-class ice hockey',sev:'green',ignored:false},
-      {id:'lang',cat:'langwork',txt:'Very English-friendly workplace',sev:'green',ignored:false},
-      {id:'swe',cat:'langlife',txt:'Swedish helps long-term but rarely required',sev:'green',ignored:false},
-    ]},
-    {key:'cph',name:'Copenhagen',gross:33000,tax:10747,exp:17320,remaining:4933,issues:[
-      {id:'hockey',cat:'hockey',txt:'Solid ice-hockey scene',sev:'green',ignored:false},
-      {id:'lang',cat:'langwork',txt:'Very English-friendly',sev:'green',ignored:false},
-    ]},
-    {key:'vie',name:'Vienna',gross:23531,tax:6298,exp:12579,remaining:4654,issues:[
-      {id:'ger',cat:'langwork',txt:'German helps for local roles (startups often English)',sev:'green',ignored:false},
-      {id:'hockey',cat:'hockey',txt:'Decent ice-hockey scene',sev:'green',ignored:false},
-    ]},
-    {key:'ams',name:'Amsterdam',gross:24651,tax:3795,exp:20804,remaining:52,issues:[
-      {id:'lang',cat:'langwork',txt:"Europe's most English-friendly hub",sev:'green',ignored:false},
-      {id:'hockey',cat:'hockey',txt:'Minor ice-hockey scene',sev:'green',ignored:false},
-    ]},
-    {key:'sgp',name:'Singapore',gross:20240,tax:466,exp:23544,remaining:-3770,issues:[
-      {id:'lang',cat:'langwork',txt:'English is an official working language',sev:'green',ignored:false},
-      {id:'hockey',cat:'hockey',txt:'Tropical — minimal ice-hockey culture',sev:'amber',ignored:false},
-    ]},
+    {key:'mel',name:'Melbourne',gross:26540,tax:4896,exp:13991,remaining:7653},
+    {key:'got',name:'Gothenburg',gross:21696,tax:4515,exp:10428,remaining:6753},
+    {key:'sha',name:'Shanghai',gross:17370,tax:1148,exp:10007,remaining:6215},
+    {key:'sto',name:'Stockholm',gross:25086,tax:5125,exp:13770,remaining:6191},
+    {key:'cph',name:'Copenhagen',gross:33000,tax:10747,exp:17320,remaining:4933},
+    {key:'vie',name:'Vienna',gross:23531,tax:6298,exp:12579,remaining:4654},
+    {key:'ams',name:'Amsterdam',gross:24651,tax:3795,exp:20804,remaining:52},
+    {key:'sgp',name:'Singapore',gross:20240,tax:466,exp:23544,remaining:-3770},
   ];
+  const cityName=k=>cities.find(c=>c.key===k).name;
+
+  // ISSUE-centric: one concern, the cities it hits, one flag applied to all of them
+  const issues=[
+    {id:'mandarin', label:'Mandarin required to work', cities:['sha'], sev:'red', ignored:false},
+    {id:'nohockey', label:'No competitive ice-hockey scene', cities:['mel'], sev:'red', ignored:false},
+    {id:'weakhockey', label:'Weak / limited ice-hockey scene', cities:['sha','sgp'], sev:'amber', ignored:false},
+    {id:'swedish', label:'Local language (Swedish) needed long-term', cities:['got'], sev:'amber', ignored:false},
+    {id:'capital', label:'Capital controls limit moving savings abroad', cities:['sha'], sev:'amber', ignored:false},
+    {id:'distance', label:'Far from home / Europe', cities:['mel'], sev:'amber', ignored:false},
+  ];
+  const issueById=id=>issues.find(i=>i.id===id);
+  const issuesForCity=k=>issues.filter(i=>i.cities.includes(k));
 
   const state={hideRed:false,hideAmber:false,openCity:{},openPanel:{red:false,amber:false}};
   const fmt=n=>(n<0?'−':'')+Math.abs(n).toLocaleString('en-US');
-  const cityByKey=k=>cities.find(c=>c.key===k);
-  function effSev(c){let w='green';c.issues.forEach(i=>{if(!i.ignored&&SEV[i.sev]>SEV[w])w=i.sev;});return w;}
+  function effSev(c){let w='green';issuesForCity(c.key).forEach(i=>{if(!i.ignored&&SEV[i.sev]>SEV[w])w=i.sev;});return w;}
   const isHidden=s=>(s==='red'&&state.hideRed)||(s==='amber'&&state.hideAmber);
   const flagWord=s=>s==='red'?'🔴 blocker':s==='amber'?'🟡 solvable':'🟢 good fit';
+  function cityListStr(keys){
+    const names=keys.map(cityName);
+    if(names.length<=3) return names.join(', ');
+    return names.slice(0,3).join(', ')+`, +${names.length-3} more`;
+  }
 
   const rowsEl=document.getElementById('rows'), podEl=document.getElementById('podium');
   const noteEl=document.getElementById('note'), fsEl=document.getElementById('filterState');
 
-  function issueRow(c,i,showCity){
-    return `<div class="issue ${i.ignored?'ign':''}">
-      <span class="txt">${showCity?`<span class="cityref" style="color:var(--${c.key})">${c.name}</span> — `:''}${i.txt}</span>
-      <span class="seg" data-city="${c.key}" data-issue="${i.id}">
-        <button class="${i.sev==='red'?'on red':''}" data-sev="red">Red</button>
-        <button class="${i.sev==='amber'?'on amber':''}" data-sev="amber">Yellow</button>
-        <button class="${i.sev==='green'?'on green':''}" data-sev="green">Green</button>
+  // the issue row from the image: label — cities … [Red|Yellow|Green] [Ignore]
+  function issueRow(iss,showCities){
+    const also = (!showCities && iss.cities.length>1) ? ` <span class="also">· also ${iss.cities.length-1} other</span>` : '';
+    return `<div class="issue ${iss.ignored?'ign':''}">
+      <span class="txt"><span class="ilabel">${iss.label}</span>${showCities?` <span class="cities">— ${cityListStr(iss.cities)}</span>`:also}</span>
+      <span class="controls-inline">
+        <span class="seg" data-issue="${iss.id}">
+          <button class="${iss.sev==='red'?'on red':''}" data-sev="red">Red</button>
+          <button class="${iss.sev==='amber'?'on amber':''}" data-sev="amber">Yellow</button>
+          <button class="${iss.sev==='green'?'on green':''}" data-sev="green">Green</button>
+        </span>
+        <button class="ign-btn ${iss.ignored?'active':''}" data-ign="${iss.id}">${iss.ignored?'Ignored':'Ignore'}</button>
       </span>
-      <button class="ign-btn ${i.ignored?'active':''}" data-ign="${c.key}:${i.id}">${i.ignored?'Ignored':'Ignore'}</button>
     </div>`;
   }
 
-  // issue-FIRST global panel: group the colour's issues by category, cities underneath
   function renderGlobalPanel(sev){
     const wrap=document.getElementById(sev==='red'?'panel-red':'panel-amber');
     if(!state.openPanel[sev]){ wrap.innerHTML=''; return; }
-    const groups={};
-    cities.forEach(c=>c.issues.forEach(i=>{ if(i.sev===sev && !i.ignored){ (groups[i.cat]=groups[i.cat]||[]).push([c,i]); }}));
-    const catKeys=Object.keys(groups);
+    const list=issues.filter(i=>i.sev===sev && !i.ignored);
     const hint=sev==='red'
-      ? 'The concerns currently blocking cities. Decide per city whether each is really a dealbreaker — move to Yellow/Green or ignore.'
-      : 'The concerns currently flagged as solvable-later. Promote to Red if it matters more, or clear to Green / ignore.';
-    const body = catKeys.length ? catKeys.map((ck,gi)=>{
-      const meta=CATS[ck]||{label:ck,ico:'•'};
-      const list=groups[ck];
-      return `<div class="gcat ${gi?'sep':''}"><span class="gc-ico">${meta.ico}</span>${meta.label}
-        <span class="gc-count">· ${list.length} ${list.length>1?'cities':'city'}</span></div>
-        ${list.map(([c,i])=>issueRow(c,i,true)).join('')}`;
-    }).join('') : '<div class="empty">No issues in this colour right now.</div>';
-    wrap.innerHTML=`<div class="gpanel"><div class="phint">${hint}</div>${body}</div>`;
+      ? 'Concerns currently blocking cities. Is each really a dealbreaker for you? Move to Yellow/Green, or ignore it entirely.'
+      : 'Concerns you can live with or fix over time. Promote to Red if one matters more, or clear to Green / ignore.';
+    wrap.innerHTML=`<div class="gpanel"><div class="phint">${hint}</div>${
+      list.length ? list.map(i=>issueRow(i,true)).join('') : '<div class="empty">No issues in this colour right now.</div>'
+    }</div>`;
   }
 
   function render(){
@@ -258,9 +235,9 @@
     const visible=enriched.filter(c=>!isHidden(c.sev)).sort((a,b)=>b.remaining-a.remaining);
     const hidden=enriched.filter(c=>isHidden(c.sev)).sort((a,b)=>b.remaining-a.remaining);
 
-    const countSev=s=>cities.reduce((n,c)=>n+c.issues.filter(i=>i.sev===s&&!i.ignored).length,0);
-    document.getElementById('cnt-red').textContent=`· ${countSev('red')}`;
-    document.getElementById('cnt-amber').textContent=`· ${countSev('amber')}`;
+    const cnt=s=>issues.filter(i=>i.sev===s&&!i.ignored).length;
+    document.getElementById('cnt-red').textContent=`· ${cnt('red')}`;
+    document.getElementById('cnt-amber').textContent=`· ${cnt('amber')}`;
     document.getElementById('head-red').classList.toggle('open',state.openPanel.red);
     document.getElementById('head-amber').classList.toggle('open',state.openPanel.amber);
     renderGlobalPanel('red'); renderGlobalPanel('amber');
@@ -280,11 +257,12 @@
     rowsEl.innerHTML=html;
 
     attachAll();
-    noteEl.innerHTML='Issue-first: open <b>Red</b> → the concern <b>“Ice-hockey scene”</b> lists Melbourne; move it to <b>Yellow</b>, then tick <b>Hide red</b> and Melbourne survives. Editing here or inside a city both change the same flag.';
+    noteEl.innerHTML='One flag per concern: open <b>Red</b>, set <b>“No competitive ice-hockey scene”</b> to <b>Yellow</b>, tick <b>Hide red</b> — Melbourne survives. Changing an issue updates every city it touches at once.';
   }
 
   function cityRow(c,rank,dim){
     const open=state.openCity[c.key];
+    const iss=issuesForCity(c.key).slice().sort((a,b)=>SEV[b.sev]-SEV[a.sev]);
     return `<div class="crow ${dim?'hidden':''} ${open?'open':''}">
       <div class="chead" data-city-toggle="${c.key}">
         <div class="rank ${rank?'':'dim'}">${rank?rank:'—'}</div>
@@ -292,16 +270,16 @@
         <div class="money ${c.remaining<0?'neg':''}">${fmt(c.remaining)} kr<small>left / month</small></div>
         <div class="flag ${c.sev}"><span class="fdot"></span>${SEVNAME[c.sev]} <span class="caret">▶</span></div>
       </div>
-      ${open?`<div class="panel"><div class="ptitle">Fit issues — reclassify or ignore</div>
-        ${c.issues.slice().sort((a,b)=>SEV[b.sev]-SEV[a.sev]).map(i=>issueRow(c,i,false)).join('')}
+      ${open?`<div class="panel"><div class="ptitle">Fit issues affecting ${c.name}</div>
+        ${iss.length?iss.map(i=>issueRow(i,false)).join(''):'<div class="empty">No fit issues — clean 🟢 fit.</div>'}
         <div class="ptitle">Financial breakdown</div>
         <div class="brk"><span>Gross <b>${fmt(c.gross)}</b></span><span>− Tax <b>${fmt(c.tax)}</b></span>
         <span>− Expenses <b>${fmt(c.exp)}</b></span><span>= Remaining <b>${fmt(c.remaining)} kr</b></span></div></div>`:''}
     </div>`;
   }
 
-  function setSev(ck,iid,sev){ const i=cityByKey(ck).issues.find(x=>x.id===iid); i.sev=sev; i.ignored=false; render(); }
-  function toggleIgn(ck,iid){ const i=cityByKey(ck).issues.find(x=>x.id===iid); i.ignored=!i.ignored; render(); }
+  function setSev(id,sev){ const i=issueById(id); i.sev=sev; i.ignored=false; render(); }
+  function toggleIgn(id){ const i=issueById(id); i.ignored=!i.ignored; render(); }
 
   function attachAll(){
     document.querySelectorAll('[data-city-toggle]').forEach(el=>el.addEventListener('click',e=>{
@@ -309,11 +287,10 @@
       const k=el.getAttribute('data-city-toggle'); state.openCity[k]=!state.openCity[k]; render();
     }));
     document.querySelectorAll('.seg button').forEach(btn=>btn.addEventListener('click',e=>{
-      e.stopPropagation(); const seg=btn.closest('.seg');
-      setSev(seg.getAttribute('data-city'),seg.getAttribute('data-issue'),btn.getAttribute('data-sev'));
+      e.stopPropagation(); setSev(btn.closest('.seg').getAttribute('data-issue'),btn.getAttribute('data-sev'));
     }));
     document.querySelectorAll('[data-ign]').forEach(btn=>btn.addEventListener('click',e=>{
-      e.stopPropagation(); const[ck,iid]=btn.getAttribute('data-ign').split(':'); toggleIgn(ck,iid);
+      e.stopPropagation(); toggleIgn(btn.getAttribute('data-ign'));
     }));
   }
 
