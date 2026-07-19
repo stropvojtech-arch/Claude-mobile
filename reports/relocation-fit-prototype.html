@@ -1,0 +1,287 @@
+<title>Relocation Fit — Interactive Flag Prototype</title>
+<style>
+  :root{
+    color-scheme:light;
+    --paper:#f6f7f9; --surface:#fff; --surface-2:#eef1f5; --ink:#14161a; --ink-2:#474d56;
+    --muted:#868c96; --hair:#e3e6ec; --hair-strong:#ccd1da; --track:#eceff4;
+    --red:#c0392b; --redbg:#fbeae8; --amber:#b7790a; --amberbg:#fbf1dd; --green:#0a7d3c; --greenbg:#e6f4ec;
+    --accent:#2a78d6;
+    --cph:#2a78d6; --sto:#eb6834; --got:#1baf7a; --ams:#e87ba4; --vie:#eda100; --sgp:#008300; --sha:#5b3fb5; --mel:#c0455e;
+    --shadow:0 1px 2px rgba(20,22,26,.06),0 8px 24px rgba(20,22,26,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){
+    color-scheme:dark;
+    --paper:#0c0e11; --surface:#15181d; --surface-2:#1c2027; --ink:#f3f5f8; --ink-2:#b6bcc6;
+    --muted:#828993; --hair:#252a31; --hair-strong:#333a44; --track:#20252d;
+    --red:#ef6a5c; --redbg:#2c1b1a; --amber:#e0a83a; --amberbg:#2a2314; --green:#35c46e; --greenbg:#152a1e;
+    --accent:#3987e5;
+    --cph:#3987e5; --sto:#d95926; --got:#199e70; --ams:#d55181; --vie:#c98500; --sgp:#0a9a0a; --sha:#9085e9; --mel:#e0697a;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }}
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --paper:#0c0e11; --surface:#15181d; --surface-2:#1c2027; --ink:#f3f5f8; --ink-2:#b6bcc6;
+    --muted:#828993; --hair:#252a31; --hair-strong:#333a44; --track:#20252d;
+    --red:#ef6a5c; --redbg:#2c1b1a; --amber:#e0a83a; --amberbg:#2a2314; --green:#35c46e; --greenbg:#152a1e;
+    --accent:#3987e5;
+    --cph:#3987e5; --sto:#d95926; --got:#199e70; --ams:#d55181; --vie:#c98500; --sgp:#0a9a0a; --sha:#9085e9; --mel:#e0697a;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:840px;margin:0 auto;padding:0 20px 80px}
+  header{padding:44px 0 22px;border-bottom:1px solid var(--hair);margin-bottom:26px}
+  .eyebrow{font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 14px}
+  h1{font-family:Georgia,serif;font-weight:600;font-size:clamp(25px,4.4vw,38px);line-height:1.08;letter-spacing:-.01em;margin:0 0 12px;text-wrap:balance}
+  .sub{font-size:15px;color:var(--ink-2);max-width:64ch;margin:0}
+  .persona{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .pill{font-size:12.5px;font-weight:600;background:var(--surface-2);border:1px solid var(--hair);border-radius:999px;padding:5px 12px;color:var(--ink-2);display:inline-flex;gap:6px;align-items:center}
+
+  .controls{background:var(--surface);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+  .controls .lab{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink);user-select:none}
+  .toggle input{position:absolute;opacity:0;width:0;height:0}
+  .sw{width:38px;height:22px;border-radius:999px;background:var(--hair-strong);position:relative;transition:background .15s;flex:none}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+  .toggle input:checked + .sw{background:var(--accent)}
+  .toggle input:checked + .sw::after{transform:translateX(16px)}
+  .toggle.red input:checked + .sw{background:var(--red)} .toggle.amber input:checked + .sw{background:var(--amber)}
+  .toggle:focus-within .sw{outline:2px solid var(--accent);outline-offset:2px}
+
+  .result{background:var(--surface);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:22px}
+  .result .lab{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .podium{display:flex;flex-wrap:wrap;gap:10px}
+  .pod{flex:1;min-width:140px;border:1px solid var(--hair);border-radius:11px;padding:12px 14px;position:relative;overflow:hidden}
+  .pod::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+  .pod .r{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em}
+  .pod .n{font-size:17px;font-weight:700;margin:2px 0}
+  .pod .m{font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+  .rowlist{display:flex;flex-direction:column;gap:8px}
+  .crow{background:var(--surface);border:1px solid var(--hair);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;transition:opacity .15s}
+  .crow.hidden{opacity:.45}
+  .chead{display:grid;grid-template-columns:34px 1fr auto auto;align-items:center;gap:12px;padding:13px 15px;cursor:pointer}
+  .rank{font-size:16px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;text-align:center}
+  .rank.dim{color:var(--muted);font-weight:600}
+  .cname{display:flex;align-items:center;gap:10px;min-width:0}
+  .cdot{width:11px;height:11px;border-radius:50%;flex:none;background:var(--c)}
+  .cname b{font-size:15.5px;font-weight:700}
+  .cname .strike{text-decoration:line-through;color:var(--muted)}
+  .money{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+  .money small{display:block;font-size:11px;color:var(--muted);font-weight:600}
+  .money.neg{color:var(--red)}
+  .flag{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:5px 11px 5px 9px;font-size:12.5px;font-weight:700;border:1px solid transparent;white-space:nowrap}
+  .flag .fdot{width:9px;height:9px;border-radius:50%}
+  .flag.red{background:var(--redbg);color:var(--red);border-color:color-mix(in srgb,var(--red) 30%,transparent)} .flag.red .fdot{background:var(--red)}
+  .flag.amber{background:var(--amberbg);color:var(--amber);border-color:color-mix(in srgb,var(--amber) 30%,transparent)} .flag.amber .fdot{background:var(--amber)}
+  .flag.green{background:var(--greenbg);color:var(--green);border-color:color-mix(in srgb,var(--green) 30%,transparent)} .flag.green .fdot{background:var(--green)}
+  .caret{color:var(--muted);font-size:12px;transition:transform .15s}
+  .crow.open .caret{transform:rotate(90deg)}
+
+  .panel{border-top:1px solid var(--hair);padding:6px 15px 15px;background:var(--surface-2)}
+  .panel .ptitle{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:12px 0 8px}
+  .issue{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--hair)}
+  .issue:last-child{border-bottom:0}
+  .issue .txt{flex:1;min-width:180px;font-size:13.5px;color:var(--ink)}
+  .issue.ign .txt{text-decoration:line-through;color:var(--muted)}
+  .seg{display:inline-flex;border:1px solid var(--hair-strong);border-radius:8px;overflow:hidden}
+  .seg button{border:0;background:var(--surface);color:var(--muted);font-size:11.5px;font-weight:700;padding:5px 9px;cursor:pointer;font-family:inherit}
+  .seg button + button{border-left:1px solid var(--hair-strong)}
+  .seg button.on.red{background:var(--red);color:#fff} .seg button.on.amber{background:var(--amber);color:#fff} .seg button.on.green{background:var(--green);color:#fff}
+  .ign-btn{font-size:12px;font-weight:600;color:var(--ink-2);background:none;border:1px solid var(--hair-strong);border-radius:7px;padding:5px 10px;cursor:pointer;font-family:inherit}
+  .ign-btn.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+  .brk{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin-top:4px}
+  .brk span{font-variant-numeric:tabular-nums} .brk b{color:var(--ink)}
+
+  .note{font-size:12.5px;color:var(--muted);margin-top:20px;max-width:70ch}
+  .divider{display:flex;align-items:center;gap:10px;margin:6px 2px 2px;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .divider::after{content:"";height:1px;background:var(--hair);flex:1}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Relocation system · Fit-flag layer · Interactive prototype</p>
+    <h1>The money ranking is objective. Your life makes it personal.</h1>
+    <p class="sub">The financial ranking never changes — it's the honest number. Your <b>fit flags</b> sit on top: 🔴 real blocker · 🟡 solvable later · 🟢 fine. Reclassify any issue, ignore it, or hide whole severities to see <b>your</b> real shortlist. Numbers are the junior e-commerce-marketer case, DKK/month.</p>
+    <div class="persona">
+      <span class="pill">👤 Junior · e-commerce marketing</span>
+      <span class="pill">🗣️ Speaks English only</span>
+      <span class="pill">🏒 Plays ice hockey (important)</span>
+    </div>
+  </header>
+
+  <div class="controls">
+    <span class="lab">Filter</span>
+    <label class="toggle red"><input type="checkbox" id="hideRed"><span class="sw"></span>Hide 🔴 red</label>
+    <label class="toggle amber"><input type="checkbox" id="hideAmber"><span class="sw"></span>Hide 🟡 yellow</label>
+  </div>
+
+  <div class="result">
+    <div class="lab">Your real top 3 <span id="filterState" style="color:var(--ink-2);font-weight:600;text-transform:none;letter-spacing:0"></span></div>
+    <div class="podium" id="podium"></div>
+  </div>
+
+  <div class="rowlist" id="rows"></div>
+
+  <p class="note" id="note"></p>
+</div>
+
+<script>
+(function(){
+  const SEV = {red:2, amber:1, green:0};
+  const SEVNAME = {red:"Red", amber:"Yellow", green:"Green"};
+  const cities = [
+    {key:'mel', name:'Melbourne', gross:26540, tax:4896, exp:13991, remaining:7653, issues:[
+      {id:'hockey', txt:'No competitive ice-hockey scene — your main hobby', sev:'red', ignored:false},
+      {id:'iso', txt:'Geographically isolated from Europe (family, weekend travel)', sev:'amber', ignored:false},
+      {id:'lang', txt:'English is the native language', sev:'green', ignored:false},
+    ]},
+    {key:'got', name:'Gothenburg', gross:21696, tax:4515, exp:10428, remaining:6753, issues:[
+      {id:'swe', txt:'Swedish needed for full integration within a few years', sev:'amber', ignored:false},
+      {id:'hockey', txt:'World-class ice hockey — Sweden is a top hockey nation', sev:'green', ignored:false},
+      {id:'work', txt:'Can land an English-speaking job to start', sev:'green', ignored:false},
+    ]},
+    {key:'sha', name:'Shanghai', gross:17370, tax:1148, exp:10007, remaining:6215, issues:[
+      {id:'mand', txt:'Mandarin required to work in the local market', sev:'red', ignored:false},
+      {id:'cap', txt:'Capital controls limit moving savings abroad', sev:'amber', ignored:false},
+      {id:'hockey', txt:'Limited ice-hockey scene', sev:'amber', ignored:false},
+    ]},
+    {key:'sto', name:'Stockholm', gross:25086, tax:5125, exp:13770, remaining:6191, issues:[
+      {id:'hockey', txt:'World-class ice hockey', sev:'green', ignored:false},
+      {id:'lang', txt:'Very English-friendly workplace', sev:'green', ignored:false},
+      {id:'swe', txt:'Swedish helps long-term but rarely required', sev:'green', ignored:false},
+    ]},
+    {key:'cph', name:'Copenhagen', gross:33000, tax:10747, exp:17320, remaining:4933, issues:[
+      {id:'hockey', txt:'Solid ice-hockey scene', sev:'green', ignored:false},
+      {id:'lang', txt:'Very English-friendly', sev:'green', ignored:false},
+    ]},
+    {key:'vie', name:'Vienna', gross:23531, tax:6298, exp:12579, remaining:4654, issues:[
+      {id:'ger', txt:'German helps for local roles (startups often run in English)', sev:'green', ignored:false},
+      {id:'hockey', txt:'Decent ice-hockey scene', sev:'green', ignored:false},
+    ]},
+    {key:'ams', name:'Amsterdam', gross:24651, tax:3795, exp:20804, remaining:52, issues:[
+      {id:'lang', txt:"Europe's most English-friendly hub", sev:'green', ignored:false},
+      {id:'hockey', txt:'Minor ice-hockey scene', sev:'green', ignored:false},
+    ]},
+    {key:'sgp', name:'Singapore', gross:20240, tax:466, exp:23544, remaining:-3770, issues:[
+      {id:'lang', txt:'English is an official working language', sev:'green', ignored:false},
+      {id:'hockey', txt:'Tropical — minimal ice-hockey culture', sev:'amber', ignored:false},
+    ]},
+  ];
+
+  const state = { hideRed:false, hideAmber:false, open:{} };
+  const fmt = n => (n<0?'−':'') + Math.abs(n).toLocaleString('en-US');
+  function effSev(c){
+    let w = 'green';
+    c.issues.forEach(i => { if(!i.ignored && SEV[i.sev] > SEV[w]) w = i.sev; });
+    return w;
+  }
+  function isHidden(sev){ return (sev==='red' && state.hideRed) || (sev==='amber' && state.hideAmber); }
+
+  const rowsEl = document.getElementById('rows');
+  const podEl = document.getElementById('podium');
+  const noteEl = document.getElementById('note');
+  const fsEl = document.getElementById('filterState');
+
+  function render(){
+    const enriched = cities.map(c => ({...c, sev:effSev(c)}));
+    const visible = enriched.filter(c => !isHidden(c.sev)).sort((a,b)=>b.remaining-a.remaining);
+    const hidden  = enriched.filter(c => isHidden(c.sev)).sort((a,b)=>b.remaining-a.remaining);
+
+    // podium
+    podEl.innerHTML = visible.slice(0,3).map((c,i)=>`
+      <div class="pod" style="--c:var(--${c.key})">
+        <div class="r">#${i+1}</div><div class="n">${c.name}</div>
+        <div class="m">${fmt(c.remaining)} kr/mo · ${flagWord(c.sev)}</div>
+      </div>`).join('') || '<div class="m" style="color:var(--muted)">Every city is filtered out — loosen a filter.</div>';
+
+    const parts = [];
+    if(state.hideRed) parts.push('🔴 red hidden');
+    if(state.hideAmber) parts.push('🟡 yellow hidden');
+    fsEl.textContent = parts.length ? '· ' + parts.join(' · ') : '· no filters';
+
+    // rows
+    let html = '';
+    visible.forEach((c,i)=> html += rowHTML(c, i+1, false));
+    if(hidden.length){
+      html += `<div class="divider">Filtered out (${hidden.length})</div>`;
+      hidden.forEach(c => html += rowHTML(c, null, true));
+    }
+    rowsEl.innerHTML = html;
+    attach();
+    noteEl.innerHTML = 'Try it: open <b>Melbourne</b> and drag its ice-hockey flag from <b>Red → Yellow</b>, then tick <b>Hide red</b> — Melbourne survives instead of dropping out. That is the difference between the raw money ranking and <b>your</b> ranking.';
+  }
+  function flagWord(s){ return s==='red'?'🔴 blocker':s==='amber'?'🟡 solvable':'🟢 good fit'; }
+
+  function rowHTML(c, rank, dim){
+    const open = state.open[c.key];
+    const worst = c.issues.filter(i=>!i.ignored && i.sev===c.sev);
+    return `
+    <div class="crow ${dim?'hidden':''} ${open?'open':''}" data-key="${c.key}">
+      <div class="chead" data-toggle="${c.key}">
+        <div class="rank ${rank?'':'dim'}">${rank?rank:'—'}</div>
+        <div class="cname"><span class="cdot" style="--c:var(--${c.key})"></span><b class="${dim?'strike':''}">${c.name}</b></div>
+        <div class="money ${c.remaining<0?'neg':''}">${fmt(c.remaining)} kr<small>left / month</small></div>
+        <div class="flag ${c.sev}"><span class="fdot"></span>${SEVNAME[c.sev]} <span class="caret">▶</span></div>
+      </div>
+      ${open ? panelHTML(c) : ''}
+    </div>`;
+  }
+  function panelHTML(c){
+    const rows = c.issues.slice().sort((a,b)=>SEV[b.sev]-SEV[a.sev]).map(i=>`
+      <div class="issue ${i.ignored?'ign':''}">
+        <span class="txt">${i.txt}</span>
+        <span class="seg" data-city="${c.key}" data-issue="${i.id}">
+          <button class="${i.sev==='red'?'on red':''}" data-sev="red">Red</button>
+          <button class="${i.sev==='amber'?'on amber':''}" data-sev="amber">Yellow</button>
+          <button class="${i.sev==='green'?'on green':''}" data-sev="green">Green</button>
+        </span>
+        <button class="ign-btn ${i.ignored?'active':''}" data-ign="${c.key}:${i.id}">${i.ignored?'Ignored':'Ignore'}</button>
+      </div>`).join('');
+    return `<div class="panel">
+      <div class="ptitle">Fit issues — reclassify or ignore</div>
+      ${rows}
+      <div class="ptitle">Financial breakdown</div>
+      <div class="brk">
+        <span>Gross <b>${fmt(c.gross)}</b></span><span>− Tax <b>${fmt(c.tax)}</b></span>
+        <span>− Expenses <b>${fmt(c.exp)}</b></span><span>= Remaining <b>${fmt(c.remaining)} kr</b></span>
+      </div>
+    </div>`;
+  }
+
+  function attach(){
+    rowsEl.querySelectorAll('[data-toggle]').forEach(el=>{
+      el.addEventListener('click', e=>{
+        if(e.target.closest('.seg')||e.target.closest('.ign-btn')) return;
+        const k = el.getAttribute('data-toggle');
+        state.open[k] = !state.open[k];
+        render();
+      });
+    });
+    rowsEl.querySelectorAll('.seg button').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        e.stopPropagation();
+        const seg = btn.closest('.seg');
+        const c = cities.find(x=>x.key===seg.getAttribute('data-city'));
+        const iss = c.issues.find(x=>x.id===seg.getAttribute('data-issue'));
+        iss.sev = btn.getAttribute('data-sev'); iss.ignored = false;
+        render();
+      });
+    });
+    rowsEl.querySelectorAll('[data-ign]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        e.stopPropagation();
+        const [ck,iid] = btn.getAttribute('data-ign').split(':');
+        const c = cities.find(x=>x.key===ck);
+        const iss = c.issues.find(x=>x.id===iid);
+        iss.ignored = !iss.ignored;
+        render();
+      });
+    });
+  }
+
+  document.getElementById('hideRed').addEventListener('change', e=>{ state.hideRed = e.target.checked; render(); });
+  document.getElementById('hideAmber').addEventListener('change', e=>{ state.hideAmber = e.target.checked; render(); });
+  render();
+})();
+</script>
