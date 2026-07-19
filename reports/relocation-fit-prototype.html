@@ -59,10 +59,16 @@
   .toggle.red input:checked + .sw{background:var(--red)} .toggle.amber input:checked + .sw{background:var(--amber)}
   .toggle:focus-within .sw{outline:2px solid var(--accent);outline-offset:2px}
   .gpanel{margin-top:10px;border:1px solid var(--hair);border-radius:10px;overflow:hidden}
-  .gpanel .phint{font-size:12px;color:var(--muted);padding:9px 12px 3px}
+  .gpanel .phint{font-size:12px;color:var(--muted);padding:10px 12px 2px}
 
-  /* ---- issue rows (shared by city + global panels) ---- */
-  .issue{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--hair)}
+  /* ---- issue group (issue-first) ---- */
+  .gcat{display:flex;align-items:center;gap:8px;padding:11px 12px 5px;font-size:13.5px;font-weight:800;color:var(--ink)}
+  .gcat.sep{border-top:1px solid var(--hair);margin-top:2px}
+  .gcat .gc-count{font-weight:600;color:var(--muted);font-size:12px}
+  .gcat .gc-ico{width:16px;text-align:center}
+
+  /* ---- city-under-issue row & city-panel issue row (shared) ---- */
+  .issue{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:8px 12px 8px 16px;border-bottom:1px solid var(--hair)}
   .issue:last-child{border-bottom:0}
   .issue .txt{flex:1;min-width:170px;font-size:13.5px;color:var(--ink)}
   .issue.ign .txt{text-decoration:line-through;color:var(--muted)}
@@ -120,7 +126,7 @@
   <header>
     <p class="eyebrow">Relocation system · Fit-flag layer · Interface mockup</p>
     <h1>The money ranking is objective. Your life makes it personal.</h1>
-    <p class="sub">The financial ranking never changes — it's the honest number. Your <b>fit flags</b> sit on top: 🔴 real blocker · 🟡 solvable later · 🟢 fine. Manage a whole colour at once, or open a single city. Numbers are the junior e-commerce-marketer case, DKK/month.</p>
+    <p class="sub">Manage fit by <b>issue</b>, not by city: open a colour to see the concerns (working language, ice-hockey scene…), and under each concern the cities that have it — reclassify them there. Numbers are the junior e-commerce-marketer case, DKK/month.</p>
     <div class="persona">
       <span class="pill">👤 Junior · e-commerce marketing</span>
       <span class="pill">🗣️ Speaks English only</span>
@@ -129,7 +135,7 @@
   </header>
 
   <div class="mgr">
-    <div class="lab">Manage flags</div>
+    <div class="lab">Manage flags by issue</div>
     <div class="sevrow">
       <button class="fm-head red" id="head-red" aria-expanded="false">
         <span class="fdot"></span> Red <span class="cnt" id="cnt-red"></span> <span class="caret">▶</span>
@@ -158,42 +164,50 @@
 <script>
 (function(){
   const SEV={red:2,amber:1,green:0}, SEVNAME={red:"Red",amber:"Yellow",green:"Green"};
+  // issue categories — the panels lead with these, cities sit underneath
+  const CATS={
+    hockey:{label:'Ice-hockey scene', ico:'🏒'},
+    langwork:{label:'Working language (can you get hired in English?)', ico:'🗣️'},
+    langlife:{label:'Local language for daily life & long-term', ico:'💬'},
+    money:{label:'Moving your savings abroad', ico:'💸'},
+    distance:{label:'Distance from home', ico:'✈️'},
+  };
   const cities=[
     {key:'mel',name:'Melbourne',gross:26540,tax:4896,exp:13991,remaining:7653,issues:[
-      {id:'hockey',txt:'No competitive ice-hockey scene — your main hobby',sev:'red',ignored:false},
-      {id:'iso',txt:'Geographically isolated from Europe (family, weekend travel)',sev:'amber',ignored:false},
-      {id:'lang',txt:'English is the native language',sev:'green',ignored:false},
+      {id:'hockey',cat:'hockey',txt:'No competitive ice-hockey scene',sev:'red',ignored:false},
+      {id:'iso',cat:'distance',txt:'Isolated from Europe (family, weekend travel)',sev:'amber',ignored:false},
+      {id:'lang',cat:'langwork',txt:'English is the native language',sev:'green',ignored:false},
     ]},
     {key:'got',name:'Gothenburg',gross:21696,tax:4515,exp:10428,remaining:6753,issues:[
-      {id:'swe',txt:'Swedish needed for full integration within a few years',sev:'amber',ignored:false},
-      {id:'hockey',txt:'World-class ice hockey — Sweden is a top hockey nation',sev:'green',ignored:false},
-      {id:'work',txt:'Can land an English-speaking job to start',sev:'green',ignored:false},
+      {id:'swe',cat:'langlife',txt:'Swedish needed for full integration within a few years',sev:'amber',ignored:false},
+      {id:'hockey',cat:'hockey',txt:'World-class ice hockey (top hockey nation)',sev:'green',ignored:false},
+      {id:'work',cat:'langwork',txt:'Can land an English-speaking job to start',sev:'green',ignored:false},
     ]},
     {key:'sha',name:'Shanghai',gross:17370,tax:1148,exp:10007,remaining:6215,issues:[
-      {id:'mand',txt:'Mandarin required to work in the local market',sev:'red',ignored:false},
-      {id:'cap',txt:'Capital controls limit moving savings abroad',sev:'amber',ignored:false},
-      {id:'hockey',txt:'Limited ice-hockey scene',sev:'amber',ignored:false},
+      {id:'mand',cat:'langwork',txt:'Mandarin required to work in the local market',sev:'red',ignored:false},
+      {id:'cap',cat:'money',txt:'Capital controls limit moving savings abroad',sev:'amber',ignored:false},
+      {id:'hockey',cat:'hockey',txt:'Limited ice-hockey scene',sev:'amber',ignored:false},
     ]},
     {key:'sto',name:'Stockholm',gross:25086,tax:5125,exp:13770,remaining:6191,issues:[
-      {id:'hockey',txt:'World-class ice hockey',sev:'green',ignored:false},
-      {id:'lang',txt:'Very English-friendly workplace',sev:'green',ignored:false},
-      {id:'swe',txt:'Swedish helps long-term but rarely required',sev:'green',ignored:false},
+      {id:'hockey',cat:'hockey',txt:'World-class ice hockey',sev:'green',ignored:false},
+      {id:'lang',cat:'langwork',txt:'Very English-friendly workplace',sev:'green',ignored:false},
+      {id:'swe',cat:'langlife',txt:'Swedish helps long-term but rarely required',sev:'green',ignored:false},
     ]},
     {key:'cph',name:'Copenhagen',gross:33000,tax:10747,exp:17320,remaining:4933,issues:[
-      {id:'hockey',txt:'Solid ice-hockey scene',sev:'green',ignored:false},
-      {id:'lang',txt:'Very English-friendly',sev:'green',ignored:false},
+      {id:'hockey',cat:'hockey',txt:'Solid ice-hockey scene',sev:'green',ignored:false},
+      {id:'lang',cat:'langwork',txt:'Very English-friendly',sev:'green',ignored:false},
     ]},
     {key:'vie',name:'Vienna',gross:23531,tax:6298,exp:12579,remaining:4654,issues:[
-      {id:'ger',txt:'German helps for local roles (startups often run in English)',sev:'green',ignored:false},
-      {id:'hockey',txt:'Decent ice-hockey scene',sev:'green',ignored:false},
+      {id:'ger',cat:'langwork',txt:'German helps for local roles (startups often English)',sev:'green',ignored:false},
+      {id:'hockey',cat:'hockey',txt:'Decent ice-hockey scene',sev:'green',ignored:false},
     ]},
     {key:'ams',name:'Amsterdam',gross:24651,tax:3795,exp:20804,remaining:52,issues:[
-      {id:'lang',txt:"Europe's most English-friendly hub",sev:'green',ignored:false},
-      {id:'hockey',txt:'Minor ice-hockey scene',sev:'green',ignored:false},
+      {id:'lang',cat:'langwork',txt:"Europe's most English-friendly hub",sev:'green',ignored:false},
+      {id:'hockey',cat:'hockey',txt:'Minor ice-hockey scene',sev:'green',ignored:false},
     ]},
     {key:'sgp',name:'Singapore',gross:20240,tax:466,exp:23544,remaining:-3770,issues:[
-      {id:'lang',txt:'English is an official working language',sev:'green',ignored:false},
-      {id:'hockey',txt:'Tropical — minimal ice-hockey culture',sev:'amber',ignored:false},
+      {id:'lang',cat:'langwork',txt:'English is an official working language',sev:'green',ignored:false},
+      {id:'hockey',cat:'hockey',txt:'Tropical — minimal ice-hockey culture',sev:'amber',ignored:false},
     ]},
   ];
 
@@ -207,7 +221,6 @@
   const rowsEl=document.getElementById('rows'), podEl=document.getElementById('podium');
   const noteEl=document.getElementById('note'), fsEl=document.getElementById('filterState');
 
-  // one issue row (used by city panels and global panels); showCity prefixes the city name
   function issueRow(c,i,showCity){
     return `<div class="issue ${i.ignored?'ign':''}">
       <span class="txt">${showCity?`<span class="cityref" style="color:var(--${c.key})">${c.name}</span> — `:''}${i.txt}</span>
@@ -220,19 +233,24 @@
     </div>`;
   }
 
+  // issue-FIRST global panel: group the colour's issues by category, cities underneath
   function renderGlobalPanel(sev){
-    const wrapId = sev==='red' ? 'panel-red' : 'panel-amber';
-    const wrap = document.getElementById(wrapId);
+    const wrap=document.getElementById(sev==='red'?'panel-red':'panel-amber');
     if(!state.openPanel[sev]){ wrap.innerHTML=''; return; }
-    const items=[];
-    cities.forEach(c=>c.issues.forEach(i=>{ if(i.sev===sev) items.push([c,i]); }));
-    const hint = sev==='red'
-      ? 'Every issue currently flagged red. Move one to Yellow/Green or ignore it — the ranking updates instantly.'
-      : 'Every issue currently flagged yellow. Promote to Red, downgrade to Green, or ignore.';
-    wrap.innerHTML = `<div class="gpanel"><div class="phint">${hint}</div>${
-      items.length ? items.map(([c,i])=>issueRow(c,i,true)).join('')
-                   : '<div class="empty">No issues in this colour right now.</div>'
-    }</div>`;
+    const groups={};
+    cities.forEach(c=>c.issues.forEach(i=>{ if(i.sev===sev && !i.ignored){ (groups[i.cat]=groups[i.cat]||[]).push([c,i]); }}));
+    const catKeys=Object.keys(groups);
+    const hint=sev==='red'
+      ? 'The concerns currently blocking cities. Decide per city whether each is really a dealbreaker — move to Yellow/Green or ignore.'
+      : 'The concerns currently flagged as solvable-later. Promote to Red if it matters more, or clear to Green / ignore.';
+    const body = catKeys.length ? catKeys.map((ck,gi)=>{
+      const meta=CATS[ck]||{label:ck,ico:'•'};
+      const list=groups[ck];
+      return `<div class="gcat ${gi?'sep':''}"><span class="gc-ico">${meta.ico}</span>${meta.label}
+        <span class="gc-count">· ${list.length} ${list.length>1?'cities':'city'}</span></div>
+        ${list.map(([c,i])=>issueRow(c,i,true)).join('')}`;
+    }).join('') : '<div class="empty">No issues in this colour right now.</div>';
+    wrap.innerHTML=`<div class="gpanel"><div class="phint">${hint}</div>${body}</div>`;
   }
 
   function render(){
@@ -240,7 +258,6 @@
     const visible=enriched.filter(c=>!isHidden(c.sev)).sort((a,b)=>b.remaining-a.remaining);
     const hidden=enriched.filter(c=>isHidden(c.sev)).sort((a,b)=>b.remaining-a.remaining);
 
-    // counts (active, non-ignored)
     const countSev=s=>cities.reduce((n,c)=>n+c.issues.filter(i=>i.sev===s&&!i.ignored).length,0);
     document.getElementById('cnt-red').textContent=`· ${countSev('red')}`;
     document.getElementById('cnt-amber').textContent=`· ${countSev('amber')}`;
@@ -263,7 +280,7 @@
     rowsEl.innerHTML=html;
 
     attachAll();
-    noteEl.innerHTML='Try it: click the <b>Red</b> label to see all red issues in one place, drag <b>Melbourne · ice hockey</b> to <b>Yellow</b>, then tick <b>Hide red</b> — Melbourne survives. Managing by colour and managing by city both edit the same underlying flags.';
+    noteEl.innerHTML='Issue-first: open <b>Red</b> → the concern <b>“Ice-hockey scene”</b> lists Melbourne; move it to <b>Yellow</b>, then tick <b>Hide red</b> and Melbourne survives. Editing here or inside a city both change the same flag.';
   }
 
   function cityRow(c,rank,dim){
@@ -300,10 +317,8 @@
     }));
   }
 
-  // header label opens the global colour panel (does NOT toggle the hide filter)
   document.getElementById('head-red').addEventListener('click',()=>{ state.openPanel.red=!state.openPanel.red; render(); });
   document.getElementById('head-amber').addEventListener('click',()=>{ state.openPanel.amber=!state.openPanel.amber; render(); });
-  // the switch is the only thing that toggles hide
   document.getElementById('hideRed').addEventListener('change',e=>{ state.hideRed=e.target.checked; render(); });
   document.getElementById('hideAmber').addEventListener('change',e=>{ state.hideAmber=e.target.checked; render(); });
 
