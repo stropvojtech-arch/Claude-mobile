@@ -1,0 +1,409 @@
+<title>Food Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Jost:wght@300;400;500&display=swap">
+<style>
+/* Layout: two full-screen panels side by side; the menu card is page 1, the shopping list is page 2, reached by swiping. */
+:root{
+  --paper:#EDF0EA; --card:#F7F8F4; --ink:#1B231E; --muted:#5D6A61; --rule:#C6CFC6;
+  --accent:#2E5B45; --brass:#9A7428; --have:#E1E7DF;
+  --display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --body:"Jost","Avenir Next","Futura",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#121815; --card:#1A221E; --ink:#E5EAE2; --muted:#93A096; --rule:#2D3832;
+  --accent:#8DBFA2; --brass:#CFA95B; --have:#202A25; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121815; --card:#1A221E; --ink:#E5EAE2; --muted:#93A096; --rule:#2D3832;
+  --accent:#8DBFA2; --brass:#CFA95B; --have:#202A25; color-scheme:dark}
+
+html,body{height:100%;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+.viewport{height:100%;overflow:hidden}
+.track{display:flex;width:200%;height:100%;will-change:transform}
+.panel{width:50%;height:100%;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.inner{max-width:560px;margin:0 auto;padding-inline:20px;padding-block:28px 40px}
+
+/* ---------- Menu card ---------- */
+.mast{text-align:center;padding-block:18px 8px}
+.mast .est{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.mast h1{font-family:var(--display);font-weight:500;font-size:clamp(40px,12vw,58px);line-height:1;margin:10px 0 6px;letter-spacing:-.01em}
+.mast h1 i{font-weight:400}
+.mast .tag{font-family:var(--display);font-style:italic;color:var(--muted);font-size:16px}
+.orn{display:flex;align-items:center;gap:12px;color:var(--brass);margin:22px auto 6px;max-width:220px}
+.orn::before,.orn::after{content:"";flex:1;height:1px;background:var(--brass);opacity:.6}
+
+.section{margin-top:30px}
+.section h2{font-family:var(--display);font-weight:400;font-style:italic;font-size:28px;text-align:center;margin:0 0 4px}
+.section .hours{text-align:center;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.dish{display:block;width:100%;text-align:left;padding-block:13px;border-top:1px solid var(--rule)}
+.dish:last-child{border-bottom:1px solid var(--rule)}
+.dish .row{display:flex;align-items:baseline;gap:8px}
+.dish .nm{font-family:var(--display);font-size:20px;font-weight:500;letter-spacing:.005em}
+.dish .lead{flex:1;border-bottom:1px dotted var(--muted);opacity:.5;transform:translateY(-4px);min-width:16px}
+.dish .pr{font-family:var(--display);font-size:18px;font-variant-numeric:tabular-nums lining-nums}
+.dish .ds{color:var(--muted);font-weight:300;font-size:14.5px;margin-top:2px;padding-right:56px}
+.foot{text-align:center;margin-top:34px;color:var(--muted);font-size:12px;letter-spacing:.06em}
+.foot .seal{display:inline-block;margin-top:14px;color:var(--brass);font-family:var(--display);font-size:18px;opacity:.75;padding:6px 10px}
+
+/* ---------- Dish sheet ---------- */
+.scrim{position:fixed;inset:0;background:rgba(20,16,0,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:10}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;background:var(--card);border-radius:18px 18px 0 0;z-index:11;
+  transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);padding:10px 22px calc(28px + env(safe-area-inset-bottom,0px))}
+.sheet.on{transform:none}
+.sheet .grip{width:40px;height:4px;border-radius:2px;background:var(--rule);margin:0 auto 14px}
+.sheet .x{position:absolute;top:12px;right:14px;font-size:22px;color:var(--muted);width:36px;height:36px}
+.sheet h3{font-family:var(--display);font-weight:500;font-size:30px;line-height:1.1;margin:4px 40px 6px 0;text-wrap:balance}
+.sheet .sd{color:var(--muted);font-weight:300;margin:0 0 16px}
+.sheet h4{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass);font-weight:500;margin:22px 0 8px}
+.ing{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.ing td{padding:7px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.ing td.q{color:var(--muted);width:38%;padding-right:10px}
+.ing td.c{text-align:right;color:var(--muted);white-space:nowrap;padding-left:8px}
+.ing tr.tot td{border-bottom:0;font-weight:500;color:var(--ink);padding-top:10px}
+.steps{margin:0;padding-left:22px}
+.steps li{margin-bottom:8px;padding-left:4px}
+.steps li::marker{font-family:var(--display);color:var(--brass)}
+.note{font-size:13px;color:var(--muted);margin-top:14px;font-style:italic}
+
+/* ---------- Shopping panel ---------- */
+.shop .inner{padding-bottom:120px}
+.shop-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.shop-head h2{font-family:var(--display);font-weight:500;font-size:34px;margin:0}
+.back{font-size:13px;color:var(--muted);letter-spacing:.04em;padding:6px 0}
+.tabs{display:flex;gap:4px;background:var(--have);border-radius:999px;padding:4px;margin:16px 0 6px}
+.tabs button{flex:1;padding:8px 0;border-radius:999px;font-size:14px;color:var(--muted)}
+.tabs button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.lbl{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass);font-weight:500;margin:24px 0 6px}
+.hint{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.pick{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
+.pick .n{flex:1;min-width:0;font-family:var(--display);font-size:17px}
+.pick .n small{display:block;font-family:var(--body);font-size:12px;color:var(--muted)}
+.step{display:flex;align-items:center;border:1px solid var(--rule);border-radius:999px;overflow:hidden;flex-shrink:0}
+.step button{width:34px;height:32px;font-size:18px;color:var(--accent)}
+.step span{min-width:22px;text-align:center;font-variant-numeric:tabular-nums;font-weight:500}
+.pick.on .step{border-color:var(--accent)}
+.empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed var(--rule);border-radius:12px;font-size:14px}
+.aisle{font-size:12px;color:var(--muted);margin:16px 0 2px;letter-spacing:.06em}
+.item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.chk{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--muted);flex-shrink:0;display:grid;place-items:center;font-size:14px;color:var(--paper)}
+.item .t{flex:1;min-width:0;text-align:left}
+.item .t b{font-weight:500;display:block}
+.item .t small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35}
+.item .cost{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:14px;text-align:right}
+.item.home .chk{background:var(--accent);border-color:var(--accent)}
+.item.home .t b{color:var(--muted);text-decoration:line-through}
+.item.home .cost{color:var(--muted)}
+.item.got .chk{background:var(--accent);border-color:var(--accent)}
+.item.got .t b{text-decoration:line-through;color:var(--muted)}
+.tag-home{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.bar{position:sticky;bottom:0;margin-top:24px;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:12px 14px;
+  display:flex;align-items:center;gap:12px;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.bar .sum{flex:1;font-size:13px;color:var(--muted)}
+.bar .sum b{display:block;font-size:20px;color:var(--ink);font-family:var(--display);font-weight:500;font-variant-numeric:tabular-nums lining-nums}
+.go{background:var(--accent);color:var(--paper);padding:10px 16px;border-radius:999px;font-weight:500;font-size:14px}
+.go[disabled]{opacity:.4}
+.clear{display:block;margin:26px auto 0;font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;padding:8px}
+.clear.arm{color:#B0412E}
+
+@media (prefers-reduced-motion: reduce){.track,.sheet,.scrim{transition:none!important}}
+</style>
+
+<div class="viewport">
+  <div class="track" id="track">
+    <!-- Page 1: the menu -->
+    <section class="panel" id="menuPanel" aria-label="Menu">
+      <div class="inner">
+        <header class="mast">
+          <div class="est">Aarhus · Est. 2026</div>
+          <h1>Menu</h1>
+          <div class="tag">Cooked to order, for one</div>
+          <div class="orn">✦</div>
+        </header>
+        <div id="menu"></div>
+        <footer class="foot">
+          All prices per portion, in Danish kroner.<br>
+          <button class="seal" id="seal" aria-label="Open shopping list">❦</button>
+        </footer>
+      </div>
+    </section>
+    <!-- Page 2: the shopping list -->
+    <section class="panel shop" id="shopPanel" aria-label="Shopping list">
+      <div class="inner">
+        <div class="shop-head">
+          <h2>Shopping</h2>
+          <button class="back" id="back">← Menu</button>
+        </div>
+        <div class="tabs" role="group" aria-label="Mode">
+          <button id="tPlan" aria-pressed="true">1 · Plan</button>
+          <button id="tStore" aria-pressed="false">2 · In the store</button>
+        </div>
+        <div id="shop"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="grip"></div>
+  <button class="x" id="close" aria-label="Close">×</button>
+  <div id="sheetBody"></div>
+</div>
+
+<script>
+/* ---- Data from the "Home menu" Google Sheet (11 Oct 2026). Prices in DKK. ----
+   ITEMS: what you buy in the store — [name, pack, pack price, aisle]
+   Dish rows: i = item id(s), a = amount per portion, c = cost per portion,
+   f = share of one pack used per portion (defaults to c ÷ pack price). */
+const ITEMS={
+  yogurt:["Greek yogurt","1 kg tub",29.00,"Dairy & eggs"],
+  banana:["Banana","1 pc",2.75,"Fruit & veg"],
+  honey:["Honey","425 g jar",19.25,"Pantry"],
+  cereal:["Cereal","750 g box",20.00,"Pantry"],
+  baguette:["Baguette","1 pc (280 g)",12.00,"Bakery"],
+  mayo:["Mayonnaise","400 g jar",13.00,"Pantry"],
+  cheese:["Sliced cheese","300 g (~20 slices)",26.95,"Dairy & eggs"],
+  ham:["Ham","140 g (~10 slices)",13.00,"Meat"],
+  tomato:["Tomatoes","500 g (~6 pcs)",20.00,"Fruit & veg"],
+  flour:["Flour","2 kg bag",9.95,"Pantry"],
+  yeast:["Fresh yeast","50 g cube",1.50,"Dairy & eggs"],
+  oil:["Olive oil","750 ml bottle",65.25,"Pantry"],
+  cantom:["Canned tomatoes","400 g can",6.95,"Pantry"],
+  sugar:["Sugar","1 kg bag",7.50,"Pantry"],
+  salt:["Salt","1 kg",5.00,"Spices"],
+  pepper:["Black pepper","100 g",9.25,"Spices"],
+  oregano:["Oregano","25 g jar",6.75,"Spices"],
+  mozz:["Mozzarella","125 g ball",7.95,"Dairy & eggs"],
+  prosc:["Prosciutto","75 g (~6 slices)",18.25,"Meat"],
+  pasta:["Pasta","500 g",4.95,"Pantry"],
+  parm:["Parmesan","200 g",38.00,"Dairy & eggs"],
+  noodles:["Egg noodles","250 g (4 nests)",7.07,"Pantry"],
+  garlic:["Garlic","200 g",14.50,"Fruit & veg"],
+  soy:["Soy sauce","260 ml",11.25,"Pantry"],
+  sesame:["Sesame oil","250 ml",30.75,"Pantry"],
+  oyster:["Oyster sauce","225 g",16.00,"Pantry"],
+  eggs:["Eggs","10 pcs",19.00,"Dairy & eggs"],
+  carrot:["Carrots","1 kg bag",12.00,"Fruit & veg"],
+  chicken:["Chicken breast","650 g",64.95,"Meat"],
+  rice:["Rice","1 kg",18.00,"Pantry"],
+  lettuce:["Lettuce","1 head",12.00,"Fruit & veg"],
+  broccoli:["Broccoli","1 head",15.00,"Fruit & veg"],
+  onion:["Onions","5 pcs",12.00,"Fruit & veg"],
+  spinach:["Spinach","1 bag",11.00,"Fruit & veg"],
+  cream:["Heavy cream","250 ml",16.00,"Dairy & eggs"],
+  beef:["Ground beef","400 g",44.95,"Meat"],
+  buns:["Burger buns","6 pcs",14.50,"Bakery"],
+  cucumber:["Cucumber","1 pc",10.00,"Fruit & veg"],
+  ketchup:["Ketchup","1 kg",17.00,"Pantry"],
+  potato:["Potatoes","2 kg bag",18.00,"Fruit & veg"],
+  crumbs:["Breadcrumbs","500 g",7.50,"Pantry"],
+  lemon:["Lemon","1 pc",5.00,"Fruit & veg"]
+};
+const SP={i:"salt|pepper",n:"Salt & pepper",a:"to taste",c:0.11,f:0.01};
+
+const MENU=[
+ {sec:"Breakfast",hours:"Mornings",dishes:[
+  {id:"yogurt",name:"Yogurt Bowl",price:14.69,desc:"Thick Greek yogurt, sliced banana, honey and crunchy cereal",
+   ing:[{i:"yogurt",a:"300 g",c:8.70},{i:"banana",a:"1 pc",c:2.75},{i:"honey",a:"2 tbsp",c:1.90},{i:"cereal",a:"~50 g",c:1.33}],
+   steps:["Scoop the yogurt into a clean bowl.","Add 2 tablespoons of honey.","Slice the banana into the bowl.","Pour the cereal on top.","Mix it all together."]}
+ ]},
+ {sec:"Lunch",hours:"Midday",dishes:[
+  {id:"sandwich",name:"Baguette Sandwich",price:12.96,desc:"Half a baguette with ham, cheese, tomato and mayonnaise",
+   ing:[{i:"baguette",a:"½ baguette",c:6.00},{i:"mayo",a:"4 knife-scoops",c:1.30},{i:"cheese",a:"2 slices",c:2.70},{i:"ham",a:"1 slice",c:1.30},{i:"tomato",a:"½ tomato",c:1.67}],
+   steps:["Cut the baguette in half across. Take one half and slice it open lengthwise.","Spread 2 knife-scoops of mayonnaise on each side.","Add 2 slices of cheese, then 1 slice of ham.","Slice half a tomato on top and close.","Save the other half of the baguette and the other half of the tomato for next time."]}
+ ]},
+ {sec:"Dinner",hours:"Evenings",dishes:[
+  {id:"pizza",name:"Pizza Crudo",price:23.03,desc:"Homemade dough, tomato sauce, mozzarella, fresh tomato and prosciutto",
+   batch:"The dough and the sauce are each made for 3 pizzas. Amounts are for one pizza, with the full batch in brackets.",
+   ing:[{i:"flour",a:"~167 g (batch 500 g)",c:0.83},{i:"yeast",a:"⅙ cube (batch ½ cube)",c:0.25},{i:"oil",a:"~17 ml (batch 50 ml)",c:1.45},{i:"cantom",a:"⅓ can (batch 1 can)",c:2.32},{i:"sugar",a:"1⅔ tbsp (batch 3 dough + 2 sauce)",c:0.16},{i:"salt",a:"1⅓ tbsp (batch 3 dough + 1 sauce)",c:0.12},{i:"oregano",a:"1 tbsp (batch 3 tbsp)",c:0.54},{i:"mozz",a:"1 ball",c:7.95},{i:"prosc",a:"2 slices",c:6.08},{i:"tomato",a:"1 tomato",c:3.33}],
+   steps:["Dough (makes 3): stir ½ cube of yeast and 3 tbsp sugar into warm water. Let it sit about 5 min.","Add the flour and 3 tbsp salt and mix. Before it fully comes together, add the 50 ml olive oil, then mix until it's no longer sticky. Add flour as needed.","Rub a little olive oil on top so it doesn't stick to the bowl. Cover and put it in the fridge overnight. If you have the patience, 3 days gives the best result.","Sauce (makes 3): bring 1 can of tomatoes to a light boil. Add 2 tbsp sugar, 1 tbsp salt and 3 tbsp oregano and cook it. Pour into a container. It's ready to use straight away.","For one pizza: stretch a third of the dough and spread a third of the sauce. Top with 1 mozzarella ball, 2 slices of prosciutto and 1 sliced tomato.","Bake as hot as your oven goes (250 °C+) for 8–12 min, until blistered."]},
+  {id:"pomodoro",name:"Pasta al Pomodoro",price:11.81,desc:"Pasta in a simple tomato sauce with oregano and parmesan",
+   ing:[{i:"pasta",a:"120 g",c:1.19},{i:"salt",a:"1 tbsp + 1 tsp",c:0.12},{i:"cantom",a:"½ can",c:3.48},{i:"parm",a:"34 g",c:6.46},{i:"sugar",a:"1 tsp",c:0.03},{i:"oregano",a:"1 tbsp",c:0.54}],
+   steps:["Boil the pasta in water with 1 tbsp salt.","In another pan, mix half a can of tomatoes with the sugar, the oregano and 1 tsp salt, and cook it.","Add a little of the pasta water to the tomatoes and mix it in.","Drain the pasta and mix it together with the sauce.","Top with the parmesan."]},
+  {id:"noodles",name:"Egg Noodles",price:12.76,desc:"Wok-tossed noodles with egg, carrot and garlic in soy, oyster and sesame",
+   ing:[{i:"noodles",a:"62.5 g (1 nest)",c:1.77},{i:"garlic",a:"1 clove",c:0.36},{i:"soy",a:"2 tbsp",c:1.30},{i:"sugar",a:"1 tsp",c:0.03},{i:"sesame",a:"1 tbsp",c:1.85},{i:"oyster",a:"1 tbsp",c:1.28},{i:"eggs",a:"3 eggs",c:5.70},{i:"carrot",a:"½ carrot",c:0.48}],
+   steps:["Cook the noodles 3–4 min, drain and rinse.","Stir together the soy sauce, oyster sauce, sugar and sesame oil.","Fry the chopped garlic and thin carrot strips in a hot pan for 2 min.","Push them aside and scramble the eggs in the gap.","Add the noodles and sauce and toss on high heat for 2 min."]},
+  {id:"thai",name:"Thai Stir-fry",price:33.86,desc:"Garlic-soy beef or chicken with broccoli and carrot, rice and lettuce",
+   ing:[{i:"chicken",n:"Beef or chicken",a:"200 g",c:19.98},{i:"rice",a:"120 g",c:2.16},{i:"lettuce",a:"⅓ head",c:4.00},{i:"carrot",a:"1 carrot",c:0.96},{i:"broccoli",a:"⅓ head",c:5.00},{i:"soy",a:"2 tbsp",c:1.30},{i:"garlic",a:"1 clove (or 2 small)",c:0.36},{i:"sugar",a:"1 tbsp",c:0.09}],
+   steps:["Rinse the rice and cook it.","Slice the meat thin. Toss it with the soy sauce, sugar and chopped garlic and leave 10 min.","Stir-fry the meat on high heat 3–4 min, then take it out.","Stir-fry the broccoli and sliced carrot 3 min with a splash of water.","Put the meat back and toss. Serve over rice with lettuce on the side."]},
+  {id:"spinach",name:"Creamy Spinach Pasta",price:23.53,desc:"Pasta in cream with spinach, onion, garlic and parmesan",
+   ing:[{i:"pasta",a:"100 g",c:1.00},{i:"onion",a:"½ onion",c:1.20},{i:"garlic",a:"1 clove",c:1.00,f:0.025},{i:"parm",a:"20 g",c:4.00},{i:"spinach",a:"½ bag",c:6.00},{i:"cream",a:"125 ml",c:8.00},{i:"oregano",a:"1 tsp",c:1.00,f:0.04},SP],
+   steps:["Cook the pasta in salted water.","Soften the chopped onion and garlic in a pan for 4 min.","Add the spinach and stir until it wilts.","Pour in the cream, add oregano, salt and pepper, and simmer 3 min.","Stir in the parmesan and toss with the drained pasta."]},
+  {id:"burger",name:"Beef Burger & Wedges",price:34.56,desc:"Two 100 g beef burgers with cucumber and ketchup, and potato wedges",
+   ing:[{i:"beef",a:"200 g",c:22.48},{i:"buns",a:"2 buns",c:4.83},{i:"cucumber",a:"½ cucumber",c:5.00},{i:"ketchup",a:"1 tbsp",c:0.34},{i:"potato",a:"200 g",c:1.80},SP],
+   steps:["Cut the potatoes into wedges, toss with a little oil and salt, and roast at 220 °C for ~30 min.","Shape the beef into two 100 g patties and season with salt and pepper.","Fry in a very hot pan 3–4 min per side.","Toast the buns cut side down.","Build two burgers: bun, patty, cucumber slices, ketchup."]},
+  {id:"schnitzel",name:"Chicken Schnitzel",price:45.93,desc:"Breaded chicken with boiled potatoes, cucumber and lemon",
+   ing:[{i:"chicken",a:"300 g",c:29.98},{i:"potato",a:"600 g",c:5.40},{i:"crumbs",a:"~60 g",c:0.90},{i:"eggs",a:"1 egg",c:1.90},{i:"flour",a:"30 g",c:0.15},{i:"cucumber",a:"½ cucumber",c:5.00},{i:"lemon",a:"½ lemon",c:2.50},SP],
+   steps:["Boil the peeled potatoes in salted water ~20 min.","Flatten the chicken to about 1 cm and season with salt and pepper.","Coat in flour, then beaten egg, then breadcrumbs.","Fry in ~1 cm of oil 3–4 min per side until golden.","Serve with the potatoes, sliced cucumber and a lemon wedge."],
+   macros:"~918 kcal · protein ~53 g · carbs ~120 g · fat ~24 g"},
+  {id:"kure",name:"Kuře s mozzarelou",price:31.12,desc:"Chicken baked under melted mozzarella, with roast potatoes",
+   ing:[{i:"chicken",a:"200 g",c:19.98},{i:"mozz",a:"½ ball",c:3.98},SP,{i:"oil",a:"50 ml",c:4.35},{i:"potato",a:"~300 g",c:2.70}],
+   steps:["Heat the oven to 200 °C. Cube the potatoes, toss in some of the olive oil and salt, and roast ~35 min.","Season the chicken and sear it in olive oil 2 min per side.","Top with sliced mozzarella and bake 15 min, until the chicken is cooked through and the cheese has melted.","Serve with the potatoes."]}
+ ]}
+];
+const DISHES=MENU.flatMap(s=>s.dishes);
+const byId=Object.fromEntries(DISHES.map(d=>[d.id,d]));
+const AISLES=["Fruit & veg","Meat","Dairy & eggs","Bakery","Pantry","Spices"];
+const kr=n=>n.toFixed(2);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---- state (kept on this device only) ---- */
+const KEY="bistro-strop-v1";
+let st={page:0,mode:"plan",portions:{},home:{},adj:{},got:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s)st=Object.assign(st,s)}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+
+/* ---- menu ---- */
+document.getElementById("menu").innerHTML=MENU.map(s=>`
+  <div class="section"><h2>${s.sec}</h2><div class="hours">${s.hours}</div>
+  ${s.dishes.map(d=>`<button class="dish" data-id="${d.id}">
+    <div class="row"><span class="nm">${esc(d.name)}</span><span class="lead"></span><span class="pr">${kr(d.price)}</span></div>
+    <div class="ds">${esc(d.desc)}</div></button>`).join("")}</div>`).join("");
+
+const sheet=document.getElementById("sheet"),scrim=document.getElementById("scrim");
+let sheetOpen=false;
+function openDish(id){
+  const d=byId[id];
+  const rows=d.ing.map(g=>{const nm=g.n||g.i.split("|").map(k=>ITEMS[k][0]).join(" & ");
+    return `<tr><td class="q">${esc(g.a)}</td><td>${esc(nm)}</td><td class="c">${kr(g.c)}</td></tr>`}).join("");
+  document.getElementById("sheetBody").innerHTML=`
+    <h3 id="sheetTitle">${esc(d.name)}</h3><p class="sd">${esc(d.desc)}</p>
+    <h4>For one portion</h4>${d.batch?`<p class="note" style="margin:0 0 8px">${esc(d.batch)}</p>`:""}
+    <table class="ing">${rows}<tr class="tot"><td class="q"></td><td>Cost per portion</td><td class="c">${kr(d.price)} kr</td></tr></table>
+    <h4>Method</h4><ol class="steps">${d.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
+    ${d.macros?`<p class="note">${esc(d.macros)}</p>`:""}`;
+  sheet.scrollTop=0;sheet.classList.add("on");scrim.classList.add("on");sheetOpen=true;
+  document.getElementById("close").focus({preventScroll:true});
+}
+function closeDish(){sheet.classList.remove("on");scrim.classList.remove("on");sheetOpen=false}
+document.getElementById("menu").addEventListener("click",e=>{const b=e.target.closest(".dish");if(b)openDish(b.dataset.id)});
+scrim.onclick=closeDish;document.getElementById("close").onclick=closeDish;
+
+/* ---- shopping maths ---- */
+function needs(){
+  const m={};
+  for(const d of DISHES){const p=st.portions[d.id]||0;if(!p)continue;
+    for(const g of d.ing)for(const k of g.i.split("|")){
+      const f=(g.f!=null?g.f:g.c/ITEMS[k][2])*p;
+      (m[k]??={f:0,dishes:new Set()}).f+=f;m[k].dishes.add(d.name);
+    }}
+  for(const k in m){m[k].auto=Math.max(1,Math.ceil(m[k].f-1e-6));m[k].packs=st.adj[k]??m[k].auto}
+  return m;
+}
+function usage(f,pack){return f<0.995?`uses ~${Math.max(1,Math.round(f*100))}% of a ${pack}`:`needs ${(Math.round(f*10)/10).toString()} × ${pack}`}
+
+function renderShop(){
+  document.getElementById("tPlan").setAttribute("aria-pressed",st.mode==="plan");
+  document.getElementById("tStore").setAttribute("aria-pressed",st.mode==="store");
+  const N=needs(),keys=Object.keys(N);
+  const buy=keys.filter(k=>!st.home[k]);
+  const total=buy.reduce((s,k)=>s+N[k].packs*ITEMS[k][2],0);
+  const portions=Object.values(st.portions).reduce((a,b)=>a+b,0);
+  const byAisle=list=>AISLES.map(a=>[a,list.filter(k=>ITEMS[k][3]===a).sort((x,y)=>ITEMS[x][0].localeCompare(ITEMS[y][0]))]).filter(([,l])=>l.length);
+  let h="";
+  if(st.mode==="plan"){
+    h+=`<div class="lbl">What are you cooking?</div>`;
+    h+=MENU.map(s=>s.dishes.map(d=>{const p=st.portions[d.id]||0;
+      return `<div class="pick${p?" on":""}"><div class="n">${esc(d.name)}<small>${s.sec} · ${kr(d.price)} kr</small></div>
+      <div class="step"><button data-dish="${d.id}" data-d="-1" aria-label="One less ${esc(d.name)}">−</button><span>${p}</span><button data-dish="${d.id}" data-d="1" aria-label="One more ${esc(d.name)}">+</button></div></div>`}).join("")).join("");
+    h+=`<div class="lbl">Ingredients</div>`;
+    if(!keys.length)h+=`<div class="empty">Add a portion of something above and its ingredients show up here.</div>`;
+    else{
+      h+=`<p class="hint">Tap anything you already have at home. Use − / + to change how many packs to buy.</p>`;
+      for(const [a,list] of byAisle(keys)){
+        h+=`<div class="aisle">${a}</div>`;
+        for(const k of list){const it=ITEMS[k],n=N[k],home=!!st.home[k];
+          h+=`<div class="item${home?" home":""}">
+            <button class="chk" data-home="${k}" aria-label="${home?"Need to buy":"Have at home"}: ${esc(it[0])}">${home?"✓":""}</button>
+            <button class="t" data-home="${k}"><b>${esc(it[0])}</b><small>${home?`<span class="tag-home">At home</span> · `:""}${usage(n.f,it[1])} · ${[...n.dishes].join(", ")}</small></button>
+            ${home?`<span class="cost">—</span>`:`<div class="step"><button data-pack="${k}" data-d="-1" aria-label="One pack less">−</button><span>${n.packs}</span><button data-pack="${k}" data-d="1" aria-label="One pack more">+</button></div>`}
+          </div>`}
+      }
+    }
+    h+=`<div class="bar"><div class="sum">${buy.length} to buy · ${portions} portion${portions===1?"":"s"}<b>${kr(total)} kr</b></div>
+       <button class="go" id="goStore" ${buy.length?"":"disabled"}>Go shopping →</button></div>`;
+  }else{
+    const left=buy.filter(k=>!st.got[k]),done=buy.filter(k=>st.got[k]);
+    const leftCost=left.reduce((s,k)=>s+N[k].packs*ITEMS[k][2],0);
+    if(!buy.length)h+=`<div class="empty" style="margin-top:20px">Nothing to buy yet. Plan a meal in step 1.</div>`;
+    else{
+      h+=`<p class="hint" style="margin-top:14px">Tap an item when it is in your basket.</p>`;
+      for(const [a,list] of byAisle(left)){
+        h+=`<div class="aisle">${a}</div>`;
+        for(const k of list){const it=ITEMS[k],n=N[k];
+          h+=`<button class="item" data-got="${k}" style="width:100%"><span class="chk"></span>
+            <span class="t"><b>${n.packs} × ${esc(it[0])}</b><small>${esc(it[1])}</small></span><span class="cost">${kr(n.packs*it[2])}</span></button>`}
+      }
+      if(done.length){h+=`<div class="aisle">In the basket</div>`;
+        for(const k of done){const it=ITEMS[k],n=N[k];
+          h+=`<button class="item got" data-got="${k}" style="width:100%"><span class="chk">✓</span>
+            <span class="t"><b>${n.packs} × ${esc(it[0])}</b><small>${esc(it[1])}</small></span><span class="cost">${kr(n.packs*it[2])}</span></button>`}}
+      h+=`<div class="bar"><div class="sum">${left.length} of ${buy.length} left<b>${kr(leftCost)} kr</b></div>
+        <span class="sum" style="flex:0;text-align:right;white-space:nowrap">trip total<br>${kr(total)} kr</span></div>`;
+    }
+  }
+  h+=`<button class="clear" id="clear">Start a new list</button>`;
+  document.getElementById("shop").innerHTML=h;
+}
+
+document.getElementById("shop").addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.dish){const id=t.dataset.dish;st.portions[id]=Math.max(0,(st.portions[id]||0)+ +t.dataset.d);if(!st.portions[id])delete st.portions[id];st.adj={}}
+  else if(t.dataset.pack){const k=t.dataset.pack,N=needs();const v=N[k].packs+ +t.dataset.d;
+    if(v<=0){st.home[k]=true;delete st.adj[k]}else st.adj[k]=v}
+  else if(t.dataset.home){const k=t.dataset.home;st.home[k]?delete st.home[k]:st.home[k]=true}
+  else if(t.dataset.got){const k=t.dataset.got;st.got[k]?delete st.got[k]:st.got[k]=true}
+  else if(t.id==="goStore"){st.mode="store";document.getElementById("shopPanel").scrollTop=0}
+  else if(t.id==="clear"){
+    if(!t.classList.contains("arm")){t.classList.add("arm");t.textContent="Tap again to clear everything";setTimeout(()=>{if(t.isConnected){t.classList.remove("arm");t.textContent="Start a new list"}},3000);return}
+    st.portions={};st.home={};st.adj={};st.got={};st.mode="plan";
+  }else return;
+  save();renderShop();
+});
+document.getElementById("tPlan").onclick=()=>{st.mode="plan";save();renderShop()};
+document.getElementById("tStore").onclick=()=>{st.mode="store";save();renderShop()};
+
+/* ---- paging: swipe on phone, arrow keys or the ❦ on laptop ---- */
+const track=document.getElementById("track");
+function go(p,animate=true){
+  st.page=p;save();
+  track.style.transition=animate?"transform .38s cubic-bezier(.2,.8,.2,1)":"none";
+  track.style.transform=`translateX(${-p*50}%)`;
+  document.getElementById("menuPanel").inert=p===1;document.getElementById("shopPanel").inert=p===0;
+  if(p===1)renderShop();
+}
+document.getElementById("seal").onclick=()=>go(1);
+document.getElementById("back").onclick=()=>go(0);
+addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&sheetOpen)return closeDish();
+  if(sheetOpen)return;
+  if(e.key==="ArrowRight")go(1);if(e.key==="ArrowLeft")go(0);
+});
+let sx=0,sy=0,dx=0,lock=null,w=1;
+track.addEventListener("touchstart",e=>{if(sheetOpen||e.touches.length>1)return;
+  sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=0;lock=null;w=innerWidth;},{passive:true});
+track.addEventListener("touchmove",e=>{if(sheetOpen||lock==="v")return;
+  const x=e.touches[0].clientX-sx,y=e.touches[0].clientY-sy;
+  if(lock===null){if(Math.abs(x)<8&&Math.abs(y)<8)return;lock=Math.abs(x)>Math.abs(y)*1.2?"h":"v";if(lock==="v")return}
+  e.preventDefault();dx=x;
+  const edge=(st.page===0&&dx>0)||(st.page===1&&dx<0);
+  const off=edge?dx*0.2:dx;
+  track.style.transition="none";
+  track.style.transform=`translateX(calc(${-st.page*50}% + ${off}px))`;
+},{passive:false});
+track.addEventListener("touchend",()=>{if(lock!=="h")return;
+  const t=Math.min(80,w*0.18);
+  if(st.page===0&&dx<-t)go(1);else if(st.page===1&&dx>t)go(0);else go(st.page);lock=null;});
+
+/* swipe down on the dish card closes it */
+let ssy=0;
+sheet.addEventListener("touchstart",e=>{ssy=e.touches[0].clientY},{passive:true});
+sheet.addEventListener("touchend",e=>{if(sheet.scrollTop<=0&&e.changedTouches[0].clientY-ssy>90)closeDish()});
+
+go(st.page,false);
+</script>
