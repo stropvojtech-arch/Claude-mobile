@@ -47,6 +47,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-r
 .dish .pr{font-family:var(--display);font-size:18px;font-variant-numeric:tabular-nums lining-nums}
 .dish .ds{color:var(--muted);font-weight:300;font-size:14.5px;margin-top:2px;padding-right:56px}
 .foot{text-align:center;margin-top:34px;color:var(--muted);font-size:12px;letter-spacing:.06em}
+.dish .pr small{font-size:.62em;letter-spacing:.08em;color:var(--muted)}
+.foot .snacks{font:inherit;letter-spacing:inherit;color:inherit;padding:4px 8px}
+.snack-list .row{display:flex;align-items:baseline;gap:8px;padding-block:12px;border-bottom:1px solid var(--rule)}
+.snack-list .nm{font-family:var(--display);font-size:20px;font-weight:500}
+.snack-list .lead{flex:1;border-bottom:1px dotted var(--muted);opacity:.5;transform:translateY(-4px);min-width:16px}
+.snack-list .pr{font-family:var(--display);font-size:18px;font-variant-numeric:tabular-nums lining-nums}
+.snack-list .pr small{font-size:.62em;letter-spacing:.08em;color:var(--muted)}
 .foot .seal{display:inline-block;margin-top:14px;color:var(--brass);font-family:var(--display);font-size:18px;opacity:.75;padding:6px 10px}
 
 /* ---------- Dish sheet ---------- */
@@ -126,7 +133,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-r
         </header>
         <div id="menu"></div>
         <footer class="foot">
-          All prices per portion, in Danish kroner.<br>
+          <button class="snacks" id="snacksBtn">Snacks</button><br>
           <button class="seal" id="seal" aria-label="Open shopping list">❦</button>
         </footer>
       </div>
@@ -246,6 +253,8 @@ const MENU=[
    steps:["Heat the oven to 200 °C. Cube the potatoes, toss in some of the olive oil and salt, and roast ~35 min.","Season the chicken and sear it in olive oil 2 min per side.","Top with sliced mozzarella and bake 15 min, until the chicken is cooked through and the cheese has melted.","Serve with the potatoes."]}
  ]}
 ];
+/* Snacks — from the Snacks tab. Add more as [name, price per portion in DKK]. */
+const SNACKS=[["Corny",7.00]];
 const DISHES=MENU.flatMap(s=>s.dishes);
 const byId=Object.fromEntries(DISHES.map(d=>[d.id,d]));
 const AISLES=["Fruit & veg","Meat","Dairy & eggs","Bakery","Pantry","Spices"];
@@ -262,7 +271,7 @@ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 document.getElementById("menu").innerHTML=MENU.map(s=>`
   <div class="section"><h2>${s.sec}</h2><div class="hours">${s.hours}</div>
   ${s.dishes.map(d=>`<button class="dish" data-id="${d.id}">
-    <div class="row"><span class="nm">${esc(d.name)}</span><span class="lead"></span><span class="pr">${kr(d.price)}</span></div>
+    <div class="row"><span class="nm">${esc(d.name)}</span><span class="lead"></span><span class="pr">${kr(d.price)} <small>DKK</small></span></div>
     <div class="ds">${esc(d.desc)}</div></button>`).join("")}</div>`).join("");
 
 const sheet=document.getElementById("sheet"),scrim=document.getElementById("scrim");
@@ -270,18 +279,25 @@ let sheetOpen=false;
 function openDish(id){
   const d=byId[id];
   const rows=d.ing.map(g=>{const nm=g.n||g.i.split("|").map(k=>ITEMS[k][0]).join(" & ");
-    return `<tr><td class="q">${esc(g.a)}</td><td>${esc(nm)}</td><td class="c">${kr(g.c)}</td></tr>`}).join("");
+    return `<tr><td class="q">${esc(g.a)}</td><td>${esc(nm)}</td><td class="c">${kr(g.c)} DKK</td></tr>`}).join("");
   document.getElementById("sheetBody").innerHTML=`
     <h3 id="sheetTitle">${esc(d.name)}</h3><p class="sd">${esc(d.desc)}</p>
     <h4>For one portion</h4>${d.batch?`<p class="note" style="margin:0 0 8px">${esc(d.batch)}</p>`:""}
-    <table class="ing">${rows}<tr class="tot"><td class="q"></td><td>Cost per portion</td><td class="c">${kr(d.price)} kr</td></tr></table>
+    <table class="ing">${rows}<tr class="tot"><td class="q"></td><td>Cost per portion</td><td class="c">${kr(d.price)} DKK</td></tr></table>
     <h4>Method</h4><ol class="steps">${d.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
     ${d.macros?`<p class="note">${esc(d.macros)}</p>`:""}`;
   sheet.scrollTop=0;sheet.classList.add("on");scrim.classList.add("on");sheetOpen=true;
   document.getElementById("close").focus({preventScroll:true});
 }
+function openSnacks(){
+  document.getElementById("sheetBody").innerHTML=`<h3 id="sheetTitle">Snacks</h3><p class="sd">Between meals</p>
+    <div class="snack-list">${SNACKS.map(([n,p])=>`<div class="row"><span class="nm">${esc(n)}</span><span class="lead"></span><span class="pr">${kr(p)} <small>DKK</small></span></div>`).join("")}</div>`;
+  sheet.scrollTop=0;sheet.classList.add("on");scrim.classList.add("on");sheetOpen=true;
+  document.getElementById("close").focus({preventScroll:true});
+}
 function closeDish(){sheet.classList.remove("on");scrim.classList.remove("on");sheetOpen=false}
 document.getElementById("menu").addEventListener("click",e=>{const b=e.target.closest(".dish");if(b)openDish(b.dataset.id)});
+document.getElementById("snacksBtn").onclick=openSnacks;
 scrim.onclick=closeDish;document.getElementById("close").onclick=closeDish;
 
 /* ---- shopping maths ---- */
@@ -309,7 +325,7 @@ function renderShop(){
   if(st.mode==="plan"){
     h+=`<div class="lbl">What are you cooking?</div>`;
     h+=MENU.map(s=>s.dishes.map(d=>{const p=st.portions[d.id]||0;
-      return `<div class="pick${p?" on":""}"><div class="n">${esc(d.name)}<small>${s.sec} · ${kr(d.price)} kr</small></div>
+      return `<div class="pick${p?" on":""}"><div class="n">${esc(d.name)}<small>${s.sec} · ${kr(d.price)} DKK</small></div>
       <div class="step"><button data-dish="${d.id}" data-d="-1" aria-label="One less ${esc(d.name)}">−</button><span>${p}</span><button data-dish="${d.id}" data-d="1" aria-label="One more ${esc(d.name)}">+</button></div></div>`}).join("")).join("");
     h+=`<div class="lbl">Ingredients</div>`;
     if(!keys.length)h+=`<div class="empty">Add a portion of something above and its ingredients show up here.</div>`;
@@ -325,7 +341,7 @@ function renderShop(){
           </div>`}
       }
     }
-    h+=`<div class="bar"><div class="sum">${buy.length} to buy · ${portions} portion${portions===1?"":"s"}<b>${kr(total)} kr</b></div>
+    h+=`<div class="bar"><div class="sum">${buy.length} to buy · ${portions} portion${portions===1?"":"s"}<b>${kr(total)} DKK</b></div>
        <button class="go" id="goStore" ${buy.length?"":"disabled"}>Go shopping →</button></div>`;
   }else{
     const left=buy.filter(k=>!st.got[k]),done=buy.filter(k=>st.got[k]);
@@ -337,14 +353,14 @@ function renderShop(){
         h+=`<div class="aisle">${a}</div>`;
         for(const k of list){const it=ITEMS[k],n=N[k];
           h+=`<button class="item" data-got="${k}" style="width:100%"><span class="chk"></span>
-            <span class="t"><b>${n.packs} × ${esc(it[0])}</b><small>${esc(it[1])}</small></span><span class="cost">${kr(n.packs*it[2])}</span></button>`}
+            <span class="t"><b>${n.packs} × ${esc(it[0])}</b><small>${esc(it[1])}</small></span><span class="cost">${kr(n.packs*it[2])} DKK</span></button>`}
       }
       if(done.length){h+=`<div class="aisle">In the basket</div>`;
         for(const k of done){const it=ITEMS[k],n=N[k];
           h+=`<button class="item got" data-got="${k}" style="width:100%"><span class="chk">✓</span>
-            <span class="t"><b>${n.packs} × ${esc(it[0])}</b><small>${esc(it[1])}</small></span><span class="cost">${kr(n.packs*it[2])}</span></button>`}}
-      h+=`<div class="bar"><div class="sum">${left.length} of ${buy.length} left<b>${kr(leftCost)} kr</b></div>
-        <span class="sum" style="flex:0;text-align:right;white-space:nowrap">trip total<br>${kr(total)} kr</span></div>`;
+            <span class="t"><b>${n.packs} × ${esc(it[0])}</b><small>${esc(it[1])}</small></span><span class="cost">${kr(n.packs*it[2])} DKK</span></button>`}}
+      h+=`<div class="bar"><div class="sum">${left.length} of ${buy.length} left<b>${kr(leftCost)} DKK</b></div>
+        <span class="sum" style="flex:0;text-align:right;white-space:nowrap">trip total<br>${kr(total)} DKK</span></div>`;
     }
   }
   h+=`<button class="clear" id="clear">Start a new list</button>`;
