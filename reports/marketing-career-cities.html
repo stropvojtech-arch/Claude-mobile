@@ -171,6 +171,8 @@
   .fav-r { display: grid; grid-template-columns: minmax(0, 1fr) auto 4.2rem; gap: 10px; font-size: .88rem; font-variant-numeric: tabular-nums; }
   .fav-r span:last-child { text-align: right; font-weight: 600; }
   .fav-r .dim, .dim { color: var(--muted); }
+  .heat td.h .sm { display: block; font-size: .68rem; font-weight: 500; opacity: .75; margin-top: 1px; }
+  .val.neg, .fav-r .neg { color: var(--bad); }
   .top3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
   .pick { border: 1px solid var(--hair); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; background: var(--bg); }
   .pick .rank { font-family: var(--f-data); font-size: .72rem; color: var(--muted); letter-spacing: .06em; }
@@ -292,15 +294,18 @@
     </header>
 
     <div class="sub">
-      <h3>Everyday prices, converted to DKK</h3>
-      <p class="note">Darker cells are pricier within that row. Hover a cell for the local price and what it covers. Figures marked <span class="est">est</span> are estimates where no 2026 price was found.</p>
+      <div class="toolbar">
+        <h3>Everyday prices as a share of disposable income</h3>
+        <div class="seg lvl-seg" role="group" aria-label="Seniority"></div>
+      </div>
+      <p class="note">Each price divided by that city's <span class="lvl-name">mid</span>-level disposable income (net salary − rent − essentials). Small figure underneath = price in DKK. Darker = a bigger bite of your money within that row. Figures marked <span class="est">est</span> are estimates where no 2026 price was found.</p>
       <div class="tbl heat"><table id="goPrices"></table></div>
     </div>
 
-    <div class="cards">
+    <div class="sub">
       <div class="sub">
         <h3>A month of going out</h3>
-        <p class="note">12 cappuccinos, 8 basic restaurant meals, 1 budget gym month, 4 hours of padel (your quarter of the court) and 1 karting race. DKK per month.</p>
+        <p class="note">12 cappuccinos, 8 basic restaurant meals, 1 budget gym month, 4 hours of padel (your quarter of the court) and 1 karting race, as a share of <span class="lvl-name">mid</span>-level disposable income.</p>
         <div class="panel"><div class="bars" id="basketBars"></div></div>
       </div>
       <div class="sub">
@@ -321,7 +326,7 @@
 
     <div class="sub">
       <h3>Where locals actually eat</h3>
-      <p class="note">The typical casual places differ by city, so each city gets its own list. Local price, then DKK.</p>
+      <p class="note">The typical casual places differ by city, so each city gets its own list. Local price, then the share of <span class="lvl-name">mid</span>-level disposable income one visit takes.</p>
       <div class="fav-grid" id="favGrid"></div>
     </div>
 
@@ -337,15 +342,17 @@
     </header>
 
     <div class="sub">
-      <h3>Monthly global subscriptions, converted to DKK</h3>
-      <p class="note">Prices include VAT or GST. Hover a cell for the local price.</p>
+      <div class="toolbar">
+        <h3>Monthly subscriptions as a share of disposable income</h3>
+        <div class="seg lvl-seg" role="group" aria-label="Seniority"></div>
+      </div>
+      <p class="note">Prices include VAT or GST. Each is divided by the city's <span class="lvl-name">mid</span>-level disposable income. Small figure underneath = price in DKK.</p>
       <div class="tbl"><table id="subTable"></table></div>
     </div>
 
     <div class="panel">
       <div class="toolbar">
         <h3>Top three by money left</h3>
-        <div class="seg lvl-seg" role="group" aria-label="Seniority"></div>
       </div>
       <div class="top3" id="top3"></div>
     </div>
@@ -768,6 +775,7 @@
     document.querySelectorAll("#levelSeg button, .lvl-seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.l === level)));
     renderGoing(L);
     renderPP(L);
+    renderShares(L);
     $("levelNote").textContent = `${L.label} · ${L.yrs} · sorted by money left`;
     const rows = FLOW[level];
     $("dispBars").innerHTML = rows.map((r, i) => {
@@ -796,40 +804,57 @@
   }));
   renderLevel();
 
-  // ---- going out: static views
-  (function () {
+  // ---- going out & subscriptions as a share of disposable income (per seniority level)
+  function renderShares(L) {
     const ALL = Object.keys(CITY);
+    const REM = Object.fromEntries(FLOW[level].map(r => [r[0], r[5]]));
+    const share = (k, d) => REM[k] > 0 ? d / REM[k] * 100 : Infinity;
+    const fmtPct = v => !isFinite(v) ? "no money left" : v >= 100 ? ">100%" : (v < 1 ? v.toFixed(2) : v < 10 ? v.toFixed(1) : Math.round(v)) + "%";
+    const shade = (v, vals) => {
+      const f = vals.filter(isFinite);
+      if (!isFinite(v)) return RAMP.length - 1;
+      const lo = Math.min(...f), hi = Math.max(...f);
+      return Math.round((v - lo) / (hi - lo || 1) * (RAMP.length - 1));
+    };
+    const heat = (pct, vals, dk, est, tip) => {
+      const i = shade(pct, vals);
+      return { h: `${isFinite(pct) ? fmtPct(pct) : "–"}${est ? '<sup class="est">est</sup>' : ""}<span class="sm">${kr(Math.round(dk))} kr</span>`, cls: "h",
+        style: `background:var(${RAMP[i]});color:${i >= 4 ? "#ffffff" : "#0d1a33"}`, tip };
+    };
+    const remLine = k => `<div>${L.label} disposable income: ${kr(REM[k])} kr</div>`;
     const NOTE = {
       coffee: { VIE: "Melange in a neighbourhood café; famous coffee houses charge €6.50–7", SGP: "Café cappuccino; a local kopi costs S$1.20–2", SHA: "Independent café; Luckin chain coffee ¥12–18", MEL: "Small flat white, average of 1,362 cafés", CPH: "Lagkagehuset charges 57 kr" },
       meal: { STO: "Weekday dagens lunch 130–170 kr", GOT: "Weekday dagens lunch about 130 kr", VIE: "Beisl lunch special €12–20", SGP: "A hawker dish is S$4–8", SHA: "Basic lunch set; a noodle bowl is ¥15–25", MEL: "Casual café or noodle bar main" },
     };
-    const cell = (k, it) => {
-      const [v, est] = it.p[k];
-      const d = dkk(k, v);
-      const vals = ALL.map(c => dkk(c, it.p[c][0]));
-      const lo = Math.min(...vals), hi = Math.max(...vals);
-      const t = (d - lo) / (hi - lo || 1);
-      const i = Math.round(t * (RAMP.length - 1));
-      let what = it.k === "gym" ? GYM_NAME[k] : it.k === "padel" ? `Court ${COURT[k]} per hour, split 4 ways` : (NOTE[it.k] && NOTE[it.k][k]) || it.unit;
-      const tip = `<b>${CITY[k].name} · ${it.label}</b><div>${local(v, CUR[k])} = ${kr(Math.round(d))} kr</div><div>${what}</div>${est ? "<div><i>Estimate, no 2026 source found</i></div>" : ""}`;
-      return { h: `${kr(Math.round(d))}${est ? '<sup class="est">est</sup>' : ""}`, cls: "h", style: `background:var(${RAMP[i]});color:${i >= 4 ? "#ffffff" : "#0d1a33"}`, tip };
-    };
-    table("goPrices", ["Item", ...ALL.map(code)], GO.map(it => [`${it.label}<div class="note">${it.unit}</div>`, ...ALL.map(k => cell(k, it))]), { leftCols: [0] });
+    document.querySelectorAll(".lvl-name").forEach(el => { el.textContent = L.label.toLowerCase(); });
 
-    const ord = ALL.slice().sort((a, b) => basket(a) - basket(b));
-    const max = Math.max(...ALL.map(basket));
+    table("goPrices", ["Item", ...ALL.map(code)], GO.map(it => {
+      const vals = ALL.map(k => share(k, dkk(k, it.p[k][0])));
+      return [`${it.label}<div class="note">${it.unit}</div>`, ...ALL.map((k, j) => {
+        const [v, est] = it.p[k], d = dkk(k, v);
+        const what = it.k === "gym" ? GYM_NAME[k] : it.k === "padel" ? `Court ${COURT[k]} per hour, split 4 ways` : (NOTE[it.k] && NOTE[it.k][k]) || it.unit;
+        const tip = `<b>${CITY[k].name} · ${it.label}</b><div>${local(v, CUR[k])} = ${kr(Math.round(d))} kr</div><div><b>${fmtPct(vals[j])}</b> of disposable income</div>${remLine(k)}<div>${what}</div>${est ? "<div><i>Estimate, no 2026 source found</i></div>" : ""}`;
+        return heat(vals[j], vals, d, est, tip);
+      })];
+    }), { leftCols: [0] });
+
+    const bShare = k => share(k, basket(k));
+    const ord = ALL.slice().sort((a, b) => bShare(a) - bShare(b));
+    const maxP = Math.min(100, Math.max(...ALL.map(bShare).filter(isFinite)));
     $("basketBars").innerHTML = ord.map((k, i) => {
-      const tip = `<b>${CITY[k].name}</b>` + GO.map(it => `<div class="r"><span>${it.qtyLabel}</span><span>${kr(Math.round(dkk(k, it.p[k][0]) * it.qty))}</span></div>`).join("") + `<div class="r"><b>Total</b><b>${kr(Math.round(basket(k)))}</b></div>`;
+      const p = bShare(k);
+      const tip = `<b>${CITY[k].name} · ${L.label}</b>` + GO.map(it => `<div class="r"><span>${it.qtyLabel}</span><span>${fmtPct(share(k, dkk(k, it.p[k][0]) * it.qty))}</span></div>`).join("") + `<div class="r"><b>Total</b><b>${fmtPct(p)}</b></div><div>${kr(Math.round(basket(k)))} kr of ${kr(REM[k])} kr</div>`;
       return `<div class="bar-row${i === 0 ? " lead" : ""}" data-tip="${esc(tip)}">
         <span class="rk">${i + 1}</span>${code(k)}
-        <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${basket(k) / max * 100}%"></div></div>
-        <span class="val">${kr(Math.round(basket(k)))}</span></div>`;
+        <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${Math.min(p, maxP) / maxP * 100}%"></div></div>
+        <span class="val${isFinite(p) && p < 100 ? "" : " neg"}">${isFinite(p) ? fmtPct(p) : "–"}</span></div>`;
     }).join("");
-    table("basketTable", ["City", ...GO.map(it => it.qtyLabel.replace(/^\d+ /, "")), "Total", "Score"],
-      ord.map(k => [cityCell(k), ...GO.map(it => kr(Math.round(dkk(k, it.p[k][0]) * it.qty))), { h: kr(Math.round(basket(k))), cls: "strong" }, { h: outScore(k).toFixed(1), cls: "strong" }]));
+    table("basketTable", ["City", ...GO.map(it => it.qtyLabel.replace(/^\d+ /, "")), "Total", "In DKK"],
+      ord.map(k => [cityCell(k), ...GO.map(it => fmtPct(share(k, dkk(k, it.p[k][0]) * it.qty))),
+        { h: fmtPct(bShare(k)), cls: isFinite(bShare(k)) && bShare(k) < 100 ? "strong" : "strong neg" }, { h: kr(Math.round(basket(k))), cls: "dim" }]), { leftCols: [0] });
 
     const FAV = {
-      CPH: [["Kebab / durum", 75], ["Pizzeria pizza", 120], ["Burger meal", 140, 1], ["Sushi set", 150, 1], ["Fast-food combo", 90]],
+      CPH: [["Kebab / durum", 100], ["Pizzeria pizza", 120], ["Burger meal", 140, 1], ["Sushi set", 150, 1], ["Fast-food combo", 90]],
       STO: [["Dagens lunch", 140], ["Pizzeria pizza", 150], ["Burger", 189], ["Kebab", 110, 1], ["Fast-food combo", 119]],
       GOT: [["Dagens lunch", 130], ["Pizzeria pizza", 120], ["Kebab", 100, 1], ["Fast-food combo", 125]],
       AMS: [["Eetcafé main", 18], ["Burger", 20], ["Shawarma", 10, 1], ["Pizza", 15, 1], ["Fast-food combo", 12]],
@@ -838,20 +863,28 @@
       SHA: [["Noodle bowl", 20], ["Neighbourhood rice / noodle shop", 28], ["Fast-food combo", 35], ["Lunch set", 60]],
       MEL: [["Pho, small bowl", 10.99], ["Burger", 20, 1], ["Pizza", 25, 1], ["Flat white", 5.03]],
     };
-    table("subTable", ["Subscription", ...ALL.map(code)], [
-      ...SUBS.map(s => [s.label, ...ALL.map(k => {
-        if (!s.p[k]) return { h: "—", cls: "dim" };
-        const [v, cur, est] = s.p[k];
-        return { h: `${kr(Math.round(subDkk(k, s)))}${est ? '<sup class="est">est</sup>' : ""}`, tip: `<b>${CITY[k].name} · ${s.label}</b><div>${fmtLocal(v, cur)} per month</div>${k === "SHA" ? "<div>Not sold in mainland China; US price shown</div>" : est ? "<div><i>Estimate</i></div>" : ""}` };
-      })]),
-      { cls: "total", cells: ["Total per month", ...ALL.map(k => ({ h: kr(Math.round(gbasket(k))), cls: "strong" }))] },
-    ], { leftCols: [0] });
-
     $("favGrid").innerHTML = ALL.map(k => `<div class="fav">
-      <div class="fav-h">${cityCell(k)}</div>
-      ${FAV[k].map(([name, v, est]) => `<div class="fav-r"><span>${name}${est ? ' <sup class="est">est</sup>' : ""}</span><span class="dim">${local(v, CUR[k])}</span><span>${kr(Math.round(dkk(k, v)))} kr</span></div>`).join("")}
+      <div class="fav-h">${cityCell(k)}<div class="note">${L.label} disposable: ${kr(REM[k])} kr</div></div>
+      ${FAV[k].map(([name, v, est]) => `<div class="fav-r" title="${local(v, CUR[k])} = ${kr(Math.round(dkk(k, v)))} kr"><span>${name}${est ? ' <sup class="est">est</sup>' : ""}</span><span class="dim">${local(v, CUR[k])}</span><span class="${REM[k] > 0 ? "" : "neg"}">${fmtPct(share(k, dkk(k, v)))}</span></div>`).join("")}
     </div>`).join("");
-  })();
+
+    const subVals = s => ALL.map(k => s.p[k] ? share(k, subDkk(k, s)) : NaN);
+    table("subTable", ["Subscription", ...ALL.map(code)], [
+      ...SUBS.map(s => {
+        const vals = subVals(s).filter(v => !isNaN(v));
+        return [s.label, ...ALL.map(k => {
+          if (!s.p[k]) return { h: "—", cls: "dim" };
+          const [v, cur, est] = s.p[k], d = subDkk(k, s), p = share(k, d);
+          const tip = `<b>${CITY[k].name} · ${s.label}</b><div>${fmtLocal(v, cur)} = ${kr(Math.round(d))} kr per month</div><div><b>${fmtPct(p)}</b> of disposable income</div>${remLine(k)}${k === "SHA" ? "<div>Not sold in mainland China; US price shown</div>" : est ? "<div><i>Estimate</i></div>" : ""}`;
+          return heat(p, vals, d, est, tip);
+        })];
+      }),
+      { cls: "total", cells: ["All subscriptions", ...ALL.map(k => {
+        const p = share(k, gbasket(k));
+        return { h: `${isFinite(p) ? fmtPct(p) : "–"}<span class="sm">${kr(Math.round(gbasket(k)))} kr</span>`, cls: "strong h" + (isFinite(p) ? "" : " neg") };
+      })] },
+    ], { leftCols: [0] });
+  }
 
   const BYSEN = {
     Junior: ["STO", "MEL", "CPH", "GOT", "SHA", "VIE", "AMS", "SGP"],

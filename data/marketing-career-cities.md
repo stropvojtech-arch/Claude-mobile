@@ -319,6 +319,22 @@ Gym chains: CPH PureGym Core, STO/GOT Fitness24Seven, AMS Basic-Fit Comfort (€
 | SHA | 4,850 | 17,732 | 34,861 |
 | MEL | 5,591 | 13,326 | 23,505 |
 
+### Prices as a share of mid-level disposable income
+
+One unit of each item ÷ that city's mid-level disposable income. The page shows junior and senior too.
+
+| Item | CPH | STO | GOT | AMS | VIE | SGP | SHA | MEL |
+|---|---|---|---|---|---|---|---|---|
+| Cappuccino | 0.36% | 0.26% | 0.26% | 0.47% | 0.30% | 0.27% | 0.14% | 0.15% |
+| Basic restaurant meal | 1.1% | 0.92% | 0.69% | 2.3% | 1.0% | 0.61% | 0.30% | 0.74% |
+| Budget gym (month) | 1.9% | 1.0% | 1.1% | 3.1% | 1.4% | 3.4% | 1.0% | 1.9% |
+| Padel, your share of a court hour | 0.48% | 0.38% | 0.37% | 0.72% | 0.55% | 0.81% | 0.38% | 0.52% |
+| Go-karting race | 1.9% | 1.5% | 1.5% | 2.3% | 1.4% | 1.1% | 0.51% | 1.7% |
+| Going-out basket (month) | 19% | 15% | 13% | 32% | 17% | 16% | 7.2% | 13% |
+| All subscriptions (month) | 3.9% | 3.3% | 3.4% | 6.9% | 4.1% | 3.2% | 2.1% | 2.6% |
+
+Copenhagen kebab/durum updated to 100 kr (user's local observation: 85 kr in Aarhus, Copenhagen at least 100).
+
 ## Global Subscriptions
 
 Monthly, incl. VAT/GST. Not sold in mainland China: Shanghai uses US prices (1 USD = 6.40 DKK) plus a VPN.
