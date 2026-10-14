@@ -361,3 +361,50 @@ Monthly, incl. VAT/GST. Not sold in mainland China: Shanghai uses US prices (1 U
 | SGP | 12,509 | 118 | 121 | Balanced | 10,125 |
 | VIE | 10,802 | 111 | 93 | Local life goes further | 8,538 |
 | AMS | 6,484 | 58 | 56 | Balanced | 3,937 |
+
+## Prague (added for comparison)
+
+FX 1 CZK = 0.306 DKK. Profile as above: single adult renting a 1-bedroom alone.
+
+### Prague financials · DKK/month, median rent
+
+| Level | Gross | Net | Eff. deductions | − Rent | − Essentials | Disposable |
+|---|---|---|---|---|---|---|
+| Junior 40,000 Kč | 12,240 | 9,771 | 20.2% | 6,426 | 3,503 | −158 |
+| Mid 65,000 Kč | 19,890 | 15,386 | 22.6% | 6,426 | 3,503 | 5,457 |
+| Senior 95,000 Kč | 29,070 | 22,124 | 23.9% | 6,426 | 3,503 | 12,195 |
+
+Tax 2026: 15% on gross up to 1,762,812 Kč/yr (23% above), 2,570 Kč monthly taxpayer credit, employee social 7.1% + health 4.5%. Salary basis: Glassdoor Prague 2026 (specialist median ≈47k Kč total pay, marketing manager ≈83k, head of marketing ≈98k).
+
+### Prague inputs
+
+| Item | Value |
+|---|---|
+| Rent, 1-BR (25th / median / 75th) | 17,500 / 21,000 / 25,000 Kč · Žižkov, Holešovice, Vršovice, Nusle |
+| Essentials DKK | Groceries 1,836 · Utilities 1,224 · Internet 153 · Mobile 122 · Transport (Lítačka 550 Kč) 168 · Total 3,503 |
+| Rent sensitivity, mid (low / median / high) | 6,528 / 5,457 / 4,233 · swing 2,295 |
+| Rent-to-income (mid) | 42% · % net kept (mid) 35% |
+| Career sub-scores | Agencies 6 · Performance 6 · E-commerce 7 · Startups 6 · Scaleups 6 · International cos 7 · HQs 6 · Networking 6 · Promotion 6 · Entrepreneurial 6 · Mobility 7 · Market size 5 · Mean 6.2 |
+| Lifestyle | Climate 6 · Bike 6 · Transit 10 · Walk 9 · Safety 9 · Health 8 · Air 7 · Green 8 · Intl community 8 · Pillar 7.9 |
+| English | CZ #23 (EF EPI 2025) · English at startups, mixed elsewhere · Realistic at international firms and hubs; local brands need Czech · Score 7.5 |
+| Economy (2026) | Unemployment 3.1% · Inflation 2.2–2.7% · GDP 1.8–2.5% · Score 8.0 |
+| Growth (gross DKK) | Year 1 12,240 · Year 3 16,000 · Year 5 21,000 · Year 10 32,000 · CEE marketing lead at a regional hub |
+| Pillar scores | Career 6.2 · Income 4.5 · Cost 7.0 · Life 7.9 · Econ 8.0 · English 7.5 · **Total 6.22 (9th of 9)** |
+| Rank by seniority | Junior 8th (above Singapore) · Mid 9th · Senior 9th |
+
+### Prague going out and subscriptions
+
+| Item | Local | DKK | % of mid disposable |
+|---|---|---|---|
+| Cappuccino | 80 Kč | 24 | 0.45% |
+| Basic restaurant meal | 237 Kč | 73 | 1.3% |
+| Budget gym (month) | 1,200 Kč est | 367 | 6.7% |
+| Padel, your share (court 610 Kč ÷ 4) | 152.5 Kč | 47 | 0.86% |
+| Go-karting race | 450 Kč est | 138 | 2.5% |
+| Going-out basket (month) | | 1,565 | 29% |
+| Claude Pro | €21.78 | 163 | |
+| Google AI Pro | 549 Kč est | 168 | |
+| Netflix Standard | 339 Kč | 104 | |
+| All subscriptions | | 434 | 8.0% |
+
+Local favourites: polední menu 226 Kč (Edenred, Apr 2026), pizzeria pizza 260 Kč, kebab 170 Kč est, burger 290 Kč est.

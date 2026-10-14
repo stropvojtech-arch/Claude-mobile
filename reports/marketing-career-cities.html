@@ -10,7 +10,7 @@
     --bg:#f5f7fa; --surface:#ffffff; --sunk:#edf1f6; --ink:#0f1726; --ink-2:#465264;
     --muted:#7c8696; --hair:#dfe4ec; --hair-2:#c6cdd8; --accent:#1f4fa3; --accent-ink:#ffffff;
     --good:#006300; --bad:#c22f2f;
-    --cph:#2a78d6; --sto:#eb6834; --got:#1baf7a; --vie:#eda100; --ams:#e87ba4; --sgp:#008300; --sha:#6250d6; --mel:#e34948;
+    --cph:#2a78d6; --sto:#eb6834; --got:#1baf7a; --vie:#eda100; --ams:#e87ba4; --sgp:#008300; --sha:#6250d6; --mel:#e34948; --prg:#5f6b7a;
     --h1:#cde2fb; --h2:#9ec5f4; --h3:#6da7ec; --h4:#3987e5; --h5:#256abf; --h6:#184f95; --h7:#0d366b;
     --f-display:"Archivo", "Arial Narrow", system-ui, sans-serif;
     --f-body:"Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -22,7 +22,7 @@
       --bg:#0c1018; --surface:#141a24; --sunk:#1b2230; --ink:#eef2f8; --ink-2:#b4bdcb;
       --muted:#838da0; --hair:#252d3b; --hair-2:#343e50; --accent:#7fa8ef; --accent-ink:#0c1018;
       --good:#2fbf4a; --bad:#ef6b6b;
-      --cph:#3987e5; --sto:#d95926; --got:#199e70; --vie:#c98500; --ams:#d55181; --sgp:#0a9a0a; --sha:#9085e9; --mel:#e66767;
+      --cph:#3987e5; --sto:#d95926; --got:#199e70; --vie:#c98500; --ams:#d55181; --sgp:#0a9a0a; --sha:#9085e9; --mel:#e66767; --prg:#a3adbb;
     }
   }
   :root[data-theme="dark"] {
@@ -30,7 +30,7 @@
     --bg:#0c1018; --surface:#141a24; --sunk:#1b2230; --ink:#eef2f8; --ink-2:#b4bdcb;
     --muted:#838da0; --hair:#252d3b; --hair-2:#343e50; --accent:#7fa8ef; --accent-ink:#0c1018;
     --good:#2fbf4a; --bad:#ef6b6b;
-    --cph:#3987e5; --sto:#d95926; --got:#199e70; --vie:#c98500; --ams:#d55181; --sgp:#0a9a0a; --sha:#9085e9; --mel:#e66767;
+    --cph:#3987e5; --sto:#d95926; --got:#199e70; --vie:#c98500; --ams:#d55181; --sgp:#0a9a0a; --sha:#9085e9; --mel:#e66767; --prg:#a3adbb;
   }
 
   * { box-sizing: border-box; }
@@ -200,11 +200,11 @@
   <header class="mast">
     <span class="eyebrow">Relocation briefing · Marketing professional</span>
     <h1>Marketing Career Cities</h1>
-    <p class="lede">Eight cities scored for a marketing career: what you earn, what tax takes, what rent takes, what's left, and where the career can go. Every amount is in Danish kroner per month.</p>
+    <p class="lede">Nine cities scored for a marketing career: what you earn, what tax takes, what rent takes, what's left, and where the career can go. Every amount is in Danish kroner per month.</p>
     <div class="meta">
       <span><b>Prepared</b> 16 Jul 2026</span>
       <span><b>Profile</b> single adult, no children, renting a 1-bedroom alone</span>
-      <span><b>FX to DKK</b> EUR 7.47 · SEK 0.678 · SGD 5.06 · CNY 0.965 · AUD 4.55</span>
+      <span><b>FX to DKK</b> EUR 7.47 · SEK 0.678 · SGD 5.06 · CNY 0.965 · AUD 4.55 · CZK 0.306</span>
     </div>
     <div class="codes" id="codes"></div>
   </header>
@@ -221,7 +221,7 @@
       <li><a href="#life">Lifestyle</a></li>
       <li><a href="#english">English</a></li>
       <li><a href="#economy">Economy</a></li>
-      <li><a href="#outliers">Shanghai &amp; Melbourne</a></li>
+      <li><a href="#outliers">Shanghai, Melbourne &amp; Prague</a></li>
       <li><a href="#method">Method</a></li>
     </ul>
   </nav>
@@ -231,6 +231,7 @@
     <div><span class="eyebrow">Best for seniors</span><span class="big">Singapore</span><p>Single-digit tax lets 32,308 kr a month stay in your pocket. A junior there runs a 3,770 kr deficit.</p></div>
     <div><span class="eyebrow">Most career upside</span><span class="big">SGP 8.9 · AMS 8.8</span><p>The two most international hubs, held back by high rent: Amsterdam keeps just 52 kr at junior level.</p></div>
     <div><span class="eyebrow">Wildcard</span><span class="big">Shanghai</span><p>Ranks about 5th for an English-only marketer, but would rank #1 (≈8.23) with fluent Mandarin.</p></div>
+    <div><span class="eyebrow">Comparison city</span><span class="big">Prague · 6.22</span><p>Cheapest rent in kroner, but Czech pay is lower still. A mid-level marketer keeps 5,457 kr, and a month of going out takes 29% of it.</p></div>
   </div>
 
   <section id="ranking">
@@ -382,7 +383,7 @@
     <header>
       <span class="eyebrow">Inputs</span>
       <h2>Salary, tax, rent and living costs</h2>
-      <p class="note">The six core cities. Shanghai and Melbourne inputs are in their own section below.</p>
+      <p class="note">The six core cities plus Prague. Shanghai and Melbourne inputs are in their own section below.</p>
     </header>
     <div class="sub"><h3>Gross monthly salary</h3><div class="tbl"><table id="salary"></table></div></div>
     <div class="sub"><h3>Net monthly salary, DKK, with effective income-tax rate</h3><div class="tbl"><table id="tax"></table></div></div>
@@ -443,8 +444,8 @@
   <section id="outliers">
     <header>
       <span class="eyebrow">Added cities</span>
-      <h2>Shanghai and Melbourne</h2>
-      <p class="note">Both were added after the six-city study. They appear in the overall ranking and the disposable-income comparison above.</p>
+      <h2>Shanghai, Melbourne and Prague</h2>
+      <p class="note">All three were added after the six-city study. They appear in the overall ranking and the disposable-income comparison above. Prague also appears in every input table.</p>
     </header>
     <div class="sub">
       <h3><span class="code" style="--c:var(--sha)">SHA</span>&nbsp; Shanghai finances · income tax only, 1 CNY = 0.965 DKK</h3>
@@ -468,6 +469,12 @@
         <h3>Melbourne scorecard</h3>
         <div class="tbl"><table id="melScore"></table></div>
       </div>
+    </div>
+    <div class="sub">
+      <h3><span class="code" style="--c:var(--prg)">PRG</span>&nbsp; Prague finances · 1 CZK = 0.306 DKK</h3>
+      <div class="tbl"><table id="prgFin"></table></div>
+      <p class="callout">Prague is cheap in kroner but not cheap relative to Czech pay. Rent takes 42% of a mid-level net salary, about the same as Copenhagen (41%). Local prices are lower than in Copenhagen, but they take a bigger share of what's left: a month of going out takes 29% of disposable income, against 19% in Copenhagen. A junior ends the month 158 kr short.</p>
+      <p class="note">Salary: Glassdoor Prague, 2026 (marketing specialist median ≈47k Kč total pay, marketing manager ≈83k, head of marketing ≈98k). Tax: 2026 rules, 15% on gross up to 1,762,812 Kč a year, 2,570 Kč monthly taxpayer credit, 7.1% social and 4.5% health insurance. Rent: Numbeo and expat guides (Oct 2026). Lítačka 30-day pass 550 Kč. Weekday lunch menu average 226 Kč (Edenred, April 2026).</p>
     </div>
   </section>
 
@@ -499,8 +506,9 @@
     SGP: { name: "Singapore",  c: "--sgp" },
     SHA: { name: "Shanghai",   c: "--sha" },
     MEL: { name: "Melbourne",  c: "--mel" },
+    PRG: { name: "Prague",     c: "--prg" },
   };
-  const SIX = ["CPH", "STO", "GOT", "AMS", "VIE", "SGP"];
+  const SIX = ["CPH", "STO", "GOT", "AMS", "VIE", "SGP", "PRG"];
   const nf = new Intl.NumberFormat("en-US");
   const kr = n => (n < 0 ? "−" : "") + nf.format(Math.abs(n));
   const $ = id => document.getElementById(id);
@@ -528,30 +536,30 @@
 
   // ================= GOING OUT: prices =================
   // Local prices researched Oct 2026, converted at the report's FX. est = no 2026 source found.
-  const FX = { DKK: 1, SEK: 0.678, EUR: 7.47, SGD: 5.06, CNY: 0.965, AUD: 4.55 };
-  const CUR = { CPH: "DKK", STO: "SEK", GOT: "SEK", AMS: "EUR", VIE: "EUR", SGP: "SGD", SHA: "CNY", MEL: "AUD" };
+  const FX = { DKK: 1, SEK: 0.678, EUR: 7.47, SGD: 5.06, CNY: 0.965, AUD: 4.55, CZK: 0.306 };
+  const CUR = { CPH: "DKK", STO: "SEK", GOT: "SEK", AMS: "EUR", VIE: "EUR", SGP: "SGD", SHA: "CNY", MEL: "AUD", PRG: "CZK" };
   const local = (v, cur) => {
     const d = v % 1 ? 2 : 0;
     const n = v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
-    return { DKK: `${n} kr`, SEK: `${n} kr`, EUR: `€${n}`, SGD: `S$${n}`, CNY: `¥${n}`, AUD: `A$${n}` }[cur];
+    return { DKK: `${n} kr`, SEK: `${n} kr`, EUR: `€${n}`, SGD: `S$${n}`, CNY: `¥${n}`, AUD: `A$${n}`, CZK: `${n} Kč` }[cur];
   };
   const dkk = (k, v) => v * FX[CUR[k]];
   const GO = [
     { k: "coffee", label: "Cappuccino", unit: "local café, one cup", qty: 12, qtyLabel: "12 coffees",
-      p: { CPH: [46], STO: [50], GOT: [49], AMS: [4.10], VIE: [4.30, 1], SGP: [6.60], SHA: [28, 1], MEL: [5.03] } },
+      p: { CPH: [46], STO: [50], GOT: [49], AMS: [4.10], VIE: [4.30, 1], SGP: [6.60], SHA: [28, 1], MEL: [5.03], PRG: [80] } },
     { k: "meal", label: "Basic restaurant meal", unit: "one person, main + soft drink", qty: 8, qtyLabel: "8 meals out",
-      p: { CPH: [140], STO: [180], GOT: [130], AMS: [20], VIE: [15, 1], SGP: [15], SHA: [60], MEL: [25, 1] } },
+      p: { CPH: [140], STO: [180], GOT: [130], AMS: [20], VIE: [15, 1], SGP: [15], SHA: [60], MEL: [25, 1], PRG: [237] } },
     { k: "gym", label: "Budget gym", unit: "one month, local chain", qty: 1, qtyLabel: "1 gym month",
-      p: { CPH: [249], STO: [199], GOT: [199], AMS: [27.07], VIE: [19.90], SGP: [85], SHA: [199], MEL: [64.78] } },
+      p: { CPH: [249], STO: [199], GOT: [199], AMS: [27.07], VIE: [19.90], SGP: [85], SHA: [199], MEL: [64.78], PRG: [1200, 1] } },
     { k: "padel", label: "Padel", unit: "your share of a court hour (÷4)", qty: 4, qtyLabel: "4 padel hours",
-      p: { CPH: [62.5], STO: [75], GOT: [70, 1], AMS: [6.25], VIE: [8, 1], SGP: [20], SHA: [75, 1], MEL: [17.5, 1] } },
+      p: { CPH: [62.5], STO: [75], GOT: [70, 1], AMS: [6.25], VIE: [8, 1], SGP: [20], SHA: [75, 1], MEL: [17.5, 1], PRG: [152.5] } },
     { k: "kart", label: "Go-karting", unit: "one 10–15 min arrive-and-drive race", qty: 1, qtyLabel: "1 karting race",
-      p: { CPH: [250, 1], STO: [300, 1], GOT: [280, 1], AMS: [20, 1], VIE: [20, 1], SGP: [28], SHA: [100], MEL: [58] } },
+      p: { CPH: [250, 1], STO: [300, 1], GOT: [280, 1], AMS: [20, 1], VIE: [20, 1], SGP: [28], SHA: [100], MEL: [58], PRG: [450, 1] } },
   ];
   const GYM_NAME = { CPH: "PureGym Core", STO: "Fitness24Seven", GOT: "Fitness24Seven", AMS: "Basic-Fit Comfort (€24.99 / 4 wks)", VIE: "FitInn",
-    SGP: "Anytime Fitness, heartland outlet", SHA: "Smart gym (¥99–299)", MEL: "Plus Fitness (A$14.95 / wk)" };
+    SGP: "Anytime Fitness, heartland outlet", SHA: "Smart gym (¥99–299)", MEL: "Plus Fitness (A$14.95 / wk)", PRG: "Mid-price gym; Prague monthly memberships run 800–1,800 Kč" };
   const COURT = { CPH: "250 kr, DGI Byen peak", STO: "300 kr, standard club", GOT: "280 kr", AMS: "€25, standard club", VIE: "€32",
-    SGP: "S$80, evening", SHA: "¥300", MEL: "A$70" };
+    SGP: "S$80, evening", SHA: "¥300", MEL: "A$70", PRG: "610 Kč typical" };
   const basket = k => GO.reduce((a, it) => a + dkk(k, it.p[k][0]) * it.qty, 0);
   // Going-out score: 10 at a 1,200 kr basket, minus 1 point per extra 200 kr, floor 1.
   const outScore = k => Math.max(1, Math.min(10, 10 - (basket(k) - 1200) / 200));
@@ -575,6 +583,7 @@
     GOT: [5.1, 8.5, 9.5, 7.8, 7.0, 8.5],
     VIE: [6.1, 7.5, 8.5, 8.8, 6.0, 7.0],
     SHA: [5.5, 9.0, 9.5, 6.8, 6.5, 4.0],
+    PRG: [6.2, 4.5, 7.0, 7.9, 8.0, 7.5],
   };
   Object.keys(SCORES).forEach(k => SCORES[k].push(+outScore(k).toFixed(1)));
   const DEFAULT_W = PILLARS.map(p => p.w);
@@ -647,19 +656,21 @@
       ["MEL", 26540, 4896, 21644, 13991, 7653], ["GOT", 21696, 4515, 17181, 10428, 6753],
       ["SHA", 17370, 1148, 16222, 10007, 6215], ["STO", 25086, 5125, 19961, 13770, 6191],
       ["CPH", 33000, 10747, 22253, 17320, 4933], ["VIE", 23531, 6298, 17233, 12579, 4654],
-      ["AMS", 24651, 3795, 20856, 20804, 52], ["SGP", 20240, 466, 19774, 23544, -3770],
+      ["AMS", 24651, 3795, 20856, 20804, 52], ["PRG", 12240, 2469, 9771, 9929, -158], ["SGP", 20240, 466, 19774, 23544, -3770],
     ],
     mid: [
       ["SHA", 33775, 4671, 29104, 10007, 19097], ["MEL", 37915, 8536, 29379, 13991, 15388],
       ["STO", 35256, 8232, 27024, 13770, 13254], ["CPH", 46000, 15771, 30229, 17320, 12909],
       ["GOT", 30510, 7388, 23122, 10428, 12694], ["SGP", 37950, 1897, 36053, 23544, 12509],
       ["VIE", 33989, 10608, 23381, 12579, 10802], ["AMS", 35856, 8568, 27288, 20804, 6484],
+      ["PRG", 19890, 4504, 15386, 9929, 5457],
     ],
     senior: [
       ["SHA", 57900, 11667, 46233, 10007, 36226], ["SGP", 60720, 4868, 55852, 23544, 32308],
       ["MEL", 53085, 13527, 39558, 13991, 25567], ["CPH", 60000, 21583, 38417, 17320, 21097],
       ["STO", 47460, 13999, 33461, 13770, 19691], ["VIE", 47933, 17127, 30806, 12579, 18227],
       ["GOT", 37290, 9604, 27686, 10428, 17258], ["AMS", 50796, 15291, 35505, 20804, 14701],
+      ["PRG", 29070, 6946, 22124, 9929, 12195],
     ],
   };
   const LEVELS = [
@@ -678,9 +689,9 @@
   // [price, currency, est]. Shanghai: not sold in mainland China, so US prices + VPN.
   FX.USD = 6.40;
   const SUBS = [
-    { label: "Claude Pro", p: { CPH: [179, "DKK"], STO: [239, "SEK"], GOT: [239, "SEK"], AMS: [21.78, "EUR"], VIE: [21.60, "EUR"], SGP: [26.98, "SGD"], SHA: [20, "USD", 1], MEL: [33, "AUD", 1] } },
-    { label: "Google AI Pro", p: { CPH: [169, "DKK"], STO: [249, "SEK", 1], GOT: [249, "SEK", 1], AMS: [21.99, "EUR", 1], VIE: [21.99, "EUR", 1], SGP: [28.98, "SGD", 1], SHA: [19.99, "USD", 1], MEL: [32.99, "AUD"] } },
-    { label: "Netflix Standard", p: { CPH: [149, "DKK"], STO: [149, "SEK"], GOT: [149, "SEK"], AMS: [15.99, "EUR"], VIE: [15.99, "EUR"], SGP: [22.98, "SGD"], SHA: [17.99, "USD", 1], MEL: [20.99, "AUD"] } },
+    { label: "Claude Pro", p: { CPH: [179, "DKK"], STO: [239, "SEK"], GOT: [239, "SEK"], AMS: [21.78, "EUR"], VIE: [21.60, "EUR"], SGP: [26.98, "SGD"], SHA: [20, "USD", 1], MEL: [33, "AUD", 1], PRG: [21.78, "EUR"] } },
+    { label: "Google AI Pro", p: { CPH: [169, "DKK"], STO: [249, "SEK", 1], GOT: [249, "SEK", 1], AMS: [21.99, "EUR", 1], VIE: [21.99, "EUR", 1], SGP: [28.98, "SGD", 1], SHA: [19.99, "USD", 1], MEL: [32.99, "AUD"], PRG: [549, "CZK", 1] } },
+    { label: "Netflix Standard", p: { CPH: [149, "DKK"], STO: [149, "SEK"], GOT: [149, "SEK"], AMS: [15.99, "EUR"], VIE: [15.99, "EUR"], SGP: [22.98, "SGD"], SHA: [17.99, "USD", 1], MEL: [20.99, "AUD"], PRG: [339, "CZK"] } },
     { label: "VPN (needed in China)", p: { SHA: [5, "USD", 1] } },
   ];
   const subDkk = (k, s) => s.p[k] ? s.p[k][0] * FX[s.p[k][1]] : 0;
@@ -824,7 +835,7 @@
     const remLine = k => `<div>${L.label} disposable income: ${kr(REM[k])} kr</div>`;
     const NOTE = {
       coffee: { VIE: "Melange in a neighbourhood café; famous coffee houses charge €6.50–7", SGP: "Café cappuccino; a local kopi costs S$1.20–2", SHA: "Independent café; Luckin chain coffee ¥12–18", MEL: "Small flat white, average of 1,362 cafés", CPH: "Lagkagehuset charges 57 kr" },
-      meal: { STO: "Weekday dagens lunch 130–170 kr", GOT: "Weekday dagens lunch about 130 kr", VIE: "Beisl lunch special €12–20", SGP: "A hawker dish is S$4–8", SHA: "Basic lunch set; a noodle bowl is ¥15–25", MEL: "Casual café or noodle bar main" },
+      meal: { PRG: "Weekday lunch menu averages 226 Kč", STO: "Weekday dagens lunch 130–170 kr", GOT: "Weekday dagens lunch about 130 kr", VIE: "Beisl lunch special €12–20", SGP: "A hawker dish is S$4–8", SHA: "Basic lunch set; a noodle bowl is ¥15–25", MEL: "Casual café or noodle bar main" },
     };
     document.querySelectorAll(".lvl-name").forEach(el => { el.textContent = L.label.toLowerCase(); });
 
@@ -862,6 +873,7 @@
       SGP: [["Hawker dish", 5.5], ["Chicken rice", 4.24], ["Kopi", 1.5], ["Casual restaurant", 20]],
       SHA: [["Noodle bowl", 20], ["Neighbourhood rice / noodle shop", 28], ["Fast-food combo", 35], ["Lunch set", 60]],
       MEL: [["Pho, small bowl", 10.99], ["Burger", 20, 1], ["Pizza", 25, 1], ["Flat white", 5.03]],
+      PRG: [["Polední menu (weekday lunch)", 226], ["Pizzeria pizza", 260], ["Kebab", 170, 1], ["Burger", 290, 1]],
     };
     $("favGrid").innerHTML = ALL.map(k => `<div class="fav">
       <div class="fav-h">${cityCell(k)}<div class="note">${L.label} disposable: ${kr(REM[k])} kr</div></div>
@@ -887,23 +899,23 @@
   }
 
   const BYSEN = {
-    Junior: ["STO", "MEL", "CPH", "GOT", "SHA", "VIE", "AMS", "SGP"],
-    Mid:    ["STO", "MEL", "SGP", "CPH", "SHA", "GOT", "VIE", "AMS"],
-    Senior: ["SGP", "STO", "MEL", "CPH", "AMS", "SHA", "VIE", "GOT"],
+    Junior: ["STO", "MEL", "CPH", "GOT", "SHA", "VIE", "AMS", "PRG", "SGP"],
+    Mid:    ["STO", "MEL", "SGP", "CPH", "SHA", "GOT", "VIE", "AMS", "PRG"],
+    Senior: ["SGP", "STO", "MEL", "CPH", "AMS", "SHA", "VIE", "GOT", "PRG"],
   };
   table("bySeniority", ["#", "Junior", "Mid", "Senior"],
     BYSEN.Junior.map((_, i) => [i + 1, code(BYSEN.Junior[i]), code(BYSEN.Mid[i]), code(BYSEN.Senior[i])]));
 
   const BURDEN = [
     ["CPH", 4933, 12909, 21097, 43, 41], ["STO", 6191, 13254, 19691, 49, 35], ["GOT", 6753, 12694, 17258, 55, 29],
-    ["AMS", 52, 6484, 14701, 24, 52], ["VIE", 4654, 10802, 18227, 46, 35], ["SGP", -3770, 12509, 32308, 35, 55],
+    ["AMS", 52, 6484, 14701, 24, 52], ["VIE", 4654, 10802, 18227, 46, 35], ["SGP", -3770, 12509, 32308, 35, 55], ["PRG", -158, 5457, 12195, 35, 42],
   ];
   table("burden", ["City", "Net kept", "Rent ÷ net"],
     BURDEN.map(r => [cityCell(r[0]), r[4] + "%", { h: r[5] + "%", cls: r[5] >= 50 ? "neg" : "" }]));
 
   // ---- rent sensitivity: low / median / high
   const SENS = [["CPH", 14209, 12909, 11409], ["STO", 14474, 13254, 11898], ["GOT", 13711, 12694, 11338],
-    ["AMS", 8725, 6484, 3496], ["VIE", 11922, 10802, 8934], ["SGP", 16051, 12509, 7955]];
+    ["AMS", 8725, 6484, 3496], ["VIE", 11922, 10802, 8934], ["SGP", 16051, 12509, 7955], ["PRG", 6528, 5457, 4233]];
   (function () {
     const W = 640, rowH = 34, top = 10, left = 92, right = 24, H = top + SENS.length * rowH + 30;
     const sx = v => left + (v / 18000) * (W - left - right);
@@ -936,6 +948,7 @@
     ["AMS", "€3,300", 24651, "€4,800", 35856, "€6,800", 50796],
     ["VIE", "€3,150", 23531, "€4,550", 33989, "€6,417", 47933],
     ["SGP", "S$4,000", 20240, "S$7,500", 37950, "S$12,000", 60720],
+    ["PRG", "40,000 Kč", 12240, "65,000 Kč", 19890, "95,000 Kč", 29070],
   ].map(r => [cityCell(r[0]), { h: r[1], cls: "dim" }, { h: kr(r[2]), cls: "strong" }, { h: r[3], cls: "dim" }, { h: kr(r[4]), cls: "strong" }, { h: r[5], cls: "dim" }, { h: kr(r[6]), cls: "strong" }]));
 
   table("tax", ["City", "Junior", "Mid", "Senior", "How the system works"], [
@@ -945,6 +958,7 @@
     ["AMS", 20856, 15, 27288, 24, 35505, 30, "Box 1 + large labour and general credits"],
     ["VIE", 17233, 27, 23381, 31, 30806, 36, "18% social + progressive; 13th/14th salary taxed 6%"],
     ["SGP", 19774, 2, 36053, 5, 55852, 8, "0–24% progressive, no CPF for foreigners"],
+    ["PRG", 9771, 20, 15386, 23, 22124, 24, "15% on gross − 2,570 Kč credit; 7.1% social + 4.5% health"],
   ].map(r => [cityCell(r[0]),
     { h: `${kr(r[1])} <span class="note">(${r[2]}%)</span>` }, { h: `${kr(r[3])} <span class="note">(${r[4]}%)</span>` },
     { h: `${kr(r[5])} <span class="note">(${r[6]}%)</span>` }, { h: r[7], cls: "l" }]), { leftCols: [4] });
@@ -956,12 +970,14 @@
     ["AMS", "€1,600", "€1,900", "€2,300", 14193, "Oost, Noord, Sloterdijk, De Baarsjes"],
     ["VIE", "€950", "€1,100", "€1,350", 8217, "Favoriten (10th), Floridsdorf (21st), Ottakring"],
     ["SGP", "S$3,200", "S$3,900", "S$4,800", 19734, "Queenstown, Paya Lebar, Geylang (1-BR condo)"],
+    ["PRG", "17,500", "21,000 Kč", "25,000", 6426, "Žižkov, Holešovice, Vršovice, Nusle"],
   ].map(r => [cityCell(r[0]), { h: r[1], cls: "dim" }, r[2], { h: r[3], cls: "dim" }, { h: kr(r[4]), cls: "strong" }, { h: r[5], cls: "l" }]), { leftCols: [5] });
 
   table("costs", ["City", "Groceries", "Utilities", "Internet", "Mobile", "Transport", "Health ins.", "Total"], [
     ["CPH", 2800, 1100, 250, 120, 550, null, 4820], ["STO", 2712, 475, 237, 136, 719, null, 4278],
     ["GOT", 2237, 475, 237, 136, 563, null, 3648], ["AMS", 2988, 1307, 336, 149, 747, 1083, 6611],
     ["VIE", 2241, 1494, 224, 112, 291, null, 4362], ["SGP", 1771, 1012, 228, 152, 648, null, 3810],
+    ["PRG", 1836, 1224, 153, 122, 168, null, 3503],
   ].map(r => [cityCell(r[0]), ...r.slice(1, 7).map(v => v == null ? { h: "—", cls: "dim" } : kr(v)), { h: kr(r[7]), cls: "strong" }]));
 
   // ================= HEATMAPS =================
@@ -975,27 +991,27 @@
   $("scale2").innerHTML = scaleHtml("Score 4", "10");
 
   const CAREER = [
-    ["Marketing agencies", 7, 8, 5, 9, 6, 9], ["Performance-marketing roles", 7, 8, 5, 9, 6, 9],
-    ["E-commerce ecosystem", 7, 8, 6, 9, 6, 9], ["Startup ecosystem", 8, 9, 5, 9, 6, 9],
-    ["Scaleups", 8, 9, 5, 8, 5, 8], ["International companies", 7, 7, 6, 10, 7, 10],
-    ["Multinational HQs", 7, 7, 5, 9, 7, 10], ["Networking", 7, 8, 5, 9, 6, 8],
-    ["Promotion potential", 7, 7, 5, 8, 6, 9], ["Entrepreneurial ecosystem", 8, 9, 5, 8, 6, 8],
-    ["Employer mobility", 7, 7, 5, 9, 6, 9], ["Market size", 6, 6, 4, 8, 6, 9],
+    ["Marketing agencies", 7, 8, 5, 9, 6, 9, 6], ["Performance-marketing roles", 7, 8, 5, 9, 6, 9, 6],
+    ["E-commerce ecosystem", 7, 8, 6, 9, 6, 9, 7], ["Startup ecosystem", 8, 9, 5, 9, 6, 9, 6],
+    ["Scaleups", 8, 9, 5, 8, 5, 8, 6], ["International companies", 7, 7, 6, 10, 7, 10, 7],
+    ["Multinational HQs", 7, 7, 5, 9, 7, 10, 6], ["Networking", 7, 8, 5, 9, 6, 8, 6],
+    ["Promotion potential", 7, 7, 5, 8, 6, 9, 6], ["Entrepreneurial ecosystem", 8, 9, 5, 8, 6, 8, 6],
+    ["Employer mobility", 7, 7, 5, 9, 6, 9, 7], ["Market size", 6, 6, 4, 8, 6, 9, 5],
   ];
   const heatTable = (id, rows, totalLabel, totals) => table(id, ["Dimension", ...SIX.map(code)], [
     ...rows.map(r => [r[0], ...r.slice(1).map((v, j) => ({ ...heatCell(v, 4, 10), tip: `<b>${CITY[SIX[j]].name}</b><div>${r[0]}: ${v}/10</div>` }))]),
     { cls: "total", cells: [totalLabel, ...totals.map(v => ({ h: v.toFixed(1), cls: "h" }))] },
   ]);
-  heatTable("careerHeat", CAREER, "Mean (career pillar)", [7.2, 7.7, 5.1, 8.8, 6.1, 8.9]);
+  heatTable("careerHeat", CAREER, "Mean (career pillar)", [7.2, 7.7, 5.1, 8.8, 6.1, 8.9, 6.2]);
 
   const LIFE = [
-    ["Climate & sunshine", 6, 5, 5, 6, 7, 5], ["Bikeability", 10, 8, 7, 10, 7, 4],
-    ["Public transport", 9, 9, 8, 9, 10, 9], ["Walkability", 9, 8, 8, 9, 9, 7],
-    ["Safety", 9, 8, 7, 8, 9, 10], ["Healthcare", 9, 8, 8, 8, 9, 9],
-    ["Air quality", 9, 9, 9, 7, 8, 7], ["Green space", 8, 9, 8, 7, 9, 8],
-    ["International community", 8, 8, 6, 10, 7, 9],
+    ["Climate & sunshine", 6, 5, 5, 6, 7, 5, 6], ["Bikeability", 10, 8, 7, 10, 7, 4, 6],
+    ["Public transport", 9, 9, 8, 9, 10, 9, 10], ["Walkability", 9, 8, 8, 9, 9, 7, 9],
+    ["Safety", 9, 8, 7, 8, 9, 10, 9], ["Healthcare", 9, 8, 8, 8, 9, 9, 8],
+    ["Air quality", 9, 9, 9, 7, 8, 7, 7], ["Green space", 8, 9, 8, 7, 9, 8, 8],
+    ["International community", 8, 8, 6, 10, 7, 9, 8],
   ];
-  heatTable("lifeHeat", LIFE, "Lifestyle pillar", [8.5, 8.0, 7.8, 8.3, 8.8, 7.8]);
+  heatTable("lifeHeat", LIFE, "Lifestyle pillar", [8.5, 8.0, 7.8, 8.3, 8.8, 7.8, 7.9]);
 
   // ================= GROWTH =================
   const GROWTH = [
@@ -1005,6 +1021,7 @@
     ["STO", [25086, 34000, 44000, 60000], "60,000", "Growth lead at a unicorn; strong founder path"],
     ["GOT", [21696, 28000, 34000, 44000], "44,000", "Marketing lead; may need to move to Stockholm to top out"],
     ["VIE", [23531, 30000, 38000, 52000], "52,000", "CEE marketing lead; German usually required to rise"],
+    ["PRG", [12240, 16000, 21000, 32000], "32,000", "CEE marketing lead at a regional hub; Czech needed to lead local brands"],
   ];
   const YEARS = [1, 3, 5, 10];
   table("growthTable", ["City", "Year 1", "Year 3", "Year 5", "Year 10", "Ceiling / path"],
@@ -1059,6 +1076,7 @@
     ["CPH", "DK #7", "English", "Mixed", "Mixed", "Realistic in tech and startups; Danish helps for local brands", 9],
     ["STO", "SE #8", "English", "Mixed", "Mixed", "Realistic in tech and scaleups; Swedish helps for local brands", 9],
     ["GOT", "SE #8", "Mixed", "Swedish", "Mixed", "Harder — smaller international scene, more Swedish-first", 8.5],
+    ["PRG", "CZ #23", "English", "Mixed", "Mixed", "Realistic at international firms, regional hubs and startups; local brands need Czech", 7.5],
     ["VIE", "AT #3", "Mixed", "German", "German", "Limited — most marketing roles need working German", 7],
   ].map(r => [`${cityCell(r[0])} <span class="note">(${r[1]})</span>`, r[2], r[3], r[4], { h: r[5], cls: "l" }, { h: r[6], cls: "strong" }]), { leftCols: [1, 2, 3, 4] });
 
@@ -1066,6 +1084,7 @@
     ["SGP", "Singapore", "2.1%", "0.5–1.5%", "2.0–4.0%", 9.5],
     ["CPH", "Denmark", "~3% (reg.)", "1.8%", "1.9%", 9.0],
     ["AMS", "Netherlands", "4.2%", "3.2%", "1.0%", 8.0],
+    ["PRG", "Czechia", "3.1%", "2.2–2.7%", "1.8–2.5%", 8.0],
     ["STO", "Sweden", "~8%", "1.5%", "1.8%", 7.0],
     ["GOT", "Sweden", "~8%", "1.5%", "1.8%", 7.0],
     ["VIE", "Austria", "5.7%", "3.0%", "0.6%", 6.0],
@@ -1088,14 +1107,19 @@
     ["Senior A$140k", 53085, 39558, "25.5%", 9555, 4436, 25567],
   ]));
   table("melField", ["Level", "Melbourne", "Best other", "Rank"], [
-    ["Junior", { h: kr(7653), cls: "strong" }, { h: "GOT 6,753", cls: "l" }, "#1 of 8"],
-    ["Mid", { h: kr(15388), cls: "strong" }, { h: "SHA 19,097", cls: "l" }, "#2 of 8"],
-    ["Senior", { h: kr(25567), cls: "strong" }, { h: "SHA 36,226 · SGP 32,308", cls: "l" }, "#3 of 8"],
+    ["Junior", { h: kr(7653), cls: "strong" }, { h: "GOT 6,753", cls: "l" }, "#1 of 9"],
+    ["Mid", { h: kr(15388), cls: "strong" }, { h: "SHA 19,097", cls: "l" }, "#2 of 9"],
+    ["Senior", { h: kr(25567), cls: "strong" }, { h: "SHA 36,226 · SGP 32,308", cls: "l" }, "#3 of 9"],
   ]);
   table("melScore", ["Pillar", "Score"], [
     ["Career", "6.9"], ["Income", "9.0"], ["Cost", "7.5"], ["Life", "8.6"], ["Econ", "8.0"], ["English", "10"],
     { cls: "total", cells: ["Overall", "≈7.90 · #2"] },
   ]);
+  table("prgFin", ["Level", "Gross", "Net", "Eff. deductions", "− Rent", "− Essentials", "Disposable"], [
+    ["Junior 40,000 Kč", 12240, 9771, "20.2%", 6426, 3503, -158],
+    ["Mid 65,000 Kč", 19890, 15386, "22.6%", 6426, 3503, 5457],
+    ["Senior 95,000 Kč", 29070, 22124, "23.9%", 6426, 3503, 12195],
+  ].map(r => [r[0], kr(r[1]), kr(r[2]), r[3], kr(r[4]), kr(r[5]), { h: kr(r[6]), cls: r[6] < 0 ? "neg strong" : "strong" }]));
 
   // ================= METHOD =================
   table("methodTable", ["Pillar", "Weight", "How it is scored"], [
