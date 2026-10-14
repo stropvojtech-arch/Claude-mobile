@@ -185,6 +185,16 @@
   .tag.loc::before { content: "◀"; } .tag.glo::before { content: "▲"; } .tag.bal::before { content: "●"; } .tag.neg::before { content: "✕"; }
   ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: .92rem; color: var(--ink-2); max-width: 60ch; }
   .cards > .sub { align-content: start; }
+  .ladder { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .ladder .step { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 11px; border: 1px solid var(--hair-2); border-radius: 6px; background: var(--surface); font-size: .88rem; font-weight: 600; }
+  .ladder .step b { font-family: var(--f-data); font-size: .74rem; color: var(--accent); font-weight: 700; }
+  .ladder .gt { color: var(--muted); font-family: var(--f-data); font-size: .8rem; }
+  label.check { display: flex; gap: 8px; align-items: center; font-size: .92rem; font-weight: 600; cursor: pointer; }
+  label.check input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+  details.method { border: 1px solid var(--hair); border-radius: 6px; background: var(--surface); padding: 12px 16px; }
+  details.method summary { cursor: pointer; font-weight: 600; }
+  details.method ul { margin-top: 10px; }
+  .sc { display: inline-block; min-width: 2.4em; text-align: right; font-family: var(--f-data); font-size: .82rem; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
   .callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; color: var(--ink-2); font-size: .95rem; max-width: 72ch; }
   footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--hair); padding-top: 18px; display: grid; gap: 6px; }
@@ -211,6 +221,7 @@
 
   <nav class="toc" aria-label="Sections">
     <ul>
+      <li><a href="#fit">Your fit</a></li>
       <li><a href="#ranking">Ranking</a></li>
       <li><a href="#income">Disposable income</a></li>
       <li><a href="#going-out">Going out</a></li>
@@ -233,6 +244,64 @@
     <div><span class="eyebrow">Wildcard</span><span class="big">Shanghai</span><p>Ranks about 5th for an English-only marketer, but would rank #1 (≈8.23) with fluent Mandarin.</p></div>
     <div><span class="eyebrow">Comparison city</span><span class="big">Prague · 6.22</span><p>Cheapest rent in kroner, but Czech pay is lower still. A mid-level marketer keeps 5,457 kr, and a month of going out takes 29% of it.</p></div>
   </div>
+
+  <section id="fit">
+    <header>
+      <span class="eyebrow">Personal score · your profile</span>
+      <h2>Your fit</h2>
+      <p class="note">Scored for you specifically. You arrive at 21 as a junior, reach mid level within the first year and move towards senior by year three. Money figures are averaged over those three years. You live in an apartment built in the last 20 years, play padel regularly, and care more about grocery quality than going out.</p>
+    </header>
+
+    <div class="ladder" id="ladder" aria-label="Your priorities, most important first"></div>
+
+    <div class="panel split">
+      <div class="weights">
+        <div class="w-row">
+          <label for="padelN">Padel sessions per month</label>
+          <output id="padelO" for="padelN">12</output>
+          <input type="range" id="padelN" min="0" max="24" step="1" value="12">
+        </div>
+        <label class="check"><input type="checkbox" id="careerOn"> Also count career strength (20%)</label>
+        <p class="note">Your list doesn't include career, so it's off by default. Turn it on to check that a city's money advantage doesn't come with a weak job market.</p>
+        <div class="tbl"><table id="fitWeights"></table></div>
+      </div>
+      <div class="sub">
+        <div class="bars" id="fitBars" aria-live="polite"></div>
+        <p class="note">Hover a city for its six factor scores. Each factor runs from 0 to 10, and the fit score is their weighted average.</p>
+      </div>
+    </div>
+
+    <div class="sub">
+      <h3>The factors behind each score</h3>
+      <div class="tbl"><table id="fitTable"></table></div>
+      <p class="note">3-year average = (junior + mid + halfway between mid and senior) ÷ 3, after paying new-build rent. Savings = that disposable income minus your subscriptions and padel, over 36 months. Groceries are already inside disposable income; their factor adds a quality score.</p>
+    </div>
+
+    <div class="sub">
+      <div class="sub">
+        <h3>New-build rent (1-bedroom, under ~20 years old)</h3>
+        <div class="tbl"><table id="newRent"></table></div>
+        <p class="note">Stockholm and Gothenburg new-build first-hand flats go through housing queues, so a newcomer usually rents second-hand at a higher price. Stockholm uses a second-hand estimate.</p>
+      </div>
+      <div class="sub">
+        <h3>Grocery quality (judgement, 1–10)</h3>
+        <div class="tbl"><table id="groQ"></table></div>
+      </div>
+    </div>
+
+    <details class="method">
+      <summary>How each factor is scored</summary>
+      <ul class="plain">
+        <li><b>Disposable income (3-year average)</b>: 0 kr = 0, 15,000 kr or more = 10.</li>
+        <li><b>Rent share</b>: new-build rent ÷ 3-year average net salary. 25% or less = 10, 55% or more = 0.</li>
+        <li><b>Global subscriptions</b>: 2× Claude Pro, Google AI Pro, Netflix Standard and Higgsfield (about US$29) as a share of disposable income. 0% = 10, 20% or more = 0.</li>
+        <li><b>Groceries</b>: 40% affordability (grocery bill ÷ disposable; 0% = 10, 40% = 0) + 60% quality score.</li>
+        <li><b>Padel</b>: your share of a court hour × sessions per month, as a share of disposable. 0% = 10, 15% or more = 0.</li>
+        <li><b>Everything else</b>: the going-out score from the section below (coffee, meals, gym, karting).</li>
+        <li><b>Weights</b> come from your ranking using rank-order centroid weights: the first priority gets about 41%, the last about 3%.</li>
+      </ul>
+    </details>
+  </section>
 
   <section id="ranking">
     <header>
@@ -1131,6 +1200,111 @@
     ["English friendliness", "5%", "EF EPI + how realistic an English-only marketing career is"],
     ["Going-out costs", "0% (optional)", "Monthly going-out basket in DKK: 12 cappuccinos, 8 basic restaurant meals, 1 budget gym month, 4 padel hours (your share), 1 karting race. Score = 10 − (basket − 1,200 kr) ÷ 200, floor 1"],
   ].map(r => [r[0], { h: r[1], cls: "strong" }, { h: r[2], cls: "l" }]), { leftCols: [2] });
+
+  // ================= YOUR FIT =================
+  (function () {
+    const ALL = Object.keys(CITY);
+    const row = (lvl, k) => FLOW[lvl].find(r => r[0] === k);
+    const MEDIAN_RENT = { CPH: 12500, STO: 9492, GOT: 6780, AMS: 14193, VIE: 8217, SGP: 19734, SHA: 6755, MEL: 9555, PRG: 6426 };
+    // New-build 1-bedroom rent, local currency. est = estimate.
+    const NEW_RENT = {
+      CPH: [13800, 0, "Ørestad new build, 58 m², 13,700 kr (Propstep, Sep 2026)"],
+      STO: [15000, 1, "Second-hand in a newer building; first-hand new builds (≈10,000 kr) need a queue"],
+      GOT: [11300, 0, "Wallenstam new production, 55 m², 11,289 kr"],
+      AMS: [2100, 1, "Mid-rent new build, above the €1,900 median"],
+      VIE: [1250, 0, "Neubau 2-room listings €1,000–1,250 net"],
+      SGP: [4200, 1, "Newer 1-BR condo, above the S$3,900 median"],
+      SHA: [8000, 1, "Newer compound, above the ¥7,000 median"],
+      MEL: [2250, 1, "New apartment, above the A$2,100 median"],
+      PRG: [24000, 0, "2+kk new build (2015) listed at 24,000 Kč + services"],
+    };
+    const GROC = { CPH: 2800, STO: 2712, GOT: 2237, AMS: 2988, VIE: 2241, SGP: 1771, SHA: 2413, MEL: 3413, PRG: 1836 };
+    const QUAL = {
+      CPH: [9, "World's highest organic market share; strict food rules"],
+      VIE: [9, "Austria has the EU's largest organic farmland share; strong fresh produce"],
+      STO: [8, "High standards and a wide organic (KRAV) range"],
+      GOT: [8, "Same Swedish standards as Stockholm"],
+      AMS: [7.5, "EU standards; supermarkets solid, fewer fresh markets"],
+      MEL: [7.5, "Strict standards and great produce; hormone growth promotants allowed in beef"],
+      SGP: [7, "Over 90% imported; strict safety, but quality costs extra"],
+      PRG: [6.5, "EU rules, but past 'dual quality' issues in some brands"],
+      SHA: [5, "Food-safety trust issues; imported premium goods are expensive"],
+    };
+    const HIGGS_DKK = 29 * FX.USD;
+    const subsFor = k => 2 * subDkk(k, SUBS[0]) + subDkk(k, SUBS[1]) + subDkk(k, SUBS[2]) + (SUBS[3].p[k] ? subDkk(k, SUBS[3]) : 0) + HIGGS_DKK;
+    const FACTORS = [
+      { k: "disp", name: "Disposable income" },
+      { k: "rent", name: "Rent share" },
+      { k: "subs", name: "Global subscriptions" },
+      { k: "groc", name: "Groceries" },
+      { k: "padel", name: "Padel" },
+      { k: "rest", name: "Everything else" },
+    ];
+    const ROC = [40.8, 24.2, 15.8, 10.3, 6.1, 2.8];
+    const cl = x => Math.max(0, Math.min(10, x));
+
+    $("ladder").innerHTML = FACTORS.map((f, i) => `${i ? '<span class="gt">›</span>' : ""}<span class="step"><b>${ROC[i]}%</b>${f.name}</span>`).join("");
+
+    function compute(k, sessions, career) {
+      const newRent = dkk(k, NEW_RENT[k][0]);
+      const d = newRent - MEDIAN_RENT[k];
+      const j = row("junior", k), m = row("mid", k), s = row("senior", k);
+      const years = [j[5] - d, m[5] - d, (m[5] + s[5]) / 2 - d];
+      const blend = years.reduce((a, b) => a + b, 0) / 3;
+      const net = (j[3] + m[3] + (m[3] + s[3]) / 2) / 3;
+      const rentPct = newRent / net * 100;
+      const subs = subsFor(k), padel = GO[3].p[k][0] * FX[CUR[k]] * sessions;
+      const pos = blend > 0;
+      const sc = {
+        disp: cl(blend / 1500),
+        rent: cl((55 - rentPct) / 3),
+        subs: pos ? cl(10 - subs / blend * 100 / 2) : 0,
+        groc: 0.4 * (pos ? cl(10 - GROC[k] / blend * 100 / 4) : 0) + 0.6 * QUAL[k][0],
+        padel: pos ? cl(10 - padel / blend * 100 / 1.5) : 0,
+        rest: outScore(k),
+      };
+      let total = FACTORS.reduce((a, f, i) => a + sc[f.k] * ROC[i], 0) / 100;
+      if (career) total = total * 0.8 + SCORES[k][0] * 0.2;
+      const save = years.reduce((a, y) => a + (y - subs - padel) * 12, 0);
+      return { k, newRent, blend, rentPct, subs, padel, sc, total, save, years, pos };
+    }
+
+    const pct = (a, b) => b > 0 ? (a / b * 100 < 10 ? (a / b * 100).toFixed(1) : Math.round(a / b * 100)) + "%" : "–";
+    function renderFit() {
+      const sessions = +$("padelN").value, career = $("careerOn").checked;
+      $("padelO").textContent = sessions;
+      const rows = ALL.map(k => compute(k, sessions, career)).sort((a, b) => b.total - a.total);
+      $("fitBars").innerHTML = rows.map((r, i) => {
+        const tip = `<b>${CITY[r.k].name} · fit ${r.total.toFixed(2)}</b>` + FACTORS.map((f, j) => `<div class="r"><span>${f.name} ×${ROC[j]}%</span><span>${r.sc[f.k].toFixed(1)}</span></div>`).join("")
+          + (career ? `<div class="r"><span>Career (20% blend)</span><span>${SCORES[r.k][0].toFixed(1)}</span></div>` : "")
+          + `<div class="r"><span>3-year savings</span><span>${kr(Math.round(r.save))} kr</span></div>`;
+        return `<div class="bar-row${i === 0 ? " lead" : ""}" data-tip="${esc(tip)}">
+          <span class="rk">${i + 1}</span>${code(r.k)}
+          <div class="track"><div class="fill" style="--c:var(${CITY[r.k].c});left:0;width:${r.total * 10}%"></div></div>
+          <span class="val">${r.total.toFixed(2)}</span></div>`;
+      }).join("");
+      table("fitTable", ["#", "City", "Fit", "Disposable, 3-yr avg", "New-build rent", "Subscriptions", "Groceries", "Padel / month", "Everything else", "3-year savings"],
+        rows.map((r, i) => [i + 1, cityCell(r.k), { h: r.total.toFixed(2), cls: "strong" },
+          { h: `${kr(Math.round(r.blend))} <span class="sc">${r.sc.disp.toFixed(1)}</span>`, cls: r.blend < 0 ? "neg" : "" },
+          `${Math.round(r.rentPct)}% of net <span class="sc">${r.sc.rent.toFixed(1)}</span>`,
+          `${pct(r.subs, r.blend)} <span class="sc">${r.sc.subs.toFixed(1)}</span>`,
+          `${pct(GROC[r.k], r.blend)} · Q${QUAL[r.k][0]} <span class="sc">${r.sc.groc.toFixed(1)}</span>`,
+          `${kr(Math.round(r.padel))} kr · ${pct(r.padel, r.blend)} <span class="sc">${r.sc.padel.toFixed(1)}</span>`,
+          `<span class="sc">${r.sc.rest.toFixed(1)}</span>`,
+          { h: kr(Math.round(r.save)) + " kr", cls: r.save < 0 ? "neg strong" : "strong" }]), { leftCols: [1] });
+      table("fitWeights", ["Priority", "Weight"], FACTORS.map((f, i) => [f.name, (career ? (ROC[i] * 0.8).toFixed(1) : ROC[i]) + "%"]).concat(career ? [["Career strength", "20%"]] : []), { leftCols: [0] });
+    }
+    $("padelN").addEventListener("input", renderFit);
+    $("careerOn").addEventListener("change", renderFit);
+    renderFit();
+
+    table("newRent", ["City", "New-build rent", "DKK", "vs median", "Basis"], ALL.map(k => {
+      const [v, est, note] = NEW_RENT[k], d = dkk(k, v);
+      return [cityCell(k), `${local(v, CUR[k])}${est ? ' <sup class="est">est</sup>' : ""}`, kr(Math.round(d)), (d >= MEDIAN_RENT[k] ? "+" : "−") + kr(Math.round(Math.abs(d - MEDIAN_RENT[k]))), { h: note, cls: "l" }];
+    }), { leftCols: [4] });
+    table("groQ", ["City", "Quality", "Bill (DKK)", "Why"], ALL.slice().sort((a, b) => QUAL[b][0] - QUAL[a][0]).map(k =>
+      [cityCell(k), { h: QUAL[k][0], cls: "strong" }, kr(GROC[k]), { h: QUAL[k][1], cls: "l" }]), { leftCols: [3] });
+  })();
 
   // ================= TOOLTIP =================
   const tip = $("tip");

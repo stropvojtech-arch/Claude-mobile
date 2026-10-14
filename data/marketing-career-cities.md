@@ -408,3 +408,44 @@ Tax 2026: 15% on gross up to 1,762,812 Kč/yr (23% above), 2,570 Kč monthly tax
 | All subscriptions | | 434 | 8.0% |
 
 Local favourites: polední menu 226 Kč (Edenred, Apr 2026), pizzeria pizza 260 Kč, kebab 170 Kč est, burger 290 Kč est.
+
+## Your Fit (personal profile)
+
+Profile: age 21, junior on arrival, mid level within year 1, moving towards senior by year 3. Lives in a 1-bedroom built in the last ~20 years. Plays padel ~12 times a month. Cares about grocery quality more than going out. Subscriptions: 2× Claude Pro, Google AI Pro, Netflix Standard, Higgsfield (~US$29, est).
+
+Priority order → rank-order centroid weights: disposable income 40.8% › rent share 24.2% › global subscriptions 15.8% › groceries 10.3% › padel 6.1% › everything else 2.8%. Optional: career strength blended in at 20% (off by default).
+
+Factor scoring (0–10): disposable 3-yr avg (0 kr = 0, 15,000 kr = 10) · rent = new-build rent ÷ 3-yr avg net (25% = 10, 55% = 0) · subscriptions ÷ disposable (0% = 10, 20% = 0) · groceries = 40% affordability (bill ÷ disposable, 0% = 10, 40% = 0) + 60% quality · padel = court share × sessions ÷ disposable (0% = 10, 15% = 0) · everything else = going-out score.
+3-yr average = (junior + mid + (mid + senior) ÷ 2) ÷ 3, after paying new-build rent instead of median rent.
+
+### New-build 1-bedroom rent
+
+| City | Local | DKK | vs median | Basis |
+|---|---|---|---|---|
+| CPH | 13,800 kr | 13,800 | +1,300 | Ørestad new build 58 m², 13,700 kr (Propstep, Sep 2026) |
+| STO | 15,000 kr est | 10,170 | +678 | Second-hand in a newer building; first-hand new builds (~10,000 kr) need a queue |
+| GOT | 11,300 kr | 7,661 | +881 | Wallenstam new production 55 m², 11,289 kr |
+| AMS | €2,100 est | 15,687 | +1,494 | Mid-rent new build |
+| VIE | €1,250 | 9,338 | +1,121 | Neubau 2-room listings €1,000–1,250 |
+| SGP | S$4,200 est | 21,252 | +1,518 | Newer 1-BR condo |
+| SHA | ¥8,000 est | 7,720 | +965 | Newer compound |
+| MEL | A$2,250 est | 10,238 | +683 | New apartment |
+| PRG | 24,000 Kč | 7,344 | +918 | 2+kk new build (2015) at 24,000 Kč + services |
+
+### Grocery quality (judgement)
+
+CPH 9 · VIE 9 · STO 8 · GOT 8 · AMS 7.5 · MEL 7.5 (bill A$750/mo → 3,413 DKK) · SGP 7 · PRG 6.5 · SHA 5 (bill ¥2,500/mo est → 2,413 DKK)
+
+### Result (12 padel sessions/month, career off)
+
+| # | City | Fit | Disposable 3-yr avg | Rent % of net | Subs % | Groceries % · quality | Padel % | 3-yr savings (DKK) |
+|---|---|---|---|---|---|---|---|---|
+| 1 | SHA | 8.73 | 16,693 | 28% | 4.3% | 14% · 5 | 5.2% | 543,876 |
+| 2 | MEL | 7.57 | 13,824 | 36% | 5.3% | 25% · 7.5 | 6.9% | 436,920 |
+| 3 | GOT | 6.80 | 10,593 | 35% | 7.4% | 21% · 8 | 5.4% | 332,780 |
+| 4 | STO | 6.58 | 11,295 | 40% | 6.9% | 24% · 8 | 5.4% | 356,572 |
+| 5 | VIE | 5.57 | 8,870 | 41% | 8.9% | 25% · 9 | 8.1% | 264,979 |
+| 6 | CPH | 5.43 | 10,315 | 48% | 8.4% | 27% · 9 | 7.3% | 313,322 |
+| 7 | SGP | 4.21 | 8,865 | 63% | 8.1% | 20% · 7 | 14% | 249,428 |
+| 8 | PRG | 2.06 | 3,790 | 50% | 21% | 48% · 6.5 | 15% | 88,115 |
+| 9 | AMS | 1.92 | 4,216 | 59% | 19% | 71% · 7.5 | 13% | 102,980 |
