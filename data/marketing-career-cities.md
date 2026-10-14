@@ -276,3 +276,72 @@ Prepared 16 Jul 2026 · Currency DKK · FX 1 EUR=7.47, 1 SEK=0.678, 1 SGD=5.06, 
 | Pillar | Career | Income | Cost | Life | Econ | English | Overall |
 |---|---|---|---|---|---|---|---|
 | Melbourne | 6.9 | 9.0 | 7.5 | 8.6 | 8.0 | 10 | ≈7.90 (#2 overall) |
+
+## Going Out
+
+Researched Oct 2026 and converted at the report's FX. `est` = no 2026 source found, estimate.
+
+### Everyday prices · local currency (DKK)
+
+| Item | Qty / month | CPH | STO | GOT | AMS | VIE | SGP | SHA | MEL |
+|---|---|---|---|---|---|---|---|---|---|
+| Cappuccino, local café (1 cup) | 12 | 46 kr (46) | 50 kr (34) | 49 kr (33) | €4.10 (31) | €4.30 (32) est | S$6.60 (33) | ¥28 (27) est | A$5.03 (23) |
+| Basic restaurant meal (main + soft drink) | 8 | 140 kr (140) | 180 kr (122) | 130 kr (88) | €20 (149) | €15 (112) est | S$15 (76) | ¥60 (58) | A$25 (114) est |
+| Budget gym (1 month) | 1 | 249 kr (249) | 199 kr (135) | 199 kr (135) | €27.07 (202) | €19.90 (149) | S$85 (430) | ¥199 (192) | A$64.78 (295) |
+| Padel, your share of a court hour (÷4) | 4 | 62.50 kr (62) | 75 kr (51) | 70 kr (47) est | €6.25 (47) | €8 (60) est | S$20 (101) | ¥75 (72) est | A$17.50 (80) est |
+| Go-karting (one 10–15 min race) | 1 | 250 kr (250) est | 300 kr (203) est | 280 kr (190) est | €20 (149) est | €20 (149) est | S$28 (142) | ¥100 (96) | A$58 (264) |
+
+### Monthly going-out basket · DKK, and optional pillar score (10 − (basket − 1,200) ÷ 200, floor 1)
+
+| City | Coffees | Meals out | Gym | Padel | Karting | Total | Score |
+|---|---|---|---|---|---|---|---|
+| SHA | 324 | 463 | 192 | 290 | 96 | 1,365 | 9.2 |
+| GOT | 399 | 705 | 135 | 190 | 190 | 1,618 | 7.9 |
+| VIE | 385 | 896 | 149 | 239 | 149 | 1,819 | 6.9 |
+| STO | 407 | 976 | 135 | 203 | 203 | 1,925 | 6.4 |
+| SGP | 401 | 607 | 430 | 405 | 142 | 1,985 | 6.1 |
+| MEL | 275 | 910 | 295 | 318 | 264 | 2,062 | 5.7 |
+| AMS | 368 | 1,195 | 202 | 187 | 149 | 2,101 | 5.5 |
+| CPH | 552 | 1,120 | 249 | 250 | 250 | 2,421 | 3.9 |
+
+Gym chains: CPH PureGym Core, STO/GOT Fitness24Seven, AMS Basic-Fit Comfort (€24.99 per 4 weeks), VIE FitInn, SGP Anytime Fitness heartland outlet, SHA smart gym (¥99–299), MEL Plus Fitness (A$14.95/week). Padel court/hour: CPH 250 kr (DGI Byen peak), STO 300 kr, GOT 280 kr est, AMS €25, VIE €32 est, SGP S$80 evening, SHA ¥300 est, MEL A$70 est.
+
+### Left after going out · DKK/month (disposable − basket)
+
+| City | Junior | Mid | Senior |
+|---|---|---|---|
+| CPH | 2,512 | 10,488 | 18,676 |
+| STO | 4,266 | 11,329 | 17,766 |
+| GOT | 5,135 | 11,076 | 15,640 |
+| AMS | −2,049 | 4,383 | 12,600 |
+| VIE | 2,835 | 8,983 | 16,408 |
+| SGP | −5,755 | 10,524 | 30,323 |
+| SHA | 4,850 | 17,732 | 34,861 |
+| MEL | 5,591 | 13,326 | 23,505 |
+
+## Global Subscriptions
+
+Monthly, incl. VAT/GST. Not sold in mainland China: Shanghai uses US prices (1 USD = 6.40 DKK) plus a VPN.
+
+### Subscription prices · local currency (DKK)
+
+| Subscription | CPH | STO | GOT | AMS | VIE | SGP | SHA | MEL |
+|---|---|---|---|---|---|---|---|---|
+| Claude Pro | 179 kr (179) | 239 kr (162) | 239 kr (162) | €21.78 (163) | €21.60 (161) | S$26.98 (137) | US$20.00 (128) est | A$33 (150) est |
+| Google AI Pro | 169 kr (169) | 249 kr (169) est | 249 kr (169) est | €21.99 (164) est | €21.99 (164) est | S$28.98 (147) est | US$19.99 (128) est | A$32.99 (150) |
+| Netflix Standard | 149 kr (149) | 149 kr (101) | 149 kr (101) | €15.99 (119) | €15.99 (119) | S$22.98 (116) | US$17.99 (115) est | A$20.99 (96) |
+| VPN (China only) | — | — | — | — | — | — | US$5.00 (32) est | — |
+| Total DKK | 497 | 432 | 432 | 446 | 445 | 399 | 403 | 396 |
+
+### Local vs global purchasing power, mid level (Copenhagen = 100)
+
+| City | Disposable | Local power | Global power | Profile | Left to save |
+|---|---|---|---|---|---|
+| SHA | 19,097 | 262 | 182 | Local life goes further | 17,328 |
+| MEL | 15,388 | 140 | 150 | Balanced | 12,930 |
+| STO | 13,254 | 129 | 118 | Balanced | 10,897 |
+| CPH | 12,909 | 100 | 100 | Balanced | 9,991 |
+| GOT | 12,694 | 147 | 113 | Local life goes further | 10,644 |
+| SGP | 12,509 | 118 | 121 | Balanced | 10,125 |
+| VIE | 10,802 | 111 | 93 | Local life goes further | 8,538 |
+| AMS | 6,484 | 58 | 56 | Balanced | 3,937 |

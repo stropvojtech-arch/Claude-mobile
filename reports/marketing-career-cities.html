@@ -162,6 +162,27 @@
   #tip .r { display: flex; justify-content: space-between; gap: 14px; font-variant-numeric: tabular-nums; }
   #tip .code::before { background: var(--c); }
 
+  .est { font-family: var(--f-data); font-size: .62rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-left: 2px; }
+  .heat td.h .est { color: inherit; opacity: .75; }
+  .heat td .note { font-size: .78rem; font-weight: 400; }
+  .fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .fav { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+  .fav-h { padding-bottom: 6px; border-bottom: 1px solid var(--hair); font-weight: 600; }
+  .fav-r { display: grid; grid-template-columns: minmax(0, 1fr) auto 4.2rem; gap: 10px; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  .fav-r span:last-child { text-align: right; font-weight: 600; }
+  .fav-r .dim, .dim { color: var(--muted); }
+  .top3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .pick { border: 1px solid var(--hair); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; background: var(--bg); }
+  .pick .rank { font-family: var(--f-data); font-size: .72rem; color: var(--muted); letter-spacing: .06em; }
+  .pick .big { font-family: var(--f-display); font-weight: 800; font-stretch: 85%; font-size: 1.5rem; line-height: 1.05; }
+  .pick .kv { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  .pick .kv span:nth-child(odd) { color: var(--ink-2); }
+  .pick .kv span:nth-child(even) { text-align: right; font-weight: 600; }
+  .tag { justify-self: start; font-size: .78rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--hair-2); color: var(--ink); background: var(--surface); }
+  .tag::before { margin-right: 5px; }
+  .tag.loc::before { content: "◀"; } .tag.glo::before { content: "▲"; } .tag.bal::before { content: "●"; } .tag.neg::before { content: "✕"; }
+  ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: .92rem; color: var(--ink-2); max-width: 60ch; }
+  .cards > .sub { align-content: start; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
   .callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; color: var(--ink-2); font-size: .95rem; max-width: 72ch; }
   footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--hair); padding-top: 18px; display: grid; gap: 6px; }
@@ -190,6 +211,8 @@
     <ul>
       <li><a href="#ranking">Ranking</a></li>
       <li><a href="#income">Disposable income</a></li>
+      <li><a href="#going-out">Going out</a></li>
+      <li><a href="#purchasing">Local vs global</a></li>
       <li><a href="#inputs">Salary, tax &amp; rent</a></li>
       <li><a href="#career">Career</a></li>
       <li><a href="#growth">Growth</a></li>
@@ -259,6 +282,93 @@
       <p class="note">Disposable income if you rent at the 25th percentile, the median, or the 75th percentile. A long line means rent decides the outcome.</p>
       <div class="panel"><div id="sensChart"></div></div>
     </div>
+  </section>
+
+  <section id="going-out">
+    <header>
+      <span class="eyebrow">Going out · new variable</span>
+      <h2>What your disposable income buys</h2>
+      <p class="note">The same kroner go further in some cities than others. This prices a normal month of going out (coffee, casual meals, a gym and a couple of sports) in each city, then takes it out of what's left after rent and essentials.</p>
+    </header>
+
+    <div class="sub">
+      <h3>Everyday prices, converted to DKK</h3>
+      <p class="note">Darker cells are pricier within that row. Hover a cell for the local price and what it covers. Figures marked <span class="est">est</span> are estimates where no 2026 price was found.</p>
+      <div class="tbl heat"><table id="goPrices"></table></div>
+    </div>
+
+    <div class="cards">
+      <div class="sub">
+        <h3>A month of going out</h3>
+        <p class="note">12 cappuccinos, 8 basic restaurant meals, 1 budget gym month, 4 hours of padel (your quarter of the court) and 1 karting race. DKK per month.</p>
+        <div class="panel"><div class="bars" id="basketBars"></div></div>
+      </div>
+      <div class="sub">
+        <h3>Basket breakdown</h3>
+        <div class="tbl"><table id="basketTable"></table></div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="toolbar">
+        <h3>Left after going out</h3>
+        <div class="seg lvl-seg" role="group" aria-label="Seniority"></div>
+      </div>
+      <p class="note">Disposable income minus the going-out basket. This is what you could still save each month while living a normal social life.</p>
+      <div class="panel"><div class="bars" id="afterBars"></div></div>
+      <div class="tbl"><table id="afterTable"></table></div>
+    </div>
+
+    <div class="sub">
+      <h3>Where locals actually eat</h3>
+      <p class="note">The typical casual places differ by city, so each city gets its own list. Local price, then DKK.</p>
+      <div class="fav-grid" id="favGrid"></div>
+    </div>
+
+    <p class="callout">Going-out costs are now a seventh pillar in the ranking above. It starts at 0% so the report's original ranking is unchanged. Use the “With going out” preset or its slider to count it.</p>
+    <p class="note">Sources: Numbeo and Expatistan crowd-sourced prices (Oct 2026) for coffee and restaurant meals; smallflatwhite.com for Melbourne coffee; chain price pages via search for PureGym, Fitness24Seven, Basic-Fit, FitInn, Anytime Fitness and Plus Fitness; DGI Byen, padelsnipe.com and Singapore club listings for padel; KF1, Auscarts and Sina for karting. Gym prices are list prices before promotions. PureGym raised prices for members over 30 in January 2026.</p>
+  </section>
+
+  <section id="purchasing">
+    <header>
+      <span class="eyebrow">Global subscriptions · new variable</span>
+      <h2>Local spending versus global spending</h2>
+      <p class="note">Some of what you buy is priced locally (coffee, meals, sport). Some is priced globally: Claude, Google and Netflix cost roughly the same everywhere. A city with cheap local prices but lower pay may let you go out more while making global subscriptions a bigger share of your money. This section shows both measures side by side.</p>
+    </header>
+
+    <div class="sub">
+      <h3>Monthly global subscriptions, converted to DKK</h3>
+      <p class="note">Prices include VAT or GST. Hover a cell for the local price.</p>
+      <div class="tbl"><table id="subTable"></table></div>
+    </div>
+
+    <div class="panel">
+      <div class="toolbar">
+        <h3>Top three by money left</h3>
+        <div class="seg lvl-seg" role="group" aria-label="Seniority"></div>
+      </div>
+      <div class="top3" id="top3"></div>
+    </div>
+
+    <div class="cards">
+      <div class="sub">
+        <h3>Purchasing power map</h3>
+        <p class="note">Copenhagen = 100 on both axes. Further right means your money buys more going out. Higher means it buys more global subscriptions. Points off the diagonal mean one kind of spending goes further than the other.</p>
+        <div class="panel"><div id="ppChart"></div></div>
+      </div>
+      <div class="sub">
+        <h3>How the measures are built</h3>
+        <ul class="plain">
+          <li><b>Local purchasing power</b> = disposable income ÷ the city's going-out basket, indexed to Copenhagen.</li>
+          <li><b>Global purchasing power</b> = disposable income ÷ the city's subscription bundle, indexed to Copenhagen.</li>
+          <li><b>Profile</b>: if one index is more than 10% above the other, the city leans that way. Otherwise it is balanced.</li>
+          <li><b>Left to save</b> = disposable income − going-out basket − subscriptions.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tbl"><table id="ppTable"></table></div>
+    <p class="note">Sources (Oct 2026): Netflix Standard prices from bigmacindex.com, geopriced.com and opentherank.com trackers; Claude Pro from geopriced.com and Anthropic's net EU price of €18 plus local VAT; Google AI Pro from opentherank.com and Google's US price. Netflix, Claude and Google are not sold in mainland China, so Shanghai uses US prices (1 USD = 6.40 DKK) plus a VPN estimate.</p>
   </section>
 
   <section id="inputs">
@@ -391,6 +501,7 @@
   const code = k => `<span class="code" style="--c:var(${CITY[k].c})">${k}</span>`;
   const cityCell = k => `${code(k)} <span>${CITY[k].name}</span>`;
 
+  const RAMP = ["--h1", "--h2", "--h3", "--h4", "--h5", "--h6", "--h7"];
   // ---- generic table renderer: head = [labels], rows = [[cells]], cells may be {h, cls}
   function table(el, head, rows, opts = {}) {
     const th = head.map((h, i) => `<th${opts.leftCols && opts.leftCols.includes(i) ? ' class="l"' : ""}>${h}</th>`).join("");
@@ -408,6 +519,36 @@
 
   $("codes").innerHTML = Object.keys(CITY).map(k => `<span class="code" style="--c:var(${CITY[k].c})">${k} <span>${CITY[k].name}</span></span>`).join("");
 
+  // ================= GOING OUT: prices =================
+  // Local prices researched Oct 2026, converted at the report's FX. est = no 2026 source found.
+  const FX = { DKK: 1, SEK: 0.678, EUR: 7.47, SGD: 5.06, CNY: 0.965, AUD: 4.55 };
+  const CUR = { CPH: "DKK", STO: "SEK", GOT: "SEK", AMS: "EUR", VIE: "EUR", SGP: "SGD", SHA: "CNY", MEL: "AUD" };
+  const local = (v, cur) => {
+    const d = v % 1 ? 2 : 0;
+    const n = v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+    return { DKK: `${n} kr`, SEK: `${n} kr`, EUR: `€${n}`, SGD: `S$${n}`, CNY: `¥${n}`, AUD: `A$${n}` }[cur];
+  };
+  const dkk = (k, v) => v * FX[CUR[k]];
+  const GO = [
+    { k: "coffee", label: "Cappuccino", unit: "local café, one cup", qty: 12, qtyLabel: "12 coffees",
+      p: { CPH: [46], STO: [50], GOT: [49], AMS: [4.10], VIE: [4.30, 1], SGP: [6.60], SHA: [28, 1], MEL: [5.03] } },
+    { k: "meal", label: "Basic restaurant meal", unit: "one person, main + soft drink", qty: 8, qtyLabel: "8 meals out",
+      p: { CPH: [140], STO: [180], GOT: [130], AMS: [20], VIE: [15, 1], SGP: [15], SHA: [60], MEL: [25, 1] } },
+    { k: "gym", label: "Budget gym", unit: "one month, local chain", qty: 1, qtyLabel: "1 gym month",
+      p: { CPH: [249], STO: [199], GOT: [199], AMS: [27.07], VIE: [19.90], SGP: [85], SHA: [199], MEL: [64.78] } },
+    { k: "padel", label: "Padel", unit: "your share of a court hour (÷4)", qty: 4, qtyLabel: "4 padel hours",
+      p: { CPH: [62.5], STO: [75], GOT: [70, 1], AMS: [6.25], VIE: [8, 1], SGP: [20], SHA: [75, 1], MEL: [17.5, 1] } },
+    { k: "kart", label: "Go-karting", unit: "one 10–15 min arrive-and-drive race", qty: 1, qtyLabel: "1 karting race",
+      p: { CPH: [250, 1], STO: [300, 1], GOT: [280, 1], AMS: [20, 1], VIE: [20, 1], SGP: [28], SHA: [100], MEL: [58] } },
+  ];
+  const GYM_NAME = { CPH: "PureGym Core", STO: "Fitness24Seven", GOT: "Fitness24Seven", AMS: "Basic-Fit Comfort (€24.99 / 4 wks)", VIE: "FitInn",
+    SGP: "Anytime Fitness, heartland outlet", SHA: "Smart gym (¥99–299)", MEL: "Plus Fitness (A$14.95 / wk)" };
+  const COURT = { CPH: "250 kr, DGI Byen peak", STO: "300 kr, standard club", GOT: "280 kr", AMS: "€25, standard club", VIE: "€32",
+    SGP: "S$80, evening", SHA: "¥300", MEL: "A$70" };
+  const basket = k => GO.reduce((a, it) => a + dkk(k, it.p[k][0]) * it.qty, 0);
+  // Going-out score: 10 at a 1,200 kr basket, minus 1 point per extra 200 kr, floor 1.
+  const outScore = k => Math.max(1, Math.min(10, 10 - (basket(k) - 1200) / 200));
+
   // ================= RANKING =================
   const PILLARS = [
     { k: "career", name: "Career opportunities", w: 40 },
@@ -416,6 +557,7 @@
     { k: "life",   name: "Lifestyle",            w: 10 },
     { k: "econ",   name: "Economic stability",   w: 5 },
     { k: "eng",    name: "English friendliness", w: 5 },
+    { k: "out",    name: "Going-out costs",      w: 0 },
   ];
   const SCORES = {
     STO: [7.7, 9.0, 8.0, 8.0, 7.0, 9.0],
@@ -427,12 +569,14 @@
     VIE: [6.1, 7.5, 8.5, 8.8, 6.0, 7.0],
     SHA: [5.5, 9.0, 9.5, 6.8, 6.5, 4.0],
   };
+  Object.keys(SCORES).forEach(k => SCORES[k].push(+outScore(k).toFixed(1)));
   const DEFAULT_W = PILLARS.map(p => p.w);
   const PRESETS = [
     { label: "Report default", w: DEFAULT_W },
-    { label: "Money first",    w: [20, 40, 25, 5, 5, 5] },
-    { label: "Career first",   w: [60, 15, 10, 5, 5, 5] },
-    { label: "Quality of life", w: [25, 20, 15, 30, 5, 5] },
+    { label: "With going out", w: [35, 20, 15, 10, 5, 5, 10] },
+    { label: "Money first",    w: [20, 30, 20, 5, 5, 5, 15] },
+    { label: "Career first",   w: [60, 15, 10, 5, 5, 5, 0] },
+    { label: "Quality of life", w: [25, 15, 10, 30, 5, 5, 10] },
   ];
   let weights = DEFAULT_W.slice();
 
@@ -521,9 +665,109 @@
   const DMIN = -5000, DMAX = 38000;
   const xp = v => ((v - DMIN) / (DMAX - DMIN)) * 100;
 
+  document.querySelectorAll(".lvl-seg").forEach(s => { s.innerHTML = $("levelSeg").innerHTML; });
+
+  // ================= GLOBAL SUBSCRIPTIONS =================
+  // [price, currency, est]. Shanghai: not sold in mainland China, so US prices + VPN.
+  FX.USD = 6.40;
+  const SUBS = [
+    { label: "Claude Pro", p: { CPH: [179, "DKK"], STO: [239, "SEK"], GOT: [239, "SEK"], AMS: [21.78, "EUR"], VIE: [21.60, "EUR"], SGP: [26.98, "SGD"], SHA: [20, "USD", 1], MEL: [33, "AUD", 1] } },
+    { label: "Google AI Pro", p: { CPH: [169, "DKK"], STO: [249, "SEK", 1], GOT: [249, "SEK", 1], AMS: [21.99, "EUR", 1], VIE: [21.99, "EUR", 1], SGP: [28.98, "SGD", 1], SHA: [19.99, "USD", 1], MEL: [32.99, "AUD"] } },
+    { label: "Netflix Standard", p: { CPH: [149, "DKK"], STO: [149, "SEK"], GOT: [149, "SEK"], AMS: [15.99, "EUR"], VIE: [15.99, "EUR"], SGP: [22.98, "SGD"], SHA: [17.99, "USD", 1], MEL: [20.99, "AUD"] } },
+    { label: "VPN (needed in China)", p: { SHA: [5, "USD", 1] } },
+  ];
+  const subDkk = (k, s) => s.p[k] ? s.p[k][0] * FX[s.p[k][1]] : 0;
+  const gbasket = k => SUBS.reduce((a, s) => a + subDkk(k, s), 0);
+  const fmtLocal = (v, cur) => cur === "USD" ? `US$${v.toFixed(2)}` : local(v, cur);
+
+  function ppRows() {
+    const base = FLOW[level].find(r => r[0] === "CPH")[5];
+    const bDom = base / basket("CPH"), bGlo = base / gbasket("CPH");
+    return FLOW[level].map(r => {
+      const k = r[0], rem = r[5];
+      const dom = rem / basket(k) / bDom * 100, glo = rem / gbasket(k) / bGlo * 100;
+      let prof = "bal", label = "Balanced";
+      if (rem <= 0) { prof = "neg"; label = "Nothing left to spend"; }
+      else if (glo > dom * 1.1) { prof = "glo"; label = "Global spending goes further"; }
+      else if (dom > glo * 1.1) { prof = "loc"; label = "Local life goes further"; }
+      return { k, rem, dom, glo, prof, label, save: rem - basket(k) - gbasket(k) };
+    });
+  }
+
+  function renderPP(L) {
+    const rows = ppRows();
+    $("top3").innerHTML = rows.slice(0, 3).map((r, i) => `<div class="pick">
+      <span class="rank">#${i + 1} BY MONEY LEFT · ${L.label.toUpperCase()}</span>
+      <span class="big">${CITY[r.k].name}</span>
+      <span class="tag ${r.prof}">${r.label}</span>
+      <div class="kv">
+        <span>Disposable income</span><span>${kr(r.rem)} kr</span>
+        <span>Local purchasing power</span><span>${Math.round(r.dom)}</span>
+        <span>Global purchasing power</span><span>${Math.round(r.glo)}</span>
+        <span>Subscriptions take</span><span>${r.rem > 0 ? Math.round(gbasket(r.k) / r.rem * 100) + "%" : "–"}</span>
+        <span>Left to save</span><span>${kr(Math.round(r.save))} kr</span>
+      </div></div>`).join("");
+
+    table("ppTable", ["#", "City", "Disposable", "Local power", "Global power", "Profile", "Going out", "Subscriptions", "Left to save"],
+      rows.map((r, i) => [i + 1, cityCell(r.k), kr(r.rem), Math.round(r.dom), Math.round(r.glo), { h: `<span class="tag ${r.prof}">${r.label}</span>`, cls: "l" },
+        kr(Math.round(basket(r.k))), kr(Math.round(gbasket(r.k))), { h: kr(Math.round(r.save)), cls: r.save < 0 ? "neg strong" : "strong" }]), { leftCols: [1, 5] });
+
+    // scatter
+    const W = 520, H = 400, m = { t: 16, r: 24, b: 40, l: 48 };
+    const vals = rows.flatMap(r => [r.dom, r.glo]);
+    const step = 50;
+    const lo = Math.min(0, Math.floor(Math.min(...vals) / step) * step), hi = Math.ceil(Math.max(...vals, 100) / step) * step;
+    const sx = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
+    const sy = v => H - m.b - (v - lo) / (hi - lo) * (H - m.t - m.b);
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Local versus global purchasing power, Copenhagen = 100">`;
+    for (let v = lo; v <= hi; v += step) {
+      s += `<line class="grid" x1="${sx(v)}" x2="${sx(v)}" y1="${m.t}" y2="${H - m.b}"/><line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${sy(v)}" y2="${sy(v)}"/>`;
+      s += `<text x="${sx(v)}" y="${H - m.b + 16}" text-anchor="middle">${v}</text><text x="${m.l - 8}" y="${sy(v) + 4}" text-anchor="end">${v}</text>`;
+    }
+    s += `<line class="axis" x1="${sx(lo)}" y1="${sy(lo)}" x2="${sx(hi)}" y2="${sy(hi)}"/>`;
+    s += `<line class="axis" x1="${sx(100)}" x2="${sx(100)}" y1="${m.t}" y2="${H - m.b}"/><line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${sy(100)}" y2="${sy(100)}"/>`;
+    s += `<text x="${(m.l + W - m.r) / 2}" y="${H - 4}" text-anchor="middle" style="fill:var(--ink-2)">Local purchasing power →</text>`;
+    s += `<text transform="translate(12 ${(m.t + H - m.b) / 2}) rotate(-90)" text-anchor="middle" style="fill:var(--ink-2)">Global purchasing power →</text>`;
+    rows.forEach(r => {
+      const col = `var(${CITY[r.k].c})`;
+      const tip = `<b>${CITY[r.k].name} · ${L.label}</b><div class="r"><span>Local power</span><span>${Math.round(r.dom)}</span></div><div class="r"><span>Global power</span><span>${Math.round(r.glo)}</span></div><div>${r.label}</div>`;
+      s += `<g data-tip="${esc(tip)}"><circle cx="${sx(r.dom)}" cy="${sy(r.glo)}" r="12" fill="transparent"/><circle cx="${sx(r.dom)}" cy="${sy(r.glo)}" r="6" fill="${col}" stroke="var(--surface)" stroke-width="2"/>`;
+      s += `<text x="${sx(r.dom) + 9}" y="${sy(r.glo) - 7}" style="fill:var(--ink);font-family:var(--f-data);font-weight:700;font-size:11px">${r.k}</text></g>`;
+    });
+    $("ppChart").innerHTML = s + `</svg>`;
+  }
+  const GMIN = -7000, GMAX = 38000;
+  const gp = v => ((v - GMIN) / (GMAX - GMIN)) * 100;
+
+  function renderGoing(L) {
+    const rows = FLOW[level].map(r => {
+      const b = basket(r[0]);
+      return { k: r[0], rem: r[5], b, after: r[5] - b };
+    }).sort((a, b) => b.after - a.after);
+    $("afterBars").innerHTML = rows.map((r, i) => {
+      const z = gp(0), left = r.after < 0 ? gp(r.after) : z, w = Math.abs(gp(r.after) - z);
+      const tip = `<b>${CITY[r.k].name} · ${L.label}</b>
+        <div class="r"><span>Disposable income</span><span>${kr(r.rem)}</span></div>
+        <div class="r"><span>− Going-out basket</span><span>${kr(Math.round(r.b))}</span></div>
+        <div class="r"><b>= Left to save</b><b>${kr(Math.round(r.after))}</b></div>`;
+      return `<div class="bar-row${i === 0 ? " lead" : ""}" data-tip="${esc(tip)}">
+        <span class="rk">${i + 1}</span>${code(r.k)}
+        <div class="track"><span class="zero" style="left:${z}%"></span><div class="fill${r.after < 0 ? " neg" : ""}" style="--c:var(${CITY[r.k].c});left:${left}%;width:${w}%"></div></div>
+        <span class="val">${kr(Math.round(r.after))}</span></div>`;
+    }).join("");
+    const meal = k => dkk(k, GO[1].p[k][0]);
+    table("afterTable", ["#", "City", "Disposable", "− Basket", "= Left to save", "Basket ÷ disposable", "Leftover in restaurant meals"],
+      rows.map((r, i) => [i + 1, cityCell(r.k), kr(r.rem), kr(Math.round(r.b)),
+        { h: kr(Math.round(r.after)), cls: r.after < 0 ? "neg strong" : "strong" },
+        { h: r.rem > 0 ? Math.round(r.b / r.rem * 100) + "%" : "over budget", cls: r.rem <= 0 || r.b > r.rem ? "neg" : "" },
+        r.after > 0 ? Math.floor(r.after / meal(r.k)) : { h: "0", cls: "neg" }]), { leftCols: [1] });
+  }
+
   function renderLevel() {
     const L = LEVELS.find(l => l.k === level);
-    document.querySelectorAll("#levelSeg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.l === level)));
+    document.querySelectorAll("#levelSeg button, .lvl-seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.l === level)));
+    renderGoing(L);
+    renderPP(L);
     $("levelNote").textContent = `${L.label} · ${L.yrs} · sorted by money left`;
     const rows = FLOW[level];
     $("dispBars").innerHTML = rows.map((r, i) => {
@@ -544,13 +788,70 @@
       rows.map((r, i) => {
         const [k, g, t, n, e, rem] = r;
         return [i + 1, cityCell(k), kr(g), kr(t), kr(n), kr(e), { h: kr(rem), cls: rem < 0 ? "neg strong" : "strong" }, { h: Math.round(rem / n * 100) + "%", cls: rem < 0 ? "neg" : "" }];
-      }));
+      }), { leftCols: [1] });
   }
-  $("levelSeg").addEventListener("click", e => {
+  document.querySelectorAll("#levelSeg, .lvl-seg").forEach(seg => seg.addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
     level = b.dataset.l; renderLevel();
-  });
+  }));
   renderLevel();
+
+  // ---- going out: static views
+  (function () {
+    const ALL = Object.keys(CITY);
+    const NOTE = {
+      coffee: { VIE: "Melange in a neighbourhood café; famous coffee houses charge €6.50–7", SGP: "Café cappuccino; a local kopi costs S$1.20–2", SHA: "Independent café; Luckin chain coffee ¥12–18", MEL: "Small flat white, average of 1,362 cafés", CPH: "Lagkagehuset charges 57 kr" },
+      meal: { STO: "Weekday dagens lunch 130–170 kr", GOT: "Weekday dagens lunch about 130 kr", VIE: "Beisl lunch special €12–20", SGP: "A hawker dish is S$4–8", SHA: "Basic lunch set; a noodle bowl is ¥15–25", MEL: "Casual café or noodle bar main" },
+    };
+    const cell = (k, it) => {
+      const [v, est] = it.p[k];
+      const d = dkk(k, v);
+      const vals = ALL.map(c => dkk(c, it.p[c][0]));
+      const lo = Math.min(...vals), hi = Math.max(...vals);
+      const t = (d - lo) / (hi - lo || 1);
+      const i = Math.round(t * (RAMP.length - 1));
+      let what = it.k === "gym" ? GYM_NAME[k] : it.k === "padel" ? `Court ${COURT[k]} per hour, split 4 ways` : (NOTE[it.k] && NOTE[it.k][k]) || it.unit;
+      const tip = `<b>${CITY[k].name} · ${it.label}</b><div>${local(v, CUR[k])} = ${kr(Math.round(d))} kr</div><div>${what}</div>${est ? "<div><i>Estimate, no 2026 source found</i></div>" : ""}`;
+      return { h: `${kr(Math.round(d))}${est ? '<sup class="est">est</sup>' : ""}`, cls: "h", style: `background:var(${RAMP[i]});color:${i >= 4 ? "#ffffff" : "#0d1a33"}`, tip };
+    };
+    table("goPrices", ["Item", ...ALL.map(code)], GO.map(it => [`${it.label}<div class="note">${it.unit}</div>`, ...ALL.map(k => cell(k, it))]), { leftCols: [0] });
+
+    const ord = ALL.slice().sort((a, b) => basket(a) - basket(b));
+    const max = Math.max(...ALL.map(basket));
+    $("basketBars").innerHTML = ord.map((k, i) => {
+      const tip = `<b>${CITY[k].name}</b>` + GO.map(it => `<div class="r"><span>${it.qtyLabel}</span><span>${kr(Math.round(dkk(k, it.p[k][0]) * it.qty))}</span></div>`).join("") + `<div class="r"><b>Total</b><b>${kr(Math.round(basket(k)))}</b></div>`;
+      return `<div class="bar-row${i === 0 ? " lead" : ""}" data-tip="${esc(tip)}">
+        <span class="rk">${i + 1}</span>${code(k)}
+        <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${basket(k) / max * 100}%"></div></div>
+        <span class="val">${kr(Math.round(basket(k)))}</span></div>`;
+    }).join("");
+    table("basketTable", ["City", ...GO.map(it => it.qtyLabel.replace(/^\d+ /, "")), "Total", "Score"],
+      ord.map(k => [cityCell(k), ...GO.map(it => kr(Math.round(dkk(k, it.p[k][0]) * it.qty))), { h: kr(Math.round(basket(k))), cls: "strong" }, { h: outScore(k).toFixed(1), cls: "strong" }]));
+
+    const FAV = {
+      CPH: [["Kebab / durum", 75], ["Pizzeria pizza", 120], ["Burger meal", 140, 1], ["Sushi set", 150, 1], ["Fast-food combo", 90]],
+      STO: [["Dagens lunch", 140], ["Pizzeria pizza", 150], ["Burger", 189], ["Kebab", 110, 1], ["Fast-food combo", 119]],
+      GOT: [["Dagens lunch", 130], ["Pizzeria pizza", 120], ["Kebab", 100, 1], ["Fast-food combo", 125]],
+      AMS: [["Eetcafé main", 18], ["Burger", 20], ["Shawarma", 10, 1], ["Pizza", 15, 1], ["Fast-food combo", 12]],
+      VIE: [["Beisl lunch menu", 14], ["Kebab or Würstel stand", 6], ["Schnitzel", 16, 1], ["Pizza", 11, 1]],
+      SGP: [["Hawker dish", 5.5], ["Chicken rice", 4.24], ["Kopi", 1.5], ["Casual restaurant", 20]],
+      SHA: [["Noodle bowl", 20], ["Neighbourhood rice / noodle shop", 28], ["Fast-food combo", 35], ["Lunch set", 60]],
+      MEL: [["Pho, small bowl", 10.99], ["Burger", 20, 1], ["Pizza", 25, 1], ["Flat white", 5.03]],
+    };
+    table("subTable", ["Subscription", ...ALL.map(code)], [
+      ...SUBS.map(s => [s.label, ...ALL.map(k => {
+        if (!s.p[k]) return { h: "—", cls: "dim" };
+        const [v, cur, est] = s.p[k];
+        return { h: `${kr(Math.round(subDkk(k, s)))}${est ? '<sup class="est">est</sup>' : ""}`, tip: `<b>${CITY[k].name} · ${s.label}</b><div>${fmtLocal(v, cur)} per month</div>${k === "SHA" ? "<div>Not sold in mainland China; US price shown</div>" : est ? "<div><i>Estimate</i></div>" : ""}` };
+      })]),
+      { cls: "total", cells: ["Total per month", ...ALL.map(k => ({ h: kr(Math.round(gbasket(k))), cls: "strong" }))] },
+    ], { leftCols: [0] });
+
+    $("favGrid").innerHTML = ALL.map(k => `<div class="fav">
+      <div class="fav-h">${cityCell(k)}</div>
+      ${FAV[k].map(([name, v, est]) => `<div class="fav-r"><span>${name}${est ? ' <sup class="est">est</sup>' : ""}</span><span class="dim">${local(v, CUR[k])}</span><span>${kr(Math.round(dkk(k, v)))} kr</span></div>`).join("")}
+    </div>`).join("");
+  })();
 
   const BYSEN = {
     Junior: ["STO", "MEL", "CPH", "GOT", "SHA", "VIE", "AMS", "SGP"],
@@ -631,7 +932,6 @@
   ].map(r => [cityCell(r[0]), ...r.slice(1, 7).map(v => v == null ? { h: "—", cls: "dim" } : kr(v)), { h: kr(r[7]), cls: "strong" }]));
 
   // ================= HEATMAPS =================
-  const RAMP = ["--h1", "--h2", "--h3", "--h4", "--h5", "--h6", "--h7"];
   const heatCell = (v, lo, hi) => {
     const t = Math.min(1, Math.max(0, (v - lo) / (hi - lo)));
     const i = Math.round(t * (RAMP.length - 1));
@@ -772,6 +1072,7 @@
     ["Lifestyle", "10%", "Climate, safety, healthcare, transport, bikeability, green space, air, international community"],
     ["Economic stability", "5%", "Unemployment, inflation, growth, resilience, funding environment"],
     ["English friendliness", "5%", "EF EPI + how realistic an English-only marketing career is"],
+    ["Going-out costs", "0% (optional)", "Monthly going-out basket in DKK: 12 cappuccinos, 8 basic restaurant meals, 1 budget gym month, 4 padel hours (your share), 1 karting race. Score = 10 − (basket − 1,200 kr) ÷ 200, floor 1"],
   ].map(r => [r[0], { h: r[1], cls: "strong" }, { h: r[2], cls: "l" }]), { leftCols: [2] });
 
   // ================= TOOLTIP =================
