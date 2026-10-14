@@ -1,0 +1,800 @@
+<title>Marketing Career Cities</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..900&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  /* Layout: a relocation briefing. One reading column; city codes act like airport
+     codes and carry identity through every table and chart. Interactive weights up top. */
+  :root {
+    --bg:#f5f7fa; --surface:#ffffff; --sunk:#edf1f6; --ink:#0f1726; --ink-2:#465264;
+    --muted:#7c8696; --hair:#dfe4ec; --hair-2:#c6cdd8; --accent:#1f4fa3; --accent-ink:#ffffff;
+    --good:#006300; --bad:#c22f2f;
+    --cph:#2a78d6; --sto:#eb6834; --got:#1baf7a; --vie:#eda100; --ams:#e87ba4; --sgp:#008300; --sha:#6250d6; --mel:#e34948;
+    --h1:#cde2fb; --h2:#9ec5f4; --h3:#6da7ec; --h4:#3987e5; --h5:#256abf; --h6:#184f95; --h7:#0d366b;
+    --f-display:"Archivo", "Arial Narrow", system-ui, sans-serif;
+    --f-body:"Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --f-data:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg:#0c1018; --surface:#141a24; --sunk:#1b2230; --ink:#eef2f8; --ink-2:#b4bdcb;
+      --muted:#838da0; --hair:#252d3b; --hair-2:#343e50; --accent:#7fa8ef; --accent-ink:#0c1018;
+      --good:#2fbf4a; --bad:#ef6b6b;
+      --cph:#3987e5; --sto:#d95926; --got:#199e70; --vie:#c98500; --ams:#d55181; --sgp:#0a9a0a; --sha:#9085e9; --mel:#e66767;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg:#0c1018; --surface:#141a24; --sunk:#1b2230; --ink:#eef2f8; --ink-2:#b4bdcb;
+    --muted:#838da0; --hair:#252d3b; --hair-2:#343e50; --accent:#7fa8ef; --accent-ink:#0c1018;
+    --good:#2fbf4a; --bad:#ef6b6b;
+    --cph:#3987e5; --sto:#d95926; --got:#199e70; --vie:#c98500; --ams:#d55181; --sgp:#0a9a0a; --sha:#9085e9; --mel:#e66767;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 72px; display: grid; gap: 56px; }
+  h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2.3rem, 6vw, 3.8rem); font-weight: 850; font-stretch: 82%; line-height: .98; letter-spacing: -.01em; }
+  h2 { font-size: 1.65rem; font-weight: 800; font-stretch: 88%; line-height: 1.1; }
+  h3 { font-size: 1.02rem; font-weight: 700; font-stretch: 100%; }
+  p { margin: 0; max-width: 66ch; }
+  .eyebrow { font-family: var(--f-data); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .lede { font-size: 1.15rem; color: var(--ink-2); }
+  .note { font-size: .88rem; color: var(--muted); }
+  section { display: grid; gap: 18px; scroll-margin-top: 64px; }
+  section > header { display: grid; gap: 6px; }
+  .sub { display: grid; gap: 10px; }
+
+  /* masthead */
+  .mast { display: grid; gap: 18px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: .9rem; color: var(--ink-2); }
+  .meta b { font-weight: 600; color: var(--ink); }
+  .codes { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .code {
+    font-family: var(--f-data); font-weight: 700; font-size: .74rem; letter-spacing: .04em;
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  }
+  .code::before { content: ""; width: 9px; height: 9px; border-radius: 2px; background: var(--c); flex: none; }
+  .codes .code { padding: 5px 9px; border: 1px solid var(--hair-2); border-radius: 4px; background: var(--surface); }
+  .codes .code span { font-family: var(--f-body); font-weight: 400; letter-spacing: 0; color: var(--ink-2); font-size: .85rem; }
+
+  /* sticky nav */
+  nav.toc {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+    border-bottom: 1px solid var(--hair); margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+    padding-inline: max(16px, env(safe-area-inset-left, 0px)); overflow-x: auto; scrollbar-width: none;
+  }
+  nav.toc ul { list-style: none; margin: 0 auto; padding: 10px 0; display: flex; gap: 4px; max-width: 1040px; }
+  nav.toc a {
+    display: block; white-space: nowrap; font-size: .85rem; color: var(--ink-2); text-decoration: none;
+    padding: 4px 10px; border-radius: 4px;
+  }
+  nav.toc a:hover { background: var(--sunk); color: var(--ink); }
+  a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* verdict strip */
+  .verdict { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--hair); border: 1px solid var(--hair); border-radius: 6px; overflow: hidden; }
+  .verdict > div { background: var(--surface); padding: 16px 18px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+  .verdict .big { font-family: var(--f-display); font-weight: 800; font-stretch: 85%; font-size: 1.6rem; line-height: 1.05; }
+  .verdict p { font-size: .9rem; color: var(--ink-2); }
+
+  /* panel */
+  .panel { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; padding: 20px; display: grid; gap: 18px; min-width: 0; }
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 28px; }
+  @media (max-width: 760px) { .split { grid-template-columns: minmax(0, 1fr); } }
+
+  /* weights */
+  .weights { display: grid; gap: 14px; align-content: start; }
+  .w-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; }
+  .w-row label { font-size: .92rem; font-weight: 600; }
+  .w-row output { font-family: var(--f-data); font-size: .85rem; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  .w-row input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); margin: 0; }
+  .w-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; justify-content: space-between; font-size: .85rem; color: var(--muted); }
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+  button.chip {
+    font: inherit; font-size: .82rem; font-weight: 600; padding: 5px 11px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--hair-2); background: var(--surface); color: var(--ink);
+  }
+  button.chip:hover { background: var(--sunk); }
+  button.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+  /* bar list */
+  .bars { display: grid; gap: 4px; }
+  .bar-row { display: grid; grid-template-columns: 1.6rem 4.4rem minmax(0, 1fr) 3.6rem; align-items: center; gap: 8px; min-height: 30px; border-radius: 4px; }
+  .bar-row:hover { background: var(--sunk); }
+  .bar-row .rk { font-family: var(--f-data); font-size: .78rem; color: var(--muted); text-align: right; }
+  .bar-row .val { font-family: var(--f-data); font-size: .86rem; font-variant-numeric: tabular-nums; text-align: right; padding-right: 4px; }
+  .track { position: relative; height: 14px; }
+  .fill { position: absolute; top: 0; bottom: 0; background: var(--c); border-radius: 0 4px 4px 0; transition: width .35s ease, left .35s ease; }
+  .fill.neg { border-radius: 4px 0 0 4px; }
+  .zero { position: absolute; top: -4px; bottom: -4px; width: 1px; background: var(--hair-2); }
+  .bar-row.lead .val { font-weight: 700; }
+  .move { font-family: var(--f-data); font-size: .7rem; margin-left: 4px; }
+  .move.up { color: var(--good); } .move.dn { color: var(--bad); }
+
+  .seg { display: inline-flex; border: 1px solid var(--hair-2); border-radius: 6px; overflow: hidden; }
+  .seg button { font: inherit; font-size: .88rem; font-weight: 600; padding: 7px 14px; border: 0; background: var(--surface); color: var(--ink-2); cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--hair-2); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+
+  /* tables */
+  .tbl { overflow-x: auto; border: 1px solid var(--hair); border-radius: 6px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  th, td { padding: 8px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--hair); font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
+  td.l, th.l { text-align: left; white-space: normal; min-width: 14ch; }
+  thead th { font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: var(--sunk); vertical-align: bottom; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: var(--sunk); }
+  td.neg { color: var(--bad); }
+  td.strong, tr.total td { font-weight: 700; }
+  tr.total td { border-top: 1px solid var(--hair-2); }
+  td.dim { color: var(--muted); }
+
+  /* heatmap */
+  .heat td.h { text-align: center; font-family: var(--f-data); font-size: .82rem; font-weight: 700; min-width: 3.2rem; border-left: 2px solid var(--surface); }
+  .heat thead th:not(:first-child) { text-align: center; }
+  .scale { display: flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--muted); }
+  .scale i { width: 18px; height: 10px; border-radius: 2px; display: block; }
+
+  /* charts */
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  svg text { font-family: var(--f-body); fill: var(--muted); font-size: 11px; }
+  svg .grid { stroke: var(--hair); stroke-width: 1; }
+  svg .axis { stroke: var(--hair-2); stroke-width: 1; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+  .legend .code { font-size: .74rem; }
+
+  #tip {
+    position: fixed; z-index: 20; pointer-events: none; background: var(--ink); color: var(--bg);
+    font-size: .82rem; line-height: 1.35; padding: 8px 10px; border-radius: 6px; max-width: 260px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.18);
+  }
+  #tip b { font-weight: 700; }
+  #tip .r { display: flex; justify-content: space-between; gap: 14px; font-variant-numeric: tabular-nums; }
+  #tip .code::before { background: var(--c); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+  .callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; color: var(--ink-2); font-size: .95rem; max-width: 72ch; }
+  footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--hair); padding-top: 18px; display: grid; gap: 6px; }
+
+  @media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+  @media (max-width: 520px) {
+    .bar-row { grid-template-columns: 1.3rem 3.8rem minmax(0, 1fr) 3.4rem; gap: 6px; }
+    .panel { padding: 16px; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <span class="eyebrow">Relocation briefing · Marketing professional</span>
+    <h1>Marketing Career Cities</h1>
+    <p class="lede">Eight cities scored for a marketing career: what you earn, what tax takes, what rent takes, what's left, and where the career can go. Every amount is in Danish kroner per month.</p>
+    <div class="meta">
+      <span><b>Prepared</b> 16 Jul 2026</span>
+      <span><b>Profile</b> single adult, no children, renting a 1-bedroom alone</span>
+      <span><b>FX to DKK</b> EUR 7.47 · SEK 0.678 · SGD 5.06 · CNY 0.965 · AUD 4.55</span>
+    </div>
+    <div class="codes" id="codes"></div>
+  </header>
+
+  <nav class="toc" aria-label="Sections">
+    <ul>
+      <li><a href="#ranking">Ranking</a></li>
+      <li><a href="#income">Disposable income</a></li>
+      <li><a href="#inputs">Salary, tax &amp; rent</a></li>
+      <li><a href="#career">Career</a></li>
+      <li><a href="#growth">Growth</a></li>
+      <li><a href="#life">Lifestyle</a></li>
+      <li><a href="#english">English</a></li>
+      <li><a href="#economy">Economy</a></li>
+      <li><a href="#outliers">Shanghai &amp; Melbourne</a></li>
+      <li><a href="#method">Method</a></li>
+    </ul>
+  </nav>
+
+  <div class="verdict" aria-label="Headline findings">
+    <div><span class="eyebrow">Best overall</span><span class="big">Stockholm · 8.13</span><p>Strong startup scene, low rent burden and good pay after tax. Ranks first at junior and mid level.</p></div>
+    <div><span class="eyebrow">Best for seniors</span><span class="big">Singapore</span><p>Single-digit tax lets 32,308 kr a month stay in your pocket. A junior there runs a 3,770 kr deficit.</p></div>
+    <div><span class="eyebrow">Most career upside</span><span class="big">SGP 8.9 · AMS 8.8</span><p>The two most international hubs, held back by high rent: Amsterdam keeps just 52 kr at junior level.</p></div>
+    <div><span class="eyebrow">Wildcard</span><span class="big">Shanghai</span><p>Ranks about 5th for an English-only marketer, but would rank #1 (≈8.23) with fluent Mandarin.</p></div>
+  </div>
+
+  <section id="ranking">
+    <header>
+      <span class="eyebrow">Final ranking</span>
+      <h2>Weighted score, your weights</h2>
+      <p class="note">Six pillars, each scored 1–10. Drag a weight to see how the order changes. Weights are rescaled to 100% if they don't add up.</p>
+    </header>
+    <div class="panel split">
+      <div class="weights">
+        <div id="sliders" class="weights"></div>
+        <div class="w-foot">
+          <span id="wsum"></span>
+          <div class="presets" id="presets"></div>
+        </div>
+      </div>
+      <div class="sub">
+        <div class="bars" id="rankBars" aria-live="polite"></div>
+        <p class="note">Arrows show movement against the report's default weights (40 / 25 / 15 / 10 / 5 / 5). Shanghai is scored as an English-only marketer.</p>
+      </div>
+    </div>
+    <div class="tbl"><table id="pillarTable"></table></div>
+  </section>
+
+  <section id="income">
+    <header>
+      <span class="eyebrow">Disposable income</span>
+      <h2>What's left each month</h2>
+      <p class="note">Gross salary, minus income tax, minus median 1-bedroom rent and essential costs. DKK per month.</p>
+    </header>
+    <div class="panel">
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Seniority" id="levelSeg"></div>
+        <span class="note" id="levelNote"></span>
+      </div>
+      <div class="bars" id="dispBars"></div>
+    </div>
+    <div class="tbl"><table id="waterfall"></table></div>
+    <div class="cards">
+      <div class="sub">
+        <h3>Ranking by seniority</h3>
+        <div class="tbl"><table id="bySeniority"></table></div>
+      </div>
+      <div class="sub">
+        <h3>Savings rate and rent burden, mid level</h3>
+        <div class="tbl"><table id="burden"></table></div>
+      </div>
+    </div>
+    <div class="sub">
+      <h3>Rent sensitivity, mid level</h3>
+      <p class="note">Disposable income if you rent at the 25th percentile, the median, or the 75th percentile. A long line means rent decides the outcome.</p>
+      <div class="panel"><div id="sensChart"></div></div>
+    </div>
+  </section>
+
+  <section id="inputs">
+    <header>
+      <span class="eyebrow">Inputs</span>
+      <h2>Salary, tax, rent and living costs</h2>
+      <p class="note">The six core cities. Shanghai and Melbourne inputs are in their own section below.</p>
+    </header>
+    <div class="sub"><h3>Gross monthly salary</h3><div class="tbl"><table id="salary"></table></div></div>
+    <div class="sub"><h3>Net monthly salary, DKK, with effective income-tax rate</h3><div class="tbl"><table id="tax"></table></div></div>
+    <div class="sub"><h3>Monthly 1-bedroom rent, local currency</h3><div class="tbl"><table id="rent"></table></div></div>
+    <div class="sub"><h3>Essential monthly costs excluding rent, DKK</h3><div class="tbl"><table id="costs"></table></div></div>
+  </section>
+
+  <section id="career">
+    <header>
+      <span class="eyebrow">Long-term career potential · 40% of the score</span>
+      <h2>Where the marketing jobs are</h2>
+      <p class="note">Twelve sub-scores from 1 to 10. Their mean is the career pillar.</p>
+    </header>
+    <div class="scale" id="scale1"></div>
+    <div class="tbl heat"><table id="careerHeat"></table></div>
+  </section>
+
+  <section id="growth">
+    <header>
+      <span class="eyebrow">Future career growth</span>
+      <h2>Expected gross salary over ten years</h2>
+      <p class="note">Typical trajectory, DKK per month. Hover or tap the chart to compare cities at a given year.</p>
+    </header>
+    <div class="panel">
+      <div class="legend" id="growthLegend"></div>
+      <div id="growthChart"></div>
+    </div>
+    <div class="tbl"><table id="growthTable"></table></div>
+  </section>
+
+  <section id="life">
+    <header>
+      <span class="eyebrow">Lifestyle · 10% of the score</span>
+      <h2>Living there</h2>
+      <p class="note">Higher is better. The last row is the lifestyle pillar.</p>
+    </header>
+    <div class="scale" id="scale2"></div>
+    <div class="tbl heat"><table id="lifeHeat"></table></div>
+  </section>
+
+  <section id="english">
+    <header>
+      <span class="eyebrow">English friendliness · 5% of the score</span>
+      <h2>Can you work in English only?</h2>
+      <p class="note">EF English Proficiency Index 2025 country rank in brackets.</p>
+    </header>
+    <div class="tbl"><table id="englishTable"></table></div>
+  </section>
+
+  <section id="economy">
+    <header>
+      <span class="eyebrow">Economic stability · 5% of the score</span>
+      <h2>Macro indicators, 2026 forecasts</h2>
+    </header>
+    <div class="tbl"><table id="econTable"></table></div>
+  </section>
+
+  <section id="outliers">
+    <header>
+      <span class="eyebrow">Added cities</span>
+      <h2>Shanghai and Melbourne</h2>
+      <p class="note">Both were added after the six-city study. They appear in the overall ranking and the disposable-income comparison above.</p>
+    </header>
+    <div class="sub">
+      <h3><span class="code" style="--c:var(--sha)">SHA</span>&nbsp; Shanghai finances · income tax only, 1 CNY = 0.965 DKK</h3>
+      <div class="tbl"><table id="shaFin"></table></div>
+    </div>
+    <div class="sub">
+      <h3>Where Shanghai ranks, by persona</h3>
+      <div class="tbl"><table id="shaPersona"></table></div>
+      <p class="callout">Language is the deciding factor. Fluent Mandarin lifts the career score from 5.5 to 8.0 and English friendliness from 4.0 to 7.0, which puts Shanghai ahead of Stockholm.</p>
+    </div>
+    <div class="sub">
+      <h3><span class="code" style="--c:var(--mel)">MEL</span>&nbsp; Melbourne finances · 1 AUD = 4.55 DKK</h3>
+      <div class="tbl"><table id="melFin"></table></div>
+    </div>
+    <div class="cards">
+      <div class="sub">
+        <h3>Melbourne against the field</h3>
+        <div class="tbl"><table id="melField"></table></div>
+      </div>
+      <div class="sub">
+        <h3>Melbourne scorecard</h3>
+        <div class="tbl"><table id="melScore"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="method">
+    <header>
+      <span class="eyebrow">Methodology</span>
+      <h2>How the score is built</h2>
+    </header>
+    <div class="tbl"><table id="methodTable"></table></div>
+    <p class="note">Disposable income = net salary − median rent − essential costs. Health insurance is only listed where it is a separate mandatory cost (Amsterdam). Singapore assumes no CPF contributions for foreigners. Vienna's 13th and 14th salaries are spread over twelve months.</p>
+  </section>
+
+  <footer>
+    <span>Source data: <code>data/marketing-career-cities.md</code> · Prepared 16 Jul 2026.</span>
+    <span>Scores are judgement-based estimates for planning, not a forecast of any individual offer.</span>
+  </footer>
+</div>
+
+<div id="tip" hidden></div>
+
+<script>
+(function () {
+  const CITY = {
+    CPH: { name: "Copenhagen", c: "--cph" },
+    STO: { name: "Stockholm",  c: "--sto" },
+    GOT: { name: "Gothenburg", c: "--got" },
+    AMS: { name: "Amsterdam",  c: "--ams" },
+    VIE: { name: "Vienna",     c: "--vie" },
+    SGP: { name: "Singapore",  c: "--sgp" },
+    SHA: { name: "Shanghai",   c: "--sha" },
+    MEL: { name: "Melbourne",  c: "--mel" },
+  };
+  const SIX = ["CPH", "STO", "GOT", "AMS", "VIE", "SGP"];
+  const nf = new Intl.NumberFormat("en-US");
+  const kr = n => (n < 0 ? "−" : "") + nf.format(Math.abs(n));
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const code = k => `<span class="code" style="--c:var(${CITY[k].c})">${k}</span>`;
+  const cityCell = k => `${code(k)} <span>${CITY[k].name}</span>`;
+
+  // ---- generic table renderer: head = [labels], rows = [[cells]], cells may be {h, cls}
+  function table(el, head, rows, opts = {}) {
+    const th = head.map((h, i) => `<th${opts.leftCols && opts.leftCols.includes(i) ? ' class="l"' : ""}>${h}</th>`).join("");
+    const body = rows.map(r => {
+      const cls = r.cls ? ` class="${r.cls}"` : "";
+      const cells = (r.cells || r).map((c, i) => {
+        if (c && typeof c === "object") return `<td class="${c.cls || ""}"${c.style ? ` style="${c.style}"` : ""}${c.tip ? ` data-tip="${esc(c.tip)}"` : ""}>${c.h}</td>`;
+        const l = opts.leftCols && opts.leftCols.includes(i) ? ' class="l"' : "";
+        return `<td${l}>${c}</td>`;
+      }).join("");
+      return `<tr${cls}>${cells}</tr>`;
+    }).join("");
+    $(el).innerHTML = `<thead><tr>${th}</tr></thead><tbody>${body}</tbody>`;
+  }
+
+  $("codes").innerHTML = Object.keys(CITY).map(k => `<span class="code" style="--c:var(${CITY[k].c})">${k} <span>${CITY[k].name}</span></span>`).join("");
+
+  // ================= RANKING =================
+  const PILLARS = [
+    { k: "career", name: "Career opportunities", w: 40 },
+    { k: "income", name: "Disposable income",    w: 25 },
+    { k: "cost",   name: "Cost of living",       w: 15 },
+    { k: "life",   name: "Lifestyle",            w: 10 },
+    { k: "econ",   name: "Economic stability",   w: 5 },
+    { k: "eng",    name: "English friendliness", w: 5 },
+  ];
+  const SCORES = {
+    STO: [7.7, 9.0, 8.0, 8.0, 7.0, 9.0],
+    MEL: [6.9, 9.0, 7.5, 8.6, 8.0, 10],
+    CPH: [7.2, 9.0, 6.5, 8.5, 9.0, 9.0],
+    SGP: [8.9, 8.0, 3.5, 7.8, 9.5, 10],
+    AMS: [8.8, 5.0, 4.5, 8.3, 8.0, 10],
+    GOT: [5.1, 8.5, 9.5, 7.8, 7.0, 8.5],
+    VIE: [6.1, 7.5, 8.5, 8.8, 6.0, 7.0],
+    SHA: [5.5, 9.0, 9.5, 6.8, 6.5, 4.0],
+  };
+  const DEFAULT_W = PILLARS.map(p => p.w);
+  const PRESETS = [
+    { label: "Report default", w: DEFAULT_W },
+    { label: "Money first",    w: [20, 40, 25, 5, 5, 5] },
+    { label: "Career first",   w: [60, 15, 10, 5, 5, 5] },
+    { label: "Quality of life", w: [25, 20, 15, 30, 5, 5] },
+  ];
+  let weights = DEFAULT_W.slice();
+
+  const totalFor = (k, w) => {
+    const sum = w.reduce((a, b) => a + b, 0) || 1;
+    return SCORES[k].reduce((acc, s, i) => acc + s * w[i], 0) / sum;
+  };
+  const order = w => Object.keys(SCORES).sort((a, b) => totalFor(b, w) - totalFor(a, w));
+  const DEFAULT_ORDER = order(DEFAULT_W);
+
+  $("sliders").innerHTML = PILLARS.map((p, i) => `
+    <div class="w-row">
+      <label for="w-${p.k}">${p.name}</label>
+      <output id="o-${p.k}" for="w-${p.k}">${p.w}%</output>
+      <input type="range" id="w-${p.k}" min="0" max="60" step="5" value="${p.w}" data-i="${i}">
+    </div>`).join("");
+  $("presets").innerHTML = PRESETS.map((p, i) => `<button type="button" class="chip" data-p="${i}">${p.label}</button>`).join("");
+
+  function renderRanking() {
+    const sum = weights.reduce((a, b) => a + b, 0);
+    PILLARS.forEach((p, i) => {
+      $("o-" + p.k).textContent = weights[i] + "%";
+      $("w-" + p.k).value = weights[i];
+    });
+    $("wsum").textContent = sum === 100 ? "Weights add up to 100%" : sum === 0 ? "All weights are 0 — set at least one" : `Weights add up to ${sum}%, rescaled to 100%`;
+    document.querySelectorAll("#presets button").forEach(b => {
+      b.setAttribute("aria-pressed", String(PRESETS[b.dataset.p].w.every((v, i) => v === weights[i])));
+    });
+    const ord = order(weights);
+    const lo = 3, hi = 10;
+    $("rankBars").innerHTML = ord.map((k, i) => {
+      const t = sum ? totalFor(k, weights) : 0;
+      const diff = DEFAULT_ORDER.indexOf(k) - i;
+      const mv = diff > 0 ? `<span class="move up" aria-label="up ${diff}">▲${diff}</span>` : diff < 0 ? `<span class="move dn" aria-label="down ${-diff}">▼${-diff}</span>` : "";
+      const pct = Math.max(0, (t - lo) / (hi - lo)) * 100;
+      const tip = `<b>${CITY[k].name}</b>` + PILLARS.map((p, j) => `<div class="r"><span>${p.name}</span><span>${SCORES[k][j].toFixed(1)}</span></div>`).join("");
+      return `<div class="bar-row${i === 0 ? " lead" : ""}" data-tip="${esc(tip)}">
+        <span class="rk">${i + 1}</span>${code(k)}
+        <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${pct}%"></div></div>
+        <span class="val">${sum ? t.toFixed(2) : "–"}${mv}</span></div>`;
+    }).join("");
+    table("pillarTable",
+      ["City", ...PILLARS.map((p, i) => `${p.name.split(" ")[0]} ×${(weights[i] / (sum || 1)).toFixed(2).replace(/^0/, "")}`), "Total"],
+      ord.map(k => [cityCell(k), ...SCORES[k].map(s => s % 1 ? s.toFixed(1) : s), { h: sum ? totalFor(k, weights).toFixed(2) : "–", cls: "strong" }]));
+  }
+  $("sliders").addEventListener("input", e => {
+    if (!e.target.dataset.i) return;
+    weights[+e.target.dataset.i] = +e.target.value;
+    renderRanking();
+  });
+  $("presets").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    weights = PRESETS[b.dataset.p].w.slice();
+    renderRanking();
+  });
+  renderRanking();
+
+  // ================= DISPOSABLE INCOME =================
+  const FLOW = {
+    junior: [
+      ["MEL", 26540, 4896, 21644, 13991, 7653], ["GOT", 21696, 4515, 17181, 10428, 6753],
+      ["SHA", 17370, 1148, 16222, 10007, 6215], ["STO", 25086, 5125, 19961, 13770, 6191],
+      ["CPH", 33000, 10747, 22253, 17320, 4933], ["VIE", 23531, 6298, 17233, 12579, 4654],
+      ["AMS", 24651, 3795, 20856, 20804, 52], ["SGP", 20240, 466, 19774, 23544, -3770],
+    ],
+    mid: [
+      ["SHA", 33775, 4671, 29104, 10007, 19097], ["MEL", 37915, 8536, 29379, 13991, 15388],
+      ["STO", 35256, 8232, 27024, 13770, 13254], ["CPH", 46000, 15771, 30229, 17320, 12909],
+      ["GOT", 30510, 7388, 23122, 10428, 12694], ["SGP", 37950, 1897, 36053, 23544, 12509],
+      ["VIE", 33989, 10608, 23381, 12579, 10802], ["AMS", 35856, 8568, 27288, 20804, 6484],
+    ],
+    senior: [
+      ["SHA", 57900, 11667, 46233, 10007, 36226], ["SGP", 60720, 4868, 55852, 23544, 32308],
+      ["MEL", 53085, 13527, 39558, 13991, 25567], ["CPH", 60000, 21583, 38417, 17320, 21097],
+      ["STO", 47460, 13999, 33461, 13770, 19691], ["VIE", 47933, 17127, 30806, 12579, 18227],
+      ["GOT", 37290, 9604, 27686, 10428, 17258], ["AMS", 50796, 15291, 35505, 20804, 14701],
+    ],
+  };
+  const LEVELS = [
+    { k: "junior", label: "Junior", yrs: "0–3 years" },
+    { k: "mid", label: "Mid", yrs: "4–8 years" },
+    { k: "senior", label: "Senior", yrs: "8+ years" },
+  ];
+  let level = "mid";
+  $("levelSeg").innerHTML = LEVELS.map(l => `<button type="button" data-l="${l.k}">${l.label}</button>`).join("");
+  const DMIN = -5000, DMAX = 38000;
+  const xp = v => ((v - DMIN) / (DMAX - DMIN)) * 100;
+
+  function renderLevel() {
+    const L = LEVELS.find(l => l.k === level);
+    document.querySelectorAll("#levelSeg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.l === level)));
+    $("levelNote").textContent = `${L.label} · ${L.yrs} · sorted by money left`;
+    const rows = FLOW[level];
+    $("dispBars").innerHTML = rows.map((r, i) => {
+      const [k, g, t, n, e, rem] = r;
+      const z = xp(0), left = rem < 0 ? xp(rem) : z, w = Math.abs(xp(rem) - z);
+      const tip = `<b>${CITY[k].name} · ${L.label}</b>
+        <div class="r"><span>Gross</span><span>${kr(g)}</span></div>
+        <div class="r"><span>− Tax</span><span>${kr(t)}</span></div>
+        <div class="r"><span>= Net</span><span>${kr(n)}</span></div>
+        <div class="r"><span>− Rent + essentials</span><span>${kr(e)}</span></div>
+        <div class="r"><b>= Left</b><b>${kr(rem)}</b></div>`;
+      return `<div class="bar-row${i === 0 ? " lead" : ""}" data-tip="${esc(tip)}">
+        <span class="rk">${i + 1}</span>${code(k)}
+        <div class="track"><span class="zero" style="left:${z}%"></span><div class="fill${rem < 0 ? " neg" : ""}" style="--c:var(${CITY[k].c});left:${left}%;width:${w}%"></div></div>
+        <span class="val">${kr(rem)}</span></div>`;
+    }).join("");
+    table("waterfall", ["#", "City", "Gross", "− Tax", "= Net", "− Expenses", "= Remaining", "% of net kept"],
+      rows.map((r, i) => {
+        const [k, g, t, n, e, rem] = r;
+        return [i + 1, cityCell(k), kr(g), kr(t), kr(n), kr(e), { h: kr(rem), cls: rem < 0 ? "neg strong" : "strong" }, { h: Math.round(rem / n * 100) + "%", cls: rem < 0 ? "neg" : "" }];
+      }));
+  }
+  $("levelSeg").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    level = b.dataset.l; renderLevel();
+  });
+  renderLevel();
+
+  const BYSEN = {
+    Junior: ["STO", "MEL", "CPH", "GOT", "SHA", "VIE", "AMS", "SGP"],
+    Mid:    ["STO", "MEL", "SGP", "CPH", "SHA", "GOT", "VIE", "AMS"],
+    Senior: ["SGP", "STO", "MEL", "CPH", "AMS", "SHA", "VIE", "GOT"],
+  };
+  table("bySeniority", ["#", "Junior", "Mid", "Senior"],
+    BYSEN.Junior.map((_, i) => [i + 1, code(BYSEN.Junior[i]), code(BYSEN.Mid[i]), code(BYSEN.Senior[i])]));
+
+  const BURDEN = [
+    ["CPH", 4933, 12909, 21097, 43, 41], ["STO", 6191, 13254, 19691, 49, 35], ["GOT", 6753, 12694, 17258, 55, 29],
+    ["AMS", 52, 6484, 14701, 24, 52], ["VIE", 4654, 10802, 18227, 46, 35], ["SGP", -3770, 12509, 32308, 35, 55],
+  ];
+  table("burden", ["City", "Net kept", "Rent ÷ net"],
+    BURDEN.map(r => [cityCell(r[0]), r[4] + "%", { h: r[5] + "%", cls: r[5] >= 50 ? "neg" : "" }]));
+
+  // ---- rent sensitivity: low / median / high
+  const SENS = [["CPH", 14209, 12909, 11409], ["STO", 14474, 13254, 11898], ["GOT", 13711, 12694, 11338],
+    ["AMS", 8725, 6484, 3496], ["VIE", 11922, 10802, 8934], ["SGP", 16051, 12509, 7955]];
+  (function () {
+    const W = 640, rowH = 34, top = 10, left = 92, right = 24, H = top + SENS.length * rowH + 30;
+    const sx = v => left + (v / 18000) * (W - left - right);
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mid-level disposable income range by rent scenario">`;
+    for (let t = 0; t <= 18000; t += 3000) {
+      s += `<line class="grid" x1="${sx(t)}" x2="${sx(t)}" y1="${top}" y2="${H - 24}"/>`;
+      s += `<text x="${sx(t)}" y="${H - 8}" text-anchor="middle">${t ? nf.format(t / 1000) + "k" : "0"}</text>`;
+    }
+    SENS.forEach((r, i) => {
+      const [k, lo, med, hi] = r, y = top + i * rowH + rowH / 2;
+      const col = `var(${CITY[k].c})`;
+      const tip = `<b>${CITY[k].name} · mid level</b><div class="r"><span>Low rent</span><span>${kr(lo)}</span></div><div class="r"><span>Median rent</span><span>${kr(med)}</span></div><div class="r"><span>High rent</span><span>${kr(hi)}</span></div><div class="r"><span>Swing</span><span>${kr(lo - hi)}</span></div>`;
+      s += `<g data-tip="${esc(tip)}"><rect x="0" y="${y - rowH / 2}" width="${W}" height="${rowH}" fill="transparent"/>`;
+      s += `<text x="0" y="${y + 4}" style="fill:var(--ink);font-family:var(--f-data);font-weight:700;font-size:12px">${k}</text>`;
+      s += `<line x1="${sx(hi)}" x2="${sx(lo)}" y1="${y}" y2="${y}" stroke="${col}" stroke-width="3" stroke-linecap="round"/>`;
+      s += `<circle cx="${sx(hi)}" cy="${y}" r="4" fill="var(--surface)" stroke="${col}" stroke-width="2"/>`;
+      s += `<circle cx="${sx(lo)}" cy="${y}" r="4" fill="var(--surface)" stroke="${col}" stroke-width="2"/>`;
+      s += `<circle cx="${sx(med)}" cy="${y}" r="6" fill="${col}" stroke="var(--surface)" stroke-width="2"/>`;
+      s += `<text x="${sx(lo) + 10}" y="${y + 4}" style="fill:var(--ink-2)">swing ${kr(lo - hi)}</text></g>`;
+    });
+    s += `</svg>`;
+    $("sensChart").innerHTML = s + `<p class="note" style="margin-top:8px">Filled dot = median rent. Open dots = 75th percentile rent (left) and 25th percentile rent (right).</p>`;
+  })();
+
+  // ================= INPUTS =================
+  table("salary", ["City", "Junior (0–3y)", "DKK", "Mid (4–8y)", "DKK", "Senior (8+y)", "DKK"], [
+    ["CPH", "33,000 kr", 33000, "46,000 kr", 46000, "60,000 kr", 60000],
+    ["STO", "37,000 kr", 25086, "52,000 kr", 35256, "70,000 kr", 47460],
+    ["GOT", "32,000 kr", 21696, "45,000 kr", 30510, "55,000 kr", 37290],
+    ["AMS", "€3,300", 24651, "€4,800", 35856, "€6,800", 50796],
+    ["VIE", "€3,150", 23531, "€4,550", 33989, "€6,417", 47933],
+    ["SGP", "S$4,000", 20240, "S$7,500", 37950, "S$12,000", 60720],
+  ].map(r => [cityCell(r[0]), { h: r[1], cls: "dim" }, { h: kr(r[2]), cls: "strong" }, { h: r[3], cls: "dim" }, { h: kr(r[4]), cls: "strong" }, { h: r[5], cls: "dim" }, { h: kr(r[6]), cls: "strong" }]));
+
+  table("tax", ["City", "Junior", "Mid", "Senior", "How the system works"], [
+    ["CPH", 22253, 33, 30229, 34, 38417, 36, "8% AM-bidrag + 23.4% municipal + state"],
+    ["STO", 19961, 20, 27024, 23, 33461, 30, "30.55% municipal, work credit, 20% state above 55k/mo"],
+    ["GOT", 17181, 21, 23122, 24, 27686, 26, "32.60% municipal (higher than Stockholm)"],
+    ["AMS", 20856, 15, 27288, 24, 35505, 30, "Box 1 + large labour and general credits"],
+    ["VIE", 17233, 27, 23381, 31, 30806, 36, "18% social + progressive; 13th/14th salary taxed 6%"],
+    ["SGP", 19774, 2, 36053, 5, 55852, 8, "0–24% progressive, no CPF for foreigners"],
+  ].map(r => [cityCell(r[0]),
+    { h: `${kr(r[1])} <span class="note">(${r[2]}%)</span>` }, { h: `${kr(r[3])} <span class="note">(${r[4]}%)</span>` },
+    { h: `${kr(r[5])} <span class="note">(${r[6]}%)</span>` }, { h: r[7], cls: "l" }]), { leftCols: [4] });
+
+  table("rent", ["City", "25th pct", "Median", "75th pct", "Median DKK", "Neighbourhoods"], [
+    ["CPH", "11,200", "12,500 kr", "14,000", 12500, "Nørrebro, Amager, Sydhavn, Vanløse"],
+    ["STO", "12,200", "14,000 kr", "16,000", 9492, "Södermalm fringe, Liljeholmen, Solna (2nd-hand)"],
+    ["GOT", "8,500", "10,000 kr", "12,000", 6780, "Majorna, Johanneberg, Gamlestaden"],
+    ["AMS", "€1,600", "€1,900", "€2,300", 14193, "Oost, Noord, Sloterdijk, De Baarsjes"],
+    ["VIE", "€950", "€1,100", "€1,350", 8217, "Favoriten (10th), Floridsdorf (21st), Ottakring"],
+    ["SGP", "S$3,200", "S$3,900", "S$4,800", 19734, "Queenstown, Paya Lebar, Geylang (1-BR condo)"],
+  ].map(r => [cityCell(r[0]), { h: r[1], cls: "dim" }, r[2], { h: r[3], cls: "dim" }, { h: kr(r[4]), cls: "strong" }, { h: r[5], cls: "l" }]), { leftCols: [5] });
+
+  table("costs", ["City", "Groceries", "Utilities", "Internet", "Mobile", "Transport", "Health ins.", "Total"], [
+    ["CPH", 2800, 1100, 250, 120, 550, null, 4820], ["STO", 2712, 475, 237, 136, 719, null, 4278],
+    ["GOT", 2237, 475, 237, 136, 563, null, 3648], ["AMS", 2988, 1307, 336, 149, 747, 1083, 6611],
+    ["VIE", 2241, 1494, 224, 112, 291, null, 4362], ["SGP", 1771, 1012, 228, 152, 648, null, 3810],
+  ].map(r => [cityCell(r[0]), ...r.slice(1, 7).map(v => v == null ? { h: "—", cls: "dim" } : kr(v)), { h: kr(r[7]), cls: "strong" }]));
+
+  // ================= HEATMAPS =================
+  const RAMP = ["--h1", "--h2", "--h3", "--h4", "--h5", "--h6", "--h7"];
+  const heatCell = (v, lo, hi) => {
+    const t = Math.min(1, Math.max(0, (v - lo) / (hi - lo)));
+    const i = Math.round(t * (RAMP.length - 1));
+    return { h: v % 1 ? v.toFixed(1) : v, cls: "h", style: `background:var(${RAMP[i]});color:${i >= 4 ? "#ffffff" : "#0d1a33"}` };
+  };
+  const scaleHtml = (lo, hi) => `<span>${lo}</span>${RAMP.map(r => `<i style="background:var(${r})"></i>`).join("")}<span>${hi}</span>`;
+  $("scale1").innerHTML = scaleHtml("Score 4", "10");
+  $("scale2").innerHTML = scaleHtml("Score 4", "10");
+
+  const CAREER = [
+    ["Marketing agencies", 7, 8, 5, 9, 6, 9], ["Performance-marketing roles", 7, 8, 5, 9, 6, 9],
+    ["E-commerce ecosystem", 7, 8, 6, 9, 6, 9], ["Startup ecosystem", 8, 9, 5, 9, 6, 9],
+    ["Scaleups", 8, 9, 5, 8, 5, 8], ["International companies", 7, 7, 6, 10, 7, 10],
+    ["Multinational HQs", 7, 7, 5, 9, 7, 10], ["Networking", 7, 8, 5, 9, 6, 8],
+    ["Promotion potential", 7, 7, 5, 8, 6, 9], ["Entrepreneurial ecosystem", 8, 9, 5, 8, 6, 8],
+    ["Employer mobility", 7, 7, 5, 9, 6, 9], ["Market size", 6, 6, 4, 8, 6, 9],
+  ];
+  const heatTable = (id, rows, totalLabel, totals) => table(id, ["Dimension", ...SIX.map(code)], [
+    ...rows.map(r => [r[0], ...r.slice(1).map((v, j) => ({ ...heatCell(v, 4, 10), tip: `<b>${CITY[SIX[j]].name}</b><div>${r[0]}: ${v}/10</div>` }))]),
+    { cls: "total", cells: [totalLabel, ...totals.map(v => ({ h: v.toFixed(1), cls: "h" }))] },
+  ]);
+  heatTable("careerHeat", CAREER, "Mean (career pillar)", [7.2, 7.7, 5.1, 8.8, 6.1, 8.9]);
+
+  const LIFE = [
+    ["Climate & sunshine", 6, 5, 5, 6, 7, 5], ["Bikeability", 10, 8, 7, 10, 7, 4],
+    ["Public transport", 9, 9, 8, 9, 10, 9], ["Walkability", 9, 8, 8, 9, 9, 7],
+    ["Safety", 9, 8, 7, 8, 9, 10], ["Healthcare", 9, 8, 8, 8, 9, 9],
+    ["Air quality", 9, 9, 9, 7, 8, 7], ["Green space", 8, 9, 8, 7, 9, 8],
+    ["International community", 8, 8, 6, 10, 7, 9],
+  ];
+  heatTable("lifeHeat", LIFE, "Lifestyle pillar", [8.5, 8.0, 7.8, 8.3, 8.8, 7.8]);
+
+  // ================= GROWTH =================
+  const GROWTH = [
+    ["SGP", [20240, 30000, 42000, 75000], "75,000+", "Regional Head / VP Growth; APAC scope; unicorn HQs"],
+    ["AMS", [24651, 33000, 42000, 62000], "62,000+", "EMEA marketing lead at an international HQ"],
+    ["CPH", [33000, 42000, 50000, 68000], "68,000", "Head of Marketing / CMO at a Nordic scaleup"],
+    ["STO", [25086, 34000, 44000, 60000], "60,000", "Growth lead at a unicorn; strong founder path"],
+    ["GOT", [21696, 28000, 34000, 44000], "44,000", "Marketing lead; may need to move to Stockholm to top out"],
+    ["VIE", [23531, 30000, 38000, 52000], "52,000", "CEE marketing lead; German usually required to rise"],
+  ];
+  const YEARS = [1, 3, 5, 10];
+  table("growthTable", ["City", "Year 1", "Year 3", "Year 5", "Year 10", "Ceiling / path"],
+    GROWTH.map(r => [cityCell(r[0]), kr(r[1][0]), kr(r[1][1]), kr(r[1][2]), { h: r[2], cls: "strong" }, { h: r[3], cls: "l" }]), { leftCols: [5] });
+  $("growthLegend").innerHTML = GROWTH.map(r => `<span class="code" style="--c:var(${CITY[r[0]].c})">${r[0]} <span class="note">${CITY[r[0]].name}</span></span>`).join("");
+
+  (function () {
+    const W = 680, H = 320, m = { t: 14, r: 60, b: 30, l: 44 };
+    const sx = y => m.l + ((y - 1) / 9) * (W - m.l - m.r);
+    const sy = v => H - m.b - (v / 80000) * (H - m.t - m.b);
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Expected monthly gross salary by year, six cities" id="gsvg">`;
+    for (let v = 0; v <= 80000; v += 20000) {
+      s += `<line class="${v ? "grid" : "axis"}" x1="${m.l}" x2="${W - m.r}" y1="${sy(v)}" y2="${sy(v)}"/>`;
+      s += `<text x="${m.l - 8}" y="${sy(v) + 4}" text-anchor="end">${v ? v / 1000 + "k" : "0"}</text>`;
+    }
+    YEARS.forEach(y => { s += `<text x="${sx(y)}" y="${H - 10}" text-anchor="middle">Year ${y}</text>`; });
+    s += `<line id="gx" class="axis" y1="${m.t}" y2="${H - m.b}" x1="0" x2="0" visibility="hidden"/>`;
+    GROWTH.forEach(r => {
+      const col = `var(${CITY[r[0]].c})`;
+      const pts = r[1].map((v, i) => `${sx(YEARS[i])},${sy(v)}`).join(" ");
+      s += `<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+      r[1].forEach((v, i) => { s += `<circle cx="${sx(YEARS[i])}" cy="${sy(v)}" r="4" fill="${col}" stroke="var(--surface)" stroke-width="2"/>`; });
+    });
+    // end labels, nudged apart so they don't collide
+    const ends = GROWTH.map(r => ({ k: r[0], y: sy(r[1][3]) })).sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
+    ends.forEach(e => { s += `<text x="${sx(10) + 10}" y="${e.y + 4}" style="fill:var(--ink);font-family:var(--f-data);font-weight:700;font-size:11px">${e.k}</text>`; });
+    s += `<rect id="ghit" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/>`;
+    s += `</svg>`;
+    $("growthChart").innerHTML = s;
+
+    const svg = $("gsvg"), gx = $("gx"), hit = $("ghit");
+    function at(ev) {
+      const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+      const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      let best = 0;
+      YEARS.forEach((y, i) => { if (Math.abs(sx(y) - p.x) < Math.abs(sx(YEARS[best]) - p.x)) best = i; });
+      gx.setAttribute("x1", sx(YEARS[best])); gx.setAttribute("x2", sx(YEARS[best])); gx.setAttribute("visibility", "visible");
+      const rows = GROWTH.slice().sort((a, b) => b[1][best] - a[1][best]).map(r =>
+        `<div class="r"><span class="code" style="--c:var(${CITY[r[0]].c})">${r[0]}</span><span>${best === 3 ? r[2] : kr(r[1][best])}</span></div>`).join("");
+      showTip(`<b>Year ${YEARS[best]}</b>${rows}`, ev.clientX, ev.clientY);
+    }
+    hit.addEventListener("pointermove", at);
+    hit.addEventListener("pointerdown", at);
+    hit.addEventListener("pointerleave", () => { gx.setAttribute("visibility", "hidden"); hideTip(); });
+  })();
+
+  // ================= ENGLISH / ECON =================
+  table("englishTable", ["City", "Startups", "Agencies", "Large corp", "English-only career?", "Score"], [
+    ["SGP", "native", "Native", "Native", "Native", "Fully realistic — official working language", 10],
+    ["AMS", "NL #1", "English", "English", "Mostly EN", "Fully realistic — Europe's most English-friendly hub", 10],
+    ["CPH", "DK #7", "English", "Mixed", "Mixed", "Realistic in tech and startups; Danish helps for local brands", 9],
+    ["STO", "SE #8", "English", "Mixed", "Mixed", "Realistic in tech and scaleups; Swedish helps for local brands", 9],
+    ["GOT", "SE #8", "Mixed", "Swedish", "Mixed", "Harder — smaller international scene, more Swedish-first", 8.5],
+    ["VIE", "AT #3", "Mixed", "German", "German", "Limited — most marketing roles need working German", 7],
+  ].map(r => [`${cityCell(r[0])} <span class="note">(${r[1]})</span>`, r[2], r[3], r[4], { h: r[5], cls: "l" }, { h: r[6], cls: "strong" }]), { leftCols: [1, 2, 3, 4] });
+
+  table("econTable", ["Country / city", "Unemployment", "Inflation", "GDP growth", "Score"], [
+    ["SGP", "Singapore", "2.1%", "0.5–1.5%", "2.0–4.0%", 9.5],
+    ["CPH", "Denmark", "~3% (reg.)", "1.8%", "1.9%", 9.0],
+    ["AMS", "Netherlands", "4.2%", "3.2%", "1.0%", 8.0],
+    ["STO", "Sweden", "~8%", "1.5%", "1.8%", 7.0],
+    ["GOT", "Sweden", "~8%", "1.5%", "1.8%", 7.0],
+    ["VIE", "Austria", "5.7%", "3.0%", "0.6%", 6.0],
+  ].map(r => [`${code(r[0])} <span>${r[1]}</span>`, r[2], r[3], r[4], { h: r[5].toFixed(1), cls: "strong" }]));
+
+  // ================= SHANGHAI / MELBOURNE =================
+  const fin = rows => rows.map(r => [r[0], kr(r[1]), kr(r[2]), r[3], kr(r[4]), kr(r[5]), { h: kr(r[6]), cls: "strong" }]);
+  table("shaFin", ["Level", "Gross", "Net (IIT)", "Eff. tax", "− Rent", "− Essentials", "Disposable"], fin([
+    ["Junior ¥18,000", 17370, 16222, "6.6%", 6755, 3252, 6215],
+    ["Mid ¥35,000", 33775, 29104, "13.8%", 6755, 3252, 19097],
+    ["Senior ¥60,000", 57900, 46233, "20.2%", 6755, 3252, 36226],
+  ]));
+  table("shaPersona", ["Persona", "Career", "Income", "Cost", "Life", "Econ", "English", "Overall"], [
+    ["English-only marketer", "5.5", "9.0", "9.5", "6.8", "6.5", "4.0", { h: "≈7.08 · about 5th", cls: "strong" }],
+    ["Mandarin-fluent marketer", { h: "8.0", cls: "strong" }, "9.0", "9.5", "6.8", "6.5", { h: "7.0", cls: "strong" }, { h: "≈8.23 · would rank #1", cls: "strong" }],
+  ]);
+  table("melFin", ["Level", "Gross", "Net", "Eff. tax", "− Rent", "− Essentials", "Disposable"], fin([
+    ["Junior A$70k", 26540, 21644, "18.5%", 9555, 4436, 7653],
+    ["Mid A$100k", 37915, 29379, "22.5%", 9555, 4436, 15388],
+    ["Senior A$140k", 53085, 39558, "25.5%", 9555, 4436, 25567],
+  ]));
+  table("melField", ["Level", "Melbourne", "Best other", "Rank"], [
+    ["Junior", { h: kr(7653), cls: "strong" }, { h: "GOT 6,753", cls: "l" }, "#1 of 8"],
+    ["Mid", { h: kr(15388), cls: "strong" }, { h: "SHA 19,097", cls: "l" }, "#2 of 8"],
+    ["Senior", { h: kr(25567), cls: "strong" }, { h: "SHA 36,226 · SGP 32,308", cls: "l" }, "#3 of 8"],
+  ]);
+  table("melScore", ["Pillar", "Score"], [
+    ["Career", "6.9"], ["Income", "9.0"], ["Cost", "7.5"], ["Life", "8.6"], ["Econ", "8.0"], ["English", "10"],
+    { cls: "total", cells: ["Overall", "≈7.90 · #2"] },
+  ]);
+
+  // ================= METHOD =================
+  table("methodTable", ["Pillar", "Weight", "How it is scored"], [
+    ["Career opportunities", "40%", "Mean of 12 sub-scores: agencies, performance, e-commerce, startups, scaleups, international firms, HQs, networking, promotion, entrepreneurship, employer mobility, market size"],
+    ["Disposable income", "25%", "Net salary − rent − essentials, in DKK, across seniority levels"],
+    ["Cost of living", "15%", "Absolute rent + essentials and rent-to-income burden (lower cost = higher score)"],
+    ["Lifestyle", "10%", "Climate, safety, healthcare, transport, bikeability, green space, air, international community"],
+    ["Economic stability", "5%", "Unemployment, inflation, growth, resilience, funding environment"],
+    ["English friendliness", "5%", "EF EPI + how realistic an English-only marketing career is"],
+  ].map(r => [r[0], { h: r[1], cls: "strong" }, { h: r[2], cls: "l" }]), { leftCols: [2] });
+
+  // ================= TOOLTIP =================
+  const tip = $("tip");
+  function showTip(html, x, y) {
+    tip.innerHTML = html; tip.hidden = false;
+    const r = tip.getBoundingClientRect();
+    let left = x + 14, top = y + 14;
+    if (left + r.width > innerWidth - 8) left = x - r.width - 14;
+    if (top + r.height > innerHeight - 8) top = y - r.height - 14;
+    tip.style.left = Math.max(8, left) + "px"; tip.style.top = Math.max(8, top) + "px";
+  }
+  function hideTip() { tip.hidden = true; }
+  document.addEventListener("pointermove", e => {
+    if (e.target.closest && e.target.closest("#ghit")) return;
+    const t = e.target.closest && e.target.closest("[data-tip]");
+    t ? showTip(t.dataset.tip, e.clientX, e.clientY) : hideTip();
+  });
+  document.addEventListener("pointerdown", e => {
+    if (e.target.closest && e.target.closest("#ghit")) return;
+    const t = e.target.closest && e.target.closest("[data-tip]");
+    t ? showTip(t.dataset.tip, e.clientX, e.clientY) : hideTip();
+  });
+  addEventListener("scroll", hideTip, { passive: true });
+})();
+</script>
