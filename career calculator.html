@@ -212,6 +212,16 @@
   .mini td.sel, .mini th.sel { background: var(--h1); color: #0d1a33; font-weight: 700; }
   .mini tr.sum td { font-weight: 700; border-top: 1px solid var(--hair-2); }
   .detail .note { margin-top: 8px; }
+  tr.fail > td { background: var(--sunk); color: var(--muted); }
+  tr.fail .code::before { opacity: .45; }
+  tr.fail td.miss { color: var(--bad); font-weight: 700; }
+  tr.divider > td { background: var(--bg); color: var(--muted); font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; text-align: left; padding: 6px 12px; }
+  thead tr.filters th { background: var(--surface); text-transform: none; letter-spacing: 0; font-weight: 400; padding: 6px 8px; }
+  input.flt { width: 100%; min-width: 4.2rem; max-width: 7rem; font: inherit; font-size: .82rem; padding: 4px 6px; border: 1px solid var(--hair-2); border-radius: 4px; background: var(--bg); color: var(--ink); text-align: right; }
+  input.flt:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  input.flt.on { border-color: var(--accent); background: var(--surface); }
+  .bar-row.fail { opacity: .4; }
+  .weights.locked .w-row { opacity: .45; }
   @media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
   @media (max-width: 520px) {
     .bar-row { grid-template-columns: 1.3rem 3.8rem minmax(0, 1fr) 3.4rem; gap: 6px; }
@@ -348,7 +358,15 @@
         <p class="note">Arrows show movement against the default weights (45 / 40 / 10 / 5) in the same situation, with English-only jobs. Shanghai is scored as an English-only marketer.</p>
       </div>
     </div>
-    <p class="note">Disposable income is shown in kroner per month (its 0–10 score in small type). Click a disposable-income figure or a going-out score to see what's behind it.</p>
+    <div class="toolbar">
+      <h3>Filter the cities</h3>
+      <div class="presets">
+        <button type="button" class="chip" id="overrideBtn" aria-pressed="false">Override scorings</button>
+        <button type="button" class="chip" id="clearFilters">Clear filters</button>
+      </div>
+    </div>
+    <p class="note">Type a minimum under any column. Cities below a minimum turn grey and drop to the bottom, and the value that misses turns red. Money left is in kroner for the situation picked above; the rest are 0–10 scores. “Override scorings” sets every multiplier to ×1, so the total is a plain average. Click a money-left figure or a going-out score to see what's behind it.</p>
+    <p class="note" id="filterStatus" aria-live="polite"></p>
     <div class="tbl"><table id="pillarTable"></table></div>
   </section>
 
@@ -780,33 +798,42 @@
     const b = e.target.closest("button"); if (!b) return;
     sit = b.dataset.s; buildScores(); DEFAULT_ORDER = order(DEFAULT_W); renderRanking();
   });
+  let override = false;
+  const FILTERS = { career: null, income: null, life: null, econ: null, out: null };
+  const valFor = (k, f) => f === "income" ? dispFor(k) : SCORES[k][PILLARS.findIndex(p => p.k === f)];
+  const misses = k => Object.keys(FILTERS).filter(f => FILTERS[f] != null && valFor(k, f) < FILTERS[f]);
   function renderRanking() {
     document.querySelectorAll("#sitSeg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === sit)));
     const S = SITS.find(t => t.k === sit);
     $("sitNote").textContent = S.note + " Changes the disposable-income score only.";
-    const sum = weights.reduce((a, b) => a + b, 0);
+    const W = override ? PILLARS.map(() => 1) : weights;
+    const sum = W.reduce((a, b) => a + b, 0);
+    const wTotal = weights.reduce((a, b) => a + b, 0);
     PILLARS.forEach((p, i) => {
-      $("o-" + p.k).textContent = weights[i] + "%";
+      $("o-" + p.k).textContent = override ? "×1" : weights[i] + "%";
       $("w-" + p.k).value = weights[i];
+      $("w-" + p.k).disabled = override;
     });
-    $("wsum").textContent = sum === 100 ? "Weights add up to 100%" : sum === 0 ? "All weights are 0 — set at least one" : `Weights add up to ${sum}%, rescaled to 100%`;
+    $("sliders").classList.toggle("locked", override);
+    $("overrideBtn").setAttribute("aria-pressed", String(override));
+    $("wsum").textContent = override ? "Override on: every pillar counts ×1" : wTotal === 100 ? "Weights add up to 100%" : wTotal === 0 ? "All weights are 0 — set at least one" : `Weights add up to ${wTotal}%, rescaled to 100%`;
     document.querySelectorAll("#presets button").forEach(b => {
-      b.setAttribute("aria-pressed", String(PRESETS[b.dataset.p].w.every((v, i) => v === weights[i])));
+      b.setAttribute("aria-pressed", String(!override && PRESETS[b.dataset.p].w.every((v, i) => v === weights[i])));
     });
-    const ord = order(weights);
+    const ord = order(W);
     const lo = 0, hi = 10;
     $("rankBars").innerHTML = ord.map((k, i) => {
-      const t = sum ? totalFor(k, weights) : 0;
+      const t = sum ? totalFor(k, W) : 0;
       const diff = DEFAULT_ORDER.indexOf(k) - i;
       const mv = diff > 0 ? `<span class="move up" aria-label="up ${diff}">▲${diff}</span>` : diff < 0 ? `<span class="move dn" aria-label="down ${-diff}">▼${-diff}</span>` : "";
       const pct = Math.max(0, (t - lo) / (hi - lo)) * 100;
       const tip = `<b>${CITY[k].name} · ${S.label}</b><div class="r"><span>Money left</span><span>${kr(Math.round(dispFor(k)))} kr</span></div>` + PILLARS.map((p, j) => `<div class="r"><span>${p.name}</span><span>${SCORES[k][j].toFixed(1)}</span></div>`).join("");
-      return `<div class="bar-row${i === 0 ? " lead" : ""}" data-tip="${esc(tip)}">
+      return `<div class="bar-row${i === 0 ? " lead" : ""}${misses(k).length ? " fail" : ""}" data-tip="${esc(tip)}">
         <span class="rk">${i + 1}</span>${code(k)}
         <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${pct}%"></div></div>
         <span class="val">${sum ? t.toFixed(2) : "–"}${mv}</span></div>`;
     }).join("");
-    renderPillarTable(ord, sum, S);
+    renderPillarTable(ord, sum, S, W);
   }
 
   // ---- ranking table with expandable disposable-income and going-out cells
@@ -859,21 +886,49 @@
       ${rows}<tr class="sum"><td>Total basket</td><td></td><td></td><td></td><td>${kr(Math.round(b))}</td></tr></tbody></table></div>
       <p class="note">Score = 10 − (${kr(Math.round(b))} − 1,200) ÷ 200 = ${sc.toFixed(1)} (kept between 1 and 10). The basket takes ${rem > 0 ? Math.round(b / rem * 100) + "%" : "more than all"} of ${S.label.toLowerCase()} money left (${kr(Math.round(rem))} kr).${padelOn ? "" : " Padel not counted."} <i>est</i> = estimate, no 2026 price found.</p>`;
   }
-  function renderPillarTable(ord, sum, S) {
-    const head = ["City", ...PILLARS.map((p, i) => `${p.k === "income" ? "Money left / month" : p.name.split(" ")[0].replace(/\(.*/, "")} ×${(weights[i] / (sum || 1)).toFixed(2).replace(/^0/, "")}`), "Total"];
+  const FLT_COLS = ["career", "income", "life", "econ", "out"];
+  $("pillarTable").innerHTML = `<thead><tr><th>City</th>${PILLARS.map(p => `<th id="ph-${p.k}"></th>`).join("")}<th id="ph-total"></th></tr>
+    <tr class="filters"><th>Minimum</th>${PILLARS.map(p => `<th><input class="flt" type="number" inputmode="decimal" data-f="${p.k}"
+      ${p.k === "income" ? 'step="500" placeholder="kr"' : 'min="0" max="10" step="0.5" placeholder="0–10"'} aria-label="Minimum ${p.name}"></th>`).join("")}<th></th></tr></thead>
+    <tbody id="pillarBody"></tbody>`;
+  function renderPillarTable(ord, sum, S, W) {
+    PILLARS.forEach((p, i) => {
+      $("ph-" + p.k).textContent = `${p.k === "income" ? "Money left / month" : p.name.split(" ")[0].replace(/\(.*/, "")} ×${override ? "1" : (W[i] / (sum || 1)).toFixed(2).replace(/^0/, "")}`;
+    });
+    $("ph-total").textContent = override ? "Average" : "Total";
     const btn = (k, kind, html) => { const id = `${k}:${kind}`; return `<button type="button" class="cellbtn" data-cell="${id}" aria-expanded="${openCell === id}">${html}<span class="caret">${openCell === id ? "▴" : "▾"}</span></button>`; };
-    const body = ord.map(k => {
-      const sc = SCORES[k], rem = Math.round(dispFor(k));
-      const cells = [cityCell(k), sc[0].toFixed(1),
-        btn(k, "income", `<span class="${rem < 0 ? "neg" : ""}">${kr(rem)} kr</span> <span class="sc">${sc[1].toFixed(1)}</span>`),
-        sc[2].toFixed(1), sc[3].toFixed(1), btn(k, "out", sc[4].toFixed(1)),
-        `<b>${sum ? totalFor(k, weights).toFixed(2) : "–"}</b>`];
-      let html = `<tr>${cells.map(c => `<td>${c}</td>`).join("")}</tr>`;
-      if (openCell && openCell.startsWith(k + ":")) html += `<tr class="detail"><td colspan="${head.length}">${openCell.endsWith("income") ? incomeDetail(k, S) : outDetail(k, S)}</td></tr>`;
+    const pass = ord.filter(k => !misses(k).length), fail = ord.filter(k => misses(k).length);
+    const ncol = PILLARS.length + 2;
+    const rowHtml = k => {
+      const sc = SCORES[k], rem = Math.round(dispFor(k)), miss = misses(k);
+      const cells = [[cityCell(k)], [sc[0].toFixed(1), "career"],
+        [btn(k, "income", `<span class="${rem < 0 ? "neg" : ""}">${kr(rem)} kr</span> <span class="sc">${sc[1].toFixed(1)}</span>`), "income"],
+        [sc[2].toFixed(1), "life"], [sc[3].toFixed(1), "econ"], [btn(k, "out", sc[4].toFixed(1)), "out"],
+        [`<b>${sum ? totalFor(k, W).toFixed(2) : "–"}</b>`]];
+      let html = `<tr${miss.length ? ' class="fail"' : ""}>${cells.map(([h, f]) => `<td${f && miss.includes(f) ? ' class="miss"' : ""}>${h}</td>`).join("")}</tr>`;
+      if (openCell && openCell.startsWith(k + ":")) html += `<tr class="detail"><td colspan="${ncol}">${openCell.endsWith("income") ? incomeDetail(k, S) : outDetail(k, S)}</td></tr>`;
       return html;
-    }).join("");
-    $("pillarTable").innerHTML = `<thead><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
+    };
+    $("pillarBody").innerHTML = pass.map(rowHtml).join("")
+      + (fail.length ? `<tr class="divider"><td colspan="${ncol}">Below your minimums</td></tr>` + fail.map(rowHtml).join("") : "");
+    const active = FLT_COLS.filter(f => FILTERS[f] != null).length;
+    $("filterStatus").textContent = active ? `${pass.length} of ${ord.length} cities meet your ${active === 1 ? "minimum" : active + " minimums"}.` : "";
+    document.querySelectorAll("input.flt").forEach(inp => inp.classList.toggle("on", FILTERS[inp.dataset.f] != null));
   }
+  $("pillarTable").addEventListener("input", e => {
+    const inp = e.target.closest && e.target.closest("input.flt"); if (!inp) return;
+    const v = inp.value.trim() === "" ? null : +inp.value;
+    FILTERS[inp.dataset.f] = v == null || isNaN(v) ? null : v;
+    renderRanking();
+  });
+  $("overrideBtn").addEventListener("click", () => {
+    override = !override; renderRanking();
+  });
+  $("clearFilters").addEventListener("click", () => {
+    FLT_COLS.forEach(f => { FILTERS[f] = null; });
+    document.querySelectorAll("input.flt").forEach(inp => { inp.value = ""; });
+    renderRanking();
+  });
   $("pillarTable").addEventListener("click", e => {
     const b = e.target.closest("button[data-cell]"); if (!b) return;
     openCell = openCell === b.dataset.cell ? null : b.dataset.cell;
@@ -886,7 +941,7 @@
   });
   $("presets").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
-    weights = PRESETS[b.dataset.p].w.slice();
+    weights = PRESETS[b.dataset.p].w.slice(); override = false;
     renderRanking();
   });
   $("localJobs").addEventListener("change", e => {
