@@ -219,6 +219,10 @@
   .vz::before { margin-right: 5px; }
   .vz.v0::before { content: "●"; color: var(--good); } .vz.v1::before { content: "◐"; color: #c98500; } .vz.v2::before { content: "○"; color: var(--bad); }
   select.flt { text-align: left; max-width: 9rem; }
+  .tablebar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+  .sortbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; text-transform: inherit; letter-spacing: inherit; font-weight: inherit; text-align: inherit; }
+  .sortbtn:hover, th[aria-sort] .sortbtn { color: var(--ink); }
+  .sarr { margin-left: 4px; font-size: .9em; }
   tr.divider > td { background: var(--bg); color: var(--muted); font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; text-align: left; padding: 6px 12px; }
   thead tr.filters th { background: var(--surface); text-transform: none; letter-spacing: 0; font-weight: 400; padding: 6px 8px; }
   input.flt { width: 100%; min-width: 4.2rem; max-width: 7rem; font: inherit; font-size: .82rem; padding: 4px 6px; border: 1px solid var(--hair-2); border-radius: 4px; background: var(--bg); color: var(--ink); text-align: right; }
@@ -362,16 +366,16 @@
         <p class="note">Arrows show movement against the default weights (45 / 40 / 10 / 5) in the same situation, with English-only jobs. Shanghai is scored as an English-only marketer.</p>
       </div>
     </div>
-    <div class="toolbar">
-      <h3>Filter the cities</h3>
-      <div class="presets">
+    <h3>Filter and sort the cities</h3>
+    <p class="note">Click a column name to sort by it (click again to flip the order). Type a minimum under any column, or pick which work permits you accept (for a Czech/EU citizen aged 21; hover a badge for the route). Cities below a minimum turn grey and drop to the bottom, and the value that misses turns red. Money left is in kroner for the situation picked above; the rest are 0–10 scores. “Override scorings” sets every multiplier to ×1, so the total is a plain average. Click a money-left figure or a going-out score to see what's behind it.</p>
+    <div class="sub">
+      <div class="tablebar">
         <button type="button" class="chip" id="overrideBtn" aria-pressed="false">Override scorings</button>
         <button type="button" class="chip" id="clearFilters">Clear filters</button>
+        <span class="note" id="filterStatus" aria-live="polite"></span>
       </div>
+      <div class="tbl"><table id="pillarTable"></table></div>
     </div>
-    <p class="note">Type a minimum under any column, or pick which work permits you accept (for a Czech/EU citizen aged 21; hover a badge for the route). Cities below a minimum turn grey and drop to the bottom, and the value that misses turns red. Money left is in kroner for the situation picked above; the rest are 0–10 scores. “Override scorings” sets every multiplier to ×1, so the total is a plain average. Click a money-left figure or a going-out score to see what's behind it.</p>
-    <p class="note" id="filterStatus" aria-live="polite"></p>
-    <div class="tbl"><table id="pillarTable"></table></div>
   </section>
 
   <section id="income">
@@ -989,7 +993,8 @@
       <p class="note">Score = 10 − (${kr(Math.round(b))} − 1,200) ÷ 200 = ${sc.toFixed(1)} (kept between 1 and 10). The basket takes ${rem > 0 ? Math.round(b / rem * 100) + "%" : "more than all"} of ${S.label.toLowerCase()} money left (${kr(Math.round(rem))} kr).${padelOn ? "" : " Padel not counted."} <i>est</i> = estimate, no 2026 price found.</p>`;
   }
   const FLT_COLS = ["visa", "career", "income", "life", "econ", "out"];
-  $("pillarTable").innerHTML = `<thead><tr><th>City</th><th>Work permit</th>${PILLARS.map(p => `<th id="ph-${p.k}"></th>`).join("")}<th id="ph-total"></th></tr>
+  const sortTh = (key, inner) => `<th id="th-${key}"><button type="button" class="sortbtn" data-sort="${key}">${inner}<span class="sarr" id="sa-${key}"></span></button></th>`;
+  $("pillarTable").innerHTML = `<thead><tr>${sortTh("city", "City")}${sortTh("visa", "Work permit")}${PILLARS.map(p => sortTh(p.k, `<span id="ph-${p.k}"></span>`)).join("")}${sortTh("total", '<span id="ph-total"></span>')}</tr>
     <tr class="filters"><th>Minimum</th><th><select class="flt" data-f="visa" aria-label="Work permit filter">
       <option value="">Any</option><option value="1">No or easy visa</option><option value="0">No visa only</option></select></th>${PILLARS.map(p => `<th><input class="flt" type="number" inputmode="decimal" data-f="${p.k}"
       ${p.k === "income" ? 'step="500" placeholder="kr"' : 'min="0" max="10" step="0.5" placeholder="0–10"'} aria-label="Minimum ${p.name}"></th>`).join("")}<th></th></tr></thead>
@@ -1000,6 +1005,16 @@
     });
     $("ph-total").textContent = override ? "Average" : "Total";
     const btn = (k, kind, html) => { const id = `${k}:${kind}`; return `<button type="button" class="cellbtn" data-cell="${id}" aria-expanded="${openCell === id}">${html}<span class="caret">${openCell === id ? "▴" : "▾"}</span></button>`; };
+    if (sortKey) {
+      const v = k => sortKey === "city" ? CITY[k].name : sortKey === "visa" ? VISA[k][0] : sortKey === "total" ? totalFor(k, W)
+        : sortKey === "income" ? dispFor(k) : SCORES[k][PILLARS.findIndex(p => p.k === sortKey)];
+      ord = ord.slice().sort((a, b) => { const x = v(a), y = v(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * sortDir; });
+    }
+    ["city", "visa", ...PILLARS.map(p => p.k), "total"].forEach(key => {
+      const on = sortKey ? sortKey === key : key === "total";
+      $("sa-" + key).textContent = on ? (sortKey ? (sortDir > 0 ? "▲" : "▼") : "▼") : "";
+      if (on) $("th-" + key).setAttribute("aria-sort", sortKey && sortDir > 0 ? "ascending" : "descending"); else $("th-" + key).removeAttribute("aria-sort");
+    });
     const pass = ord.filter(k => !misses(k).length), fail = ord.filter(k => misses(k).length);
     const ncol = PILLARS.length + 3;
     const rowHtml = k => {
@@ -1037,7 +1052,16 @@
     document.querySelectorAll(".flt").forEach(inp => { inp.value = ""; });
     renderRanking();
   });
+  let sortKey = null, sortDir = -1; // null = default order (total, highest first)
   $("pillarTable").addEventListener("click", e => {
+    const sb = e.target.closest("button[data-sort]");
+    if (sb) {
+      const key = sb.dataset.sort;
+      if (key === sortKey) sortDir = -sortDir;
+      else { sortKey = key; sortDir = key === "city" || key === "visa" ? 1 : -1; }
+      if (sortKey === "total" && sortDir === -1) sortKey = null;
+      renderRanking(); return;
+    }
     const b = e.target.closest("button[data-cell]"); if (!b) return;
     openCell = openCell === b.dataset.cell ? null : b.dataset.cell;
     renderRanking();
