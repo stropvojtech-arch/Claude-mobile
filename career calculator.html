@@ -215,6 +215,10 @@
   tr.fail > td { background: var(--sunk); color: var(--muted); }
   tr.fail .code::before { opacity: .45; }
   tr.fail td.miss { color: var(--bad); font-weight: 700; }
+  .vz { display: inline-block; font-size: .78rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--hair-2); white-space: nowrap; }
+  .vz::before { margin-right: 5px; }
+  .vz.v0::before { content: "●"; color: var(--good); } .vz.v1::before { content: "◐"; color: #c98500; } .vz.v2::before { content: "○"; color: var(--bad); }
+  select.flt { text-align: left; max-width: 9rem; }
   tr.divider > td { background: var(--bg); color: var(--muted); font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; text-align: left; padding: 6px 12px; }
   thead tr.filters th { background: var(--surface); text-transform: none; letter-spacing: 0; font-weight: 400; padding: 6px 8px; }
   input.flt { width: 100%; min-width: 4.2rem; max-width: 7rem; font: inherit; font-size: .82rem; padding: 4px 6px; border: 1px solid var(--hair-2); border-radius: 4px; background: var(--bg); color: var(--ink); text-align: right; }
@@ -365,7 +369,7 @@
         <button type="button" class="chip" id="clearFilters">Clear filters</button>
       </div>
     </div>
-    <p class="note">Type a minimum under any column. Cities below a minimum turn grey and drop to the bottom, and the value that misses turns red. Money left is in kroner for the situation picked above; the rest are 0–10 scores. “Override scorings” sets every multiplier to ×1, so the total is a plain average. Click a money-left figure or a going-out score to see what's behind it.</p>
+    <p class="note">Type a minimum under any column, or pick which work permits you accept (for a Czech/EU citizen aged 21; hover a badge for the route). Cities below a minimum turn grey and drop to the bottom, and the value that misses turns red. Money left is in kroner for the situation picked above; the rest are 0–10 scores. “Override scorings” sets every multiplier to ×1, so the total is a plain average. Click a money-left figure or a going-out score to see what's behind it.</p>
     <p class="note" id="filterStatus" aria-live="polite"></p>
     <div class="tbl"><table id="pillarTable"></table></div>
   </section>
@@ -852,9 +856,27 @@
     sit = b.dataset.s; buildScores(); DEFAULT_ORDER = order(DEFAULT_W); renderRanking();
   });
   let override = false;
-  const FILTERS = { career: null, income: null, life: null, econ: null, out: null };
+  const FILTERS = { visa: null, career: null, income: null, life: null, econ: null, out: null };
+  // Work permit for a Czech (EU) citizen aged 21: 0 = no visa, 1 = easy visa, 2 = hard visa. Checked Oct 2026.
+  const VISA = {
+    CPH: [0, "EU free movement"], STO: [0, "EU free movement"], GOT: [0, "EU free movement"], AMS: [0, "EU free movement"],
+    VIE: [0, "EU free movement"], PRG: [0, "EU citizen, home country"], WAW: [0, "EU free movement"], KRK: [0, "EU free movement"],
+    WRO: [0, "EU free movement"], BCN: [0, "EU free movement"],
+    ZRH: [0, "EU–Swiss free movement: a job contract gets you a B permit"], GVA: [0, "EU–Swiss free movement: a job contract gets you a B permit"],
+    MEL: [1, "Work and Holiday visa (subclass 462), age 18–30, capped places"], BNE: [1, "Work and Holiday visa (subclass 462), age 18–30, capped places"],
+    ADL: [1, "Work and Holiday visa (subclass 462), age 18–30, capped places"], HBA: [1, "Work and Holiday visa (subclass 462), age 18–30, capped places"],
+    TOR: [1, "IEC Working Holiday permit, Czech citizens aged 18–35"], MTL: [1, "IEC Working Holiday permit, Czech citizens aged 18–35"],
+    DXB: [1, "Employer-sponsored work visa, routinely issued once you have an offer"],
+    AUS: [2, "US work visa needed: H-1B lottery or employer sponsorship"], NYC: [2, "US work visa needed: H-1B lottery or employer sponsorship"],
+    MAN: [2, "Skilled Worker visa with sponsor; EU–UK youth scheme not agreed (Sep 2026)"],
+    SGP: [2, "Employment Pass needs S$5,600+ a month at your age plus COMPASS points; junior pay is about S$4,000"],
+    SHA: [2, "Work permit usually needs a degree plus 2 years' experience"],
+    BUE: [2, "No Czech–Argentina working holiday; needs employer-sponsored work residence"],
+    SJO: [2, "Employer must get a work permit; hard for jobs a local could fill"],
+  };
+  const VISA_LABEL = ["No visa", "Easy visa", "Hard visa"];
   const valFor = (k, f) => f === "income" ? dispFor(k) : SCORES[k][PILLARS.findIndex(p => p.k === f)];
-  const misses = k => Object.keys(FILTERS).filter(f => FILTERS[f] != null && valFor(k, f) < FILTERS[f]);
+  const misses = k => Object.keys(FILTERS).filter(f => FILTERS[f] != null && (f === "visa" ? VISA[k][0] > FILTERS.visa : valFor(k, f) < FILTERS[f]));
   function renderRanking() {
     document.querySelectorAll("#sitSeg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === sit)));
     const S = SITS.find(t => t.k === sit);
@@ -880,7 +902,7 @@
       const diff = DEFAULT_ORDER.indexOf(k) - i;
       const mv = diff > 0 ? `<span class="move up" aria-label="up ${diff}">▲${diff}</span>` : diff < 0 ? `<span class="move dn" aria-label="down ${-diff}">▼${-diff}</span>` : "";
       const pct = Math.max(0, (t - lo) / (hi - lo)) * 100;
-      const tip = `<b>${CITY[k].name} · ${S.label}</b><div class="r"><span>Money left</span><span>${kr(Math.round(dispFor(k)))} kr</span></div>` + PILLARS.map((p, j) => `<div class="r"><span>${p.name}</span><span>${SCORES[k][j].toFixed(1)}</span></div>`).join("");
+      const tip = `<b>${CITY[k].name} · ${S.label}</b><div class="r"><span>Work permit</span><span>${VISA_LABEL[VISA[k][0]]}</span></div><div class="r"><span>Money left</span><span>${kr(Math.round(dispFor(k)))} kr</span></div>` + PILLARS.map((p, j) => `<div class="r"><span>${p.name}</span><span>${SCORES[k][j].toFixed(1)}</span></div>`).join("");
       return `<div class="bar-row${i === 0 ? " lead" : ""}${misses(k).length ? " fail" : ""}" data-tip="${esc(tip)}">
         <span class="rk">${i + 1}</span>${code(k)}
         <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${pct}%"></div></div>
@@ -956,9 +978,10 @@
       ${rows}<tr class="sum"><td>Total basket</td><td></td><td></td><td></td><td>${kr(Math.round(b))}</td></tr></tbody></table></div>
       <p class="note">Score = 10 − (${kr(Math.round(b))} − 1,200) ÷ 200 = ${sc.toFixed(1)} (kept between 1 and 10). The basket takes ${rem > 0 ? Math.round(b / rem * 100) + "%" : "more than all"} of ${S.label.toLowerCase()} money left (${kr(Math.round(rem))} kr).${padelOn ? "" : " Padel not counted."} <i>est</i> = estimate, no 2026 price found.</p>`;
   }
-  const FLT_COLS = ["career", "income", "life", "econ", "out"];
-  $("pillarTable").innerHTML = `<thead><tr><th>City</th>${PILLARS.map(p => `<th id="ph-${p.k}"></th>`).join("")}<th id="ph-total"></th></tr>
-    <tr class="filters"><th>Minimum</th>${PILLARS.map(p => `<th><input class="flt" type="number" inputmode="decimal" data-f="${p.k}"
+  const FLT_COLS = ["visa", "career", "income", "life", "econ", "out"];
+  $("pillarTable").innerHTML = `<thead><tr><th>City</th><th>Work permit</th>${PILLARS.map(p => `<th id="ph-${p.k}"></th>`).join("")}<th id="ph-total"></th></tr>
+    <tr class="filters"><th>Minimum</th><th><select class="flt" data-f="visa" aria-label="Work permit filter">
+      <option value="">Any</option><option value="1">No or easy visa</option><option value="0">No visa only</option></select></th>${PILLARS.map(p => `<th><input class="flt" type="number" inputmode="decimal" data-f="${p.k}"
       ${p.k === "income" ? 'step="500" placeholder="kr"' : 'min="0" max="10" step="0.5" placeholder="0–10"'} aria-label="Minimum ${p.name}"></th>`).join("")}<th></th></tr></thead>
     <tbody id="pillarBody"></tbody>`;
   function renderPillarTable(ord, sum, S, W) {
@@ -968,10 +991,10 @@
     $("ph-total").textContent = override ? "Average" : "Total";
     const btn = (k, kind, html) => { const id = `${k}:${kind}`; return `<button type="button" class="cellbtn" data-cell="${id}" aria-expanded="${openCell === id}">${html}<span class="caret">${openCell === id ? "▴" : "▾"}</span></button>`; };
     const pass = ord.filter(k => !misses(k).length), fail = ord.filter(k => misses(k).length);
-    const ncol = PILLARS.length + 2;
+    const ncol = PILLARS.length + 3;
     const rowHtml = k => {
       const sc = SCORES[k], rem = Math.round(dispFor(k)), miss = misses(k);
-      const cells = [[cityCell(k)], [sc[0].toFixed(1), "career"],
+      const cells = [[cityCell(k)], [`<span class="vz v${VISA[k][0]}" title="${esc(VISA[k][1])}">${VISA_LABEL[VISA[k][0]]}</span>`, "visa"], [sc[0].toFixed(1), "career"],
         [btn(k, "income", `<span class="${rem < 0 ? "neg" : ""}">${kr(rem)} kr</span> <span class="sc">${sc[1].toFixed(1)}</span>`), "income"],
         [sc[2].toFixed(1), "life"], [sc[3].toFixed(1), "econ"], [btn(k, "out", sc[4].toFixed(1)), "out"],
         [`<b>${sum ? totalFor(k, W).toFixed(2) : "–"}</b>`]];
@@ -983,8 +1006,13 @@
       + (fail.length ? `<tr class="divider"><td colspan="${ncol}">Below your minimums</td></tr>` + fail.map(rowHtml).join("") : "");
     const active = FLT_COLS.filter(f => FILTERS[f] != null).length;
     $("filterStatus").textContent = active ? `${pass.length} of ${ord.length} cities meet your ${active === 1 ? "minimum" : active + " minimums"}.` : "";
-    document.querySelectorAll("input.flt").forEach(inp => inp.classList.toggle("on", FILTERS[inp.dataset.f] != null));
+    document.querySelectorAll(".flt").forEach(inp => inp.classList.toggle("on", FILTERS[inp.dataset.f] != null));
   }
+  $("pillarTable").addEventListener("change", e => {
+    const sel = e.target.closest && e.target.closest("select.flt"); if (!sel) return;
+    FILTERS.visa = sel.value === "" ? null : +sel.value;
+    renderRanking();
+  });
   $("pillarTable").addEventListener("input", e => {
     const inp = e.target.closest && e.target.closest("input.flt"); if (!inp) return;
     const v = inp.value.trim() === "" ? null : +inp.value;
@@ -996,7 +1024,7 @@
   });
   $("clearFilters").addEventListener("click", () => {
     FLT_COLS.forEach(f => { FILTERS[f] = null; });
-    document.querySelectorAll("input.flt").forEach(inp => { inp.value = ""; });
+    document.querySelectorAll(".flt").forEach(inp => { inp.value = ""; });
     renderRanking();
   });
   $("pillarTable").addEventListener("click", e => {
