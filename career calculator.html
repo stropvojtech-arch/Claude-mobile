@@ -200,6 +200,18 @@
   .callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; color: var(--ink-2); font-size: .95rem; max-width: 72ch; }
   footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--hair); padding-top: 18px; display: grid; gap: 6px; }
 
+  .cellbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; border-bottom: 1px dashed var(--hair-2); white-space: nowrap; }
+  .cellbtn:hover, .cellbtn[aria-expanded="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+  .cellbtn .caret { font-size: .7em; margin-left: 3px; color: var(--muted); }
+  tr.detail > td { background: var(--sunk); white-space: normal; text-align: left; padding: 12px 14px 16px; }
+  tbody tr.detail:hover > td { background: var(--sunk); }
+  .detail h4 { margin: 0 0 8px; font-size: .9rem; }
+  .detail .tbl { display: inline-block; max-width: 100%; }
+  .mini { width: auto; font-size: .85rem; }
+  .mini th, .mini td { padding: 5px 12px; }
+  .mini td.sel, .mini th.sel { background: var(--h1); color: #0d1a33; font-weight: 700; }
+  .mini tr.sum td { font-weight: 700; border-top: 1px solid var(--hair-2); }
+  .detail .note { margin-top: 8px; }
   @media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
   @media (max-width: 520px) {
     .bar-row { grid-template-columns: 1.3rem 3.8rem minmax(0, 1fr) 3.4rem; gap: 6px; }
@@ -336,6 +348,7 @@
         <p class="note">Arrows show movement against the default weights (45 / 40 / 10 / 5) in the same situation, with English-only jobs. Shanghai is scored as an English-only marketer.</p>
       </div>
     </div>
+    <p class="note">Disposable income is shown in kroner per month (its 0–10 score in small type). Click a disposable-income figure or a going-out score to see what's behind it.</p>
     <div class="tbl"><table id="pillarTable"></table></div>
   </section>
 
@@ -793,10 +806,79 @@
         <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${pct}%"></div></div>
         <span class="val">${sum ? t.toFixed(2) : "–"}${mv}</span></div>`;
     }).join("");
-    table("pillarTable",
-      ["City", ...PILLARS.map((p, i) => `${p.name.split(" ")[0].replace(/\(.*/, "")} ×${(weights[i] / (sum || 1)).toFixed(2).replace(/^0/, "")}`), "Total"],
-      ord.map(k => [cityCell(k), ...SCORES[k].map(s => s % 1 ? s.toFixed(1) : s), { h: sum ? totalFor(k, weights).toFixed(2) : "–", cls: "strong" }]));
+    renderPillarTable(ord, sum, S);
   }
+
+  // ---- ranking table with expandable disposable-income and going-out cells
+  const RENT_DKK = { CPH: 12500, STO: 9492, GOT: 6780, AMS: 14193, VIE: 8217, SGP: 19734, SHA: 6755, MEL: 9555, PRG: 6426, DXB: 11658 };
+  // Essentials excluding rent, DKK/month: [groceries, utilities, internet, mobile, transport, health insurance].
+  // MEL and SHA only had a total; their split is estimated from typical local prices.
+  const ESS = {
+    CPH: [2800, 1100, 250, 120, 550, 0], STO: [2712, 475, 237, 136, 719, 0], GOT: [2237, 475, 237, 136, 563, 0],
+    AMS: [2988, 1307, 336, 149, 747, 1083], VIE: [2241, 1494, 224, 112, 291, 0], SGP: [1771, 1012, 228, 152, 648, 0],
+    PRG: [1836, 1224, 153, 122, 168, 0], DXB: [2436, 1366, 677, 261, 696, 0],
+    MEL: [2275, 819, 341, 155, 846, 0], SHA: [2413, 355, 97, 97, 290, 0],
+  };
+  const ESS_EST = { MEL: 1, SHA: 1 };
+  const ESS_LABELS = ["Food (groceries)", "Utilities (power, heat, water)", "Internet", "Mobile", "Transport (monthly pass)", "Health insurance"];
+  let openCell = null; // "CPH:income" or "CPH:out"
+  function incomeDetail(k, S) {
+    const lv = [["junior", "Junior"], ["mid", "Mid"], ["senior", "Senior"]];
+    const cols = lv.map(([l, label]) => {
+      const [, g, t, n, e, rem] = FLOW[l].find(r => r[0] === k);
+      return { label, sel: sit === l, g, t, n, rent: RENT_DKK[k], ess: e - RENT_DKK[k], col: e, rem };
+    });
+    if (sit === "overall") {
+      const avg = f => Math.round(cols.reduce((a, c) => a + c[f], 0) / 3);
+      cols.push({ label: "Average", sel: true, g: avg("g"), t: avg("t"), n: avg("n"), rent: RENT_DKK[k], ess: cols[0].ess, col: cols[0].col, rem: avg("rem") });
+    }
+    const fixedLine = (name, v, sign = "− ") => `<tr><td style="padding-left:24px">${name}</td>${cols.map(c => `<td${c.sel ? ' class="sel"' : ""}>${sign}${kr(v)}</td>`).join("")}</tr>`;
+    const essRows = ESS[k].map((v, i) => v ? fixedLine(ESS_LABELS[i] + (ESS_EST[k] ? ' <sup class="est">est</sup>' : ""), v) : "").join("");
+    const line = (name, f, sign, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td>${name}</td>${cols.map(c => `<td${c.sel ? ' class="sel"' : ""}>${sign}${kr(c[f])}</td>`).join("")}</tr>`;
+    const c0 = cols.find(c => c.sel);
+    return `<h4>${CITY[k].name} · where the money goes (DKK per month)</h4>
+      <div class="tbl"><table class="mini"><thead><tr><th></th>${cols.map(c => `<th${c.sel ? ' class="sel"' : ""}>${c.label}</th>`).join("")}</tr></thead><tbody>
+      ${line("Gross salary", "g", "")}${line("Income tax", "t", "− ")}${line("Net salary", "n", "= ", "sum")}
+      <tr><td colspan="${cols.length + 1}" class="dim" style="padding-top:10px">Cost of living</td></tr>
+      ${fixedLine("Rent, median 1-bedroom", RENT_DKK[k])}${essRows}
+      ${line("Total cost of living", "col", "− ", "sum")}
+      ${line("Money left (disposable income)", "rem", "= ", "sum")}</tbody></table></div>
+      <p class="note">${ESS_EST[k] ? "The category split for this city is an estimate; the total is from the original study. " : ""}Score ${incomeScore(k).toFixed(1)}/10: the best city in the ${S.label.toLowerCase()} view scores 10, 0 kr or less scores 0.</p>`;
+  }
+  function outDetail(k, S) {
+    const items = goItems();
+    const rem = dispFor(k), b = basket(k);
+    const rows = items.map(it => {
+      const [v, est] = it.p[k], d = dkk(k, v);
+      return `<tr><td>${it.label}${est ? ' <sup class="est">est</sup>' : ""}<div class="note">${it.k === "gym" ? GYM_NAME[k] : it.k === "padel" ? `Court ${COURT[k]} per hour, split 4 ways` : it.unit}</div></td>
+        <td>${local(v, CUR[k])}</td><td>${kr(Math.round(d))}</td><td>× ${it.qty}</td><td>${kr(Math.round(d * it.qty))}</td></tr>`;
+    }).join("");
+    const sc = outScore(k);
+    return `<h4>${CITY[k].name} · a month of going out</h4>
+      <div class="tbl"><table class="mini"><thead><tr><th>Item</th><th>Local price</th><th>DKK each</th><th>Times a month</th><th>DKK a month</th></tr></thead><tbody>
+      ${rows}<tr class="sum"><td>Total basket</td><td></td><td></td><td></td><td>${kr(Math.round(b))}</td></tr></tbody></table></div>
+      <p class="note">Score = 10 − (${kr(Math.round(b))} − 1,200) ÷ 200 = ${sc.toFixed(1)} (kept between 1 and 10). The basket takes ${rem > 0 ? Math.round(b / rem * 100) + "%" : "more than all"} of ${S.label.toLowerCase()} money left (${kr(Math.round(rem))} kr).${padelOn ? "" : " Padel not counted."} <i>est</i> = estimate, no 2026 price found.</p>`;
+  }
+  function renderPillarTable(ord, sum, S) {
+    const head = ["City", ...PILLARS.map((p, i) => `${p.k === "income" ? "Money left / month" : p.name.split(" ")[0].replace(/\(.*/, "")} ×${(weights[i] / (sum || 1)).toFixed(2).replace(/^0/, "")}`), "Total"];
+    const btn = (k, kind, html) => { const id = `${k}:${kind}`; return `<button type="button" class="cellbtn" data-cell="${id}" aria-expanded="${openCell === id}">${html}<span class="caret">${openCell === id ? "▴" : "▾"}</span></button>`; };
+    const body = ord.map(k => {
+      const sc = SCORES[k], rem = Math.round(dispFor(k));
+      const cells = [cityCell(k), sc[0].toFixed(1),
+        btn(k, "income", `<span class="${rem < 0 ? "neg" : ""}">${kr(rem)} kr</span> <span class="sc">${sc[1].toFixed(1)}</span>`),
+        sc[2].toFixed(1), sc[3].toFixed(1), btn(k, "out", sc[4].toFixed(1)),
+        `<b>${sum ? totalFor(k, weights).toFixed(2) : "–"}</b>`];
+      let html = `<tr>${cells.map(c => `<td>${c}</td>`).join("")}</tr>`;
+      if (openCell && openCell.startsWith(k + ":")) html += `<tr class="detail"><td colspan="${head.length}">${openCell.endsWith("income") ? incomeDetail(k, S) : outDetail(k, S)}</td></tr>`;
+      return html;
+    }).join("");
+    $("pillarTable").innerHTML = `<thead><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
+  }
+  $("pillarTable").addEventListener("click", e => {
+    const b = e.target.closest("button[data-cell]"); if (!b) return;
+    openCell = openCell === b.dataset.cell ? null : b.dataset.cell;
+    renderRanking();
+  });
   $("sliders").addEventListener("input", e => {
     if (!e.target.dataset.i) return;
     weights[+e.target.dataset.i] = +e.target.value;
