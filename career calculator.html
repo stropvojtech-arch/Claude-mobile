@@ -342,7 +342,7 @@
       <p class="note">Four pillars, each scored 0–10, plus optional going-out costs. Drag a weight to see how the order changes. Weights are rescaled to 100% if they don't add up.</p>
       <ul class="plain">
         <li><b>Career opportunities (English only)</b>: how deep the marketing job market is, multiplied by the share of those jobs you can do in English. A job that needs the local language counts for nothing. <a href="#career">Details</a></li>
-        <li><b>Disposable income</b>: what's left each month after tax, rent and essentials, for the situation you pick (junior, mid, senior, or the average of all three). The best city in that situation scores 10; 0 kr or a deficit scores 0. Cost of living sits inside this number, so it no longer has its own pillar. <a href="#income">Details</a></li>
+        <li><b>Disposable income</b>: what's left each month after tax, rent and essentials, for the situation you pick (junior, mid, senior, or the average of all three). The best city in that situation scores 10; 0 kr or a deficit scores 0. Cost of living sits inside this number, so it no longer has its own pillar. With <b>Remote job</b> ticked it becomes salary − tax only, since rent and living costs depend on where you live, not where the employer is. <a href="#income">Details</a></li>
         <li><b>Lifestyle</b>: how pleasant the city is to live in day to day. It averages nine 1–10 scores: weather, cycling, public transport, walking, safety, healthcare, air quality, parks and how international the people are. <a href="#life">Details</a></li>
         <li><b>Economic stability</b>: how safe the country's economy looks in 2026. Low unemployment, low inflation and steady growth mean fewer layoffs and a currency that keeps its value. <a href="#economy">Details</a></li>
       </ul>
@@ -353,6 +353,7 @@
           <span class="eyebrow">Your situation</span>
           <div class="seg" role="group" aria-label="Situation" id="sitSeg"></div>
           <p class="note" id="sitNote"></p>
+          <label class="check"><input type="checkbox" id="remoteOn"> Remote job: count only salary − tax (rent and living costs don't matter)</label>
         </div>
         <div id="sliders" class="weights"></div>
         <label class="check"><input type="checkbox" id="localJobs"> Also count jobs that need the local language</label>
@@ -830,7 +831,10 @@
     HBA: [1.0, "Australia: all marketing jobs are English."],
     AKL: [1.0, "New Zealand: native English market; every marketing job is open language-wise."],
   };
-  const avgDisp = k => ["junior", "mid", "senior"].reduce((a, l) => a + FLOW[l].find(r => r[0] === k)[5], 0) / 3;
+  // Remote job: the money pillar becomes net salary (gross − tax); rent and living costs drop out.
+  let remote = false;
+  const MC = () => remote ? 3 : 5;
+  const avgDisp = k => ["junior", "mid", "senior"].reduce((a, l) => a + FLOW[l].find(r => r[0] === k)[MC()], 0) / 3;
   const SITS = [
     { k: "junior", label: "Junior", note: "0–3 years. Money left at junior pay." },
     { k: "mid", label: "Mid", note: "4–8 years. Money left at mid-level pay." },
@@ -838,7 +842,7 @@
     { k: "overall", label: "Overall", note: "Average of junior, mid and senior." },
   ];
   let sit = "junior";
-  const dispFor = k => sit === "overall" ? avgDisp(k) : FLOW[sit].find(r => r[0] === k)[5];
+  const dispFor = k => sit === "overall" ? avgDisp(k) : FLOW[sit].find(r => r[0] === k)[MC()];
   const incomeScore = k => {
     const best = Math.max(...Object.keys(RAW).map(dispFor));
     return Math.max(0, dispFor(k)) / best * 10;
@@ -910,7 +914,7 @@
   function renderRanking() {
     document.querySelectorAll("#sitSeg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === sit)));
     const S = SITS.find(t => t.k === sit);
-    $("sitNote").textContent = S.note + " Changes the disposable-income score only.";
+    $("sitNote").textContent = (remote ? S.note.replace("Money left at", "Net salary at") + " Remote job: rent and living costs don't count." : S.note) + " Changes the disposable-income score only.";
     const W = override ? PILLARS.map(() => 1) : weights;
     const sum = W.reduce((a, b) => a + b, 0);
     const wTotal = weights.reduce((a, b) => a + b, 0);
@@ -932,7 +936,7 @@
       const diff = DEFAULT_ORDER.indexOf(k) - i;
       const mv = diff > 0 ? `<span class="move up" aria-label="up ${diff}">▲${diff}</span>` : diff < 0 ? `<span class="move dn" aria-label="down ${-diff}">▼${-diff}</span>` : "";
       const pct = Math.max(0, (t - lo) / (hi - lo)) * 100;
-      const tip = `<b>${CITY[k].name} · ${S.label}</b><div class="r"><span>Work permit</span><span>${VISA_LABEL[VISA[k][0]]}</span></div><div class="r"><span>Money left</span><span>${kr(Math.round(dispFor(k)))} kr</span></div>` + PILLARS.map((p, j) => `<div class="r"><span>${p.name}</span><span>${SCORES[k][j].toFixed(1)}</span></div>`).join("");
+      const tip = `<b>${CITY[k].name} · ${S.label}</b><div class="r"><span>Work permit</span><span>${VISA_LABEL[VISA[k][0]]}</span></div><div class="r"><span>${remote ? "Net pay (remote)" : "Money left"}</span><span>${kr(Math.round(dispFor(k)))} kr</span></div>` + PILLARS.map((p, j) => `<div class="r"><span>${p.name}</span><span>${SCORES[k][j].toFixed(1)}</span></div>`).join("");
       return `<div class="bar-row${i === 0 ? " lead" : ""}${misses(k).length ? " fail" : ""}" data-tip="${esc(tip)}">
         <span class="rk">${i + 1}</span>${code(k)}
         <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${pct}%"></div></div>
@@ -982,7 +986,7 @@
     const lv = [["junior", "Junior"], ["mid", "Mid"], ["senior", "Senior"]];
     const cols = lv.map(([l, label]) => {
       const [, g, t, n, e, rem] = FLOW[l].find(r => r[0] === k);
-      return { label, sel: sit === l, g, t, n, rent: RENT_DKK[k], ess: e - RENT_DKK[k], col: e, rem };
+      return { label, sel: sit === l, g, t, n, rent: RENT_DKK[k], ess: e - RENT_DKK[k], col: e, rem: remote ? n : rem };
     });
     if (sit === "overall") {
       const avg = f => Math.round(cols.reduce((a, c) => a + c[f], 0) / 3);
@@ -995,11 +999,11 @@
     return `<h4>${CITY[k].name} · where the money goes (DKK per month)</h4>
       <div class="tbl"><table class="mini"><thead><tr><th></th>${cols.map(c => `<th${c.sel ? ' class="sel"' : ""}>${c.label}</th>`).join("")}</tr></thead><tbody>
       ${line("Gross salary", "g", "")}${line("Income tax", "t", "− ")}${line("Net salary", "n", "= ", "sum")}
-      <tr><td colspan="${cols.length + 1}" class="dim" style="padding-top:10px">Cost of living</td></tr>
+      ${remote ? `<tr><td colspan="${cols.length + 1}" class="dim" style="padding-top:10px">Cost of living: not counted (remote job)</td></tr>` : `<tr><td colspan="${cols.length + 1}" class="dim" style="padding-top:10px">Cost of living</td></tr>
       ${fixedLine("Rent, median 1-bedroom", RENT_DKK[k])}${essRows}
       ${line("Total cost of living", "col", "− ", "sum")}
-      ${line("Money left (disposable income)", "rem", "= ", "sum")}</tbody></table></div>
-      <p class="note">${ESS_EST[k] ? (k === "MEL" || k === "SHA" ? "The category split for this city is an estimate; the total is from the original study. " : "Some of these living costs are estimates (no 2026 source found). ") : ""}Score ${incomeScore(k).toFixed(1)}/10: the best city in the ${S.label.toLowerCase()} view scores 10, 0 kr or less scores 0.</p>`;
+      ${line("Money left (disposable income)", "rem", "= ", "sum")}`}</tbody></table></div>
+      <p class="note">${remote ? "Remote job: you keep the net salary, and rent and living costs depend on where you live, so they are left out. Tax is this city's; in practice a remote worker is usually taxed where they live. " : ""}${!remote &&ESS_EST[k] ? (k === "MEL" || k === "SHA" ? "The category split for this city is an estimate; the total is from the original study. " : "Some of these living costs are estimates (no 2026 source found). ") : ""}Score ${incomeScore(k).toFixed(1)}/10: the best city in the ${S.label.toLowerCase()} view scores 10, 0 kr or less scores 0.</p>`;
   }
   function outDetail(k, S) {
     const items = goItems();
@@ -1024,7 +1028,7 @@
     <tbody id="pillarBody"></tbody>`;
   function renderPillarTable(ord, sum, S, W) {
     PILLARS.forEach((p, i) => {
-      $("ph-" + p.k).textContent = `${p.k === "income" ? "Money left / month" : p.name.split(" ")[0].replace(/\(.*/, "")} ×${override ? "1" : (W[i] / (sum || 1)).toFixed(2).replace(/^0/, "")}`;
+      $("ph-" + p.k).textContent = `${p.k === "income" ? (remote ? "Net pay / month" : "Money left / month") : p.name.split(" ")[0].replace(/\(.*/, "")} ×${override ? "1" : (W[i] / (sum || 1)).toFixed(2).replace(/^0/, "")}`;
     });
     $("ph-total").textContent = override ? "Average" : "Total";
     const btn = (k, kind, html) => { const id = `${k}:${kind}`; return `<button type="button" class="cellbtn" data-cell="${id}" aria-expanded="${openCell === id}">${html}<span class="caret">${openCell === id ? "▴" : "▾"}</span></button>`; };
@@ -1101,6 +1105,9 @@
   });
   $("localJobs").addEventListener("change", e => {
     localJobs = e.target.checked; buildScores(); DEFAULT_ORDER = order(DEFAULT_W); renderRanking();
+  });
+  $("remoteOn").addEventListener("change", e => {
+    remote = e.target.checked; buildScores(); DEFAULT_ORDER = order(DEFAULT_W); renderRanking();
   });
   renderRanking();
   table("enCareer", ["City", "Market depth", "× English share", "= Career score", "Why that share"],
