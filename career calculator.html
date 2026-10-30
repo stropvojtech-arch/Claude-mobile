@@ -353,7 +353,7 @@
           <span class="eyebrow">Your situation</span>
           <div class="seg" role="group" aria-label="Situation" id="sitSeg"></div>
           <p class="note" id="sitNote"></p>
-          <label class="check"><input type="checkbox" id="remoteOn"> Remote job: count only salary − tax (rent and living costs don't matter)</label>
+          <label class="check"><input type="checkbox" id="remoteOn"> Remote job: count only salary − tax (rent and living costs don't matter, and no work permit is needed)</label>
         </div>
         <div id="sliders" class="weights"></div>
         <label class="check"><input type="checkbox" id="localJobs"> Also count jobs that need the local language</label>
@@ -909,8 +909,10 @@
     AKL: [1, "Czech Working Holiday Visa (immigration.govt.nz): ages 18-35, up to 12 months, 1,200 places/yr (2026 round opened 18 Jun 2026), NZ$770 fee, NZ$4,200 funds, full medical insurance; temporary work only (no permanent job), one per lifetime; since 20 Apr 2026 must work for an employer, not self-employed. Longer stay = AEWV employer sponsorship."],
   };
   const VISA_LABEL = ["No visa", "Easy visa", "Hard visa"];
+  // A remote job needs no work permit in the employer's city.
+  const visaFor = k => remote ? 0 : VISA[k][0];
   const valFor = (k, f) => f === "income" ? dispFor(k) : SCORES[k][PILLARS.findIndex(p => p.k === f)];
-  const misses = k => Object.keys(FILTERS).filter(f => FILTERS[f] != null && (f === "visa" ? VISA[k][0] > FILTERS.visa : valFor(k, f) < FILTERS[f]));
+  const misses = k => Object.keys(FILTERS).filter(f => FILTERS[f] != null && (f === "visa" ? visaFor(k) > FILTERS.visa : valFor(k, f) < FILTERS[f]));
   function renderRanking() {
     document.querySelectorAll("#sitSeg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === sit)));
     const S = SITS.find(t => t.k === sit);
@@ -936,7 +938,7 @@
       const diff = DEFAULT_ORDER.indexOf(k) - i;
       const mv = diff > 0 ? `<span class="move up" aria-label="up ${diff}">▲${diff}</span>` : diff < 0 ? `<span class="move dn" aria-label="down ${-diff}">▼${-diff}</span>` : "";
       const pct = Math.max(0, (t - lo) / (hi - lo)) * 100;
-      const tip = `<b>${CITY[k].name} · ${S.label}</b><div class="r"><span>Work permit</span><span>${VISA_LABEL[VISA[k][0]]}</span></div><div class="r"><span>${remote ? "Net pay (remote)" : "Money left"}</span><span>${kr(Math.round(dispFor(k)))} kr</span></div>` + PILLARS.map((p, j) => `<div class="r"><span>${p.name}</span><span>${SCORES[k][j].toFixed(1)}</span></div>`).join("");
+      const tip = `<b>${CITY[k].name} · ${S.label}</b><div class="r"><span>Work permit</span><span>${VISA_LABEL[visaFor(k)]}</span></div><div class="r"><span>${remote ? "Net pay (remote)" : "Money left"}</span><span>${kr(Math.round(dispFor(k)))} kr</span></div>` + PILLARS.map((p, j) => `<div class="r"><span>${p.name}</span><span>${SCORES[k][j].toFixed(1)}</span></div>`).join("");
       return `<div class="bar-row${i === 0 ? " lead" : ""}${misses(k).length ? " fail" : ""}" data-tip="${esc(tip)}">
         <span class="rk">${i + 1}</span>${code(k)}
         <div class="track"><div class="fill" style="--c:var(${CITY[k].c});left:0;width:${pct}%"></div></div>
@@ -1033,7 +1035,7 @@
     $("ph-total").textContent = override ? "Average" : "Total";
     const btn = (k, kind, html) => { const id = `${k}:${kind}`; return `<button type="button" class="cellbtn" data-cell="${id}" aria-expanded="${openCell === id}">${html}<span class="caret">${openCell === id ? "▴" : "▾"}</span></button>`; };
     if (sortKey) {
-      const v = k => sortKey === "city" ? CITY[k].name : sortKey === "visa" ? VISA[k][0] : sortKey === "total" ? totalFor(k, W)
+      const v = k => sortKey === "city" ? CITY[k].name : sortKey === "visa" ? visaFor(k) : sortKey === "total" ? totalFor(k, W)
         : sortKey === "income" ? dispFor(k) : SCORES[k][PILLARS.findIndex(p => p.k === sortKey)];
       ord = ord.slice().sort((a, b) => { const x = v(a), y = v(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * sortDir; });
     }
@@ -1046,7 +1048,7 @@
     const ncol = PILLARS.length + 3;
     const rowHtml = k => {
       const sc = SCORES[k], rem = Math.round(dispFor(k)), miss = misses(k);
-      const cells = [[cityCell(k)], [`<span class="vz v${VISA[k][0]}" title="${esc(VISA[k][1])}">${VISA_LABEL[VISA[k][0]]}</span>`, "visa"], [sc[0].toFixed(1), "career"],
+      const cells = [[cityCell(k)], [`<span class="vz v${visaFor(k)}" title="${esc(remote ? "Remote job: you work from home, so no work permit is needed here. Living there: " + VISA[k][1] : VISA[k][1])}">${VISA_LABEL[visaFor(k)]}</span>`, "visa"], [sc[0].toFixed(1), "career"],
         [btn(k, "income", `<span class="${rem < 0 ? "neg" : ""}">${kr(rem)} kr</span> <span class="sc">${sc[1].toFixed(1)}</span>`), "income"],
         [sc[2].toFixed(1), "life"], [sc[3].toFixed(1), "econ"], [btn(k, "out", sc[4].toFixed(1)), "out"],
         [`<b>${sum ? totalFor(k, W).toFixed(2) : "–"}</b>`]];
